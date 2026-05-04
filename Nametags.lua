@@ -1,7 +1,16 @@
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local LogoID = "rbxassetid://95343151225680"
 
 local Nametags = {}
+
+local function TypeWrite(label, text)
+	label.Text = ""
+	for i = 1, #text do
+		label.Text = string.sub(text, 1, i)
+		task.wait(0.05)
+	end
+end
 
 function Nametags.Create(player)
 	if player.Character and player.Character:FindFirstChild("Head") then
@@ -10,72 +19,98 @@ function Nametags.Create(player)
 		
 		local Tag = Instance.new("BillboardGui")
 		Tag.Name = "LunarTag"
-		Tag.Size = UDim2.new(0, 120, 0, 40)
-		Tag.StudsOffset = Vector3.new(0, 2.5, 0)
+		Tag.Size = UDim2.new(0, 140, 0, 45)
+		Tag.StudsOffset = Vector3.new(0, 3, 0)
 		Tag.AlwaysOnTop = true
 		Tag.Parent = Head
 		
 		local TagFrame = Instance.new("Frame")
 		TagFrame.Size = UDim2.new(1, 0, 1, 0)
-		TagFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-		TagFrame.BackgroundTransparency = 0.3
+		TagFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+		TagFrame.BackgroundTransparency = 0.2
 		TagFrame.Parent = Tag
 		
 		local TagCorner = Instance.new("UICorner")
-		TagCorner.CornerRadius = UDim.new(0, 8)
+		TagCorner.CornerRadius = UDim.new(0, 10)
 		TagCorner.Parent = TagFrame
 		
 		local TagStroke = Instance.new("UIStroke")
-		TagStroke.Color = Color3.fromRGB(150, 255, 150)
-		TagStroke.Transparency = 0.5
-		TagStroke.Thickness = 1
+		TagStroke.Color = Color3.fromRGB(255, 255, 255)
+		TagStroke.Transparency = 0.8
+		TagStroke.Thickness = 1.2
 		TagStroke.Parent = TagFrame
 		
 		local TagLogo = Instance.new("ImageLabel")
-		TagLogo.Size = UDim2.new(0, 20, 0, 20)
-		TagLogo.Position = UDim2.new(0, 8, 0.5, -10)
+		TagLogo.Size = UDim2.new(0, 24, 0, 24)
+		TagLogo.Position = UDim2.new(0, 8, 0.5, -12)
 		TagLogo.BackgroundTransparency = 1
 		TagLogo.Image = LogoID
 		TagLogo.Parent = TagFrame
 		
+		local Role = "LUNAR USER"
+		local RoleColor = Color3.fromRGB(150, 255, 150)
+		
+		if player.Name == "lnrs_dev" then
+			Role = "LUNAR OWNER"
+			RoleColor = Color3.fromRGB(255, 100, 100)
+			TagStroke.Color = RoleColor
+		end
+		
 		local TagText = Instance.new("TextLabel")
-		TagText.Size = UDim2.new(1, -35, 0.5, 0)
-		TagText.Position = UDim2.new(0, 32, 0, 5)
+		TagText.Size = UDim2.new(1, -40, 0.5, 0)
+		TagText.Position = UDim2.new(0, 35, 0, 8)
 		TagText.BackgroundTransparency = 1
-		TagText.Text = "LUNAR USER"
-		TagText.TextColor3 = Color3.fromRGB(150, 255, 150)
+		TagText.Text = ""
+		TagText.TextColor3 = RoleColor
 		TagText.Font = Enum.Font.GothamBold
 		TagText.TextSize = 10
 		TagText.TextXAlignment = Enum.TextXAlignment.Left
 		TagText.Parent = TagFrame
 		
 		local SubText = Instance.new("TextLabel")
-		SubText.Size = UDim2.new(1, -35, 0.5, 0)
-		SubText.Position = UDim2.new(0, 32, 0.5, -5)
+		SubText.Size = UDim2.new(1, -40, 0.5, 0)
+		SubText.Position = UDim2.new(0, 35, 0.5, -4)
 		SubText.BackgroundTransparency = 1
 		SubText.Text = "@" .. player.Name
 		SubText.TextColor3 = Color3.fromRGB(200, 200, 200)
 		SubText.Font = Enum.Font.Gotham
-		SubText.TextSize = 8
+		SubText.TextSize = 9
 		SubText.TextXAlignment = Enum.TextXAlignment.Left
 		SubText.Parent = TagFrame
+		
+		task.spawn(function()
+			while Tag.Parent do
+				TypeWrite(TagText, Role)
+				task.wait(3)
+			end
+		end)
 	end
 end
 
 function Nametags.Init()
-	for _, p in pairs(Players:GetPlayers()) do
-		if p.Character then Nametags.Create(p) end
-		p.CharacterAdded:Connect(function()
-			task.wait(1)
-			Nametags.Create(p)
-		end)
+	Players.LocalPlayer:SetAttribute("LunarUser", true)
+	
+	local function CheckAndTag(p)
+		if p:GetAttribute("LunarUser") or p.Name == "lnrs_dev" then
+			if p.Character then Nametags.Create(p) end
+			p.CharacterAdded:Connect(function()
+				task.wait(1)
+				Nametags.Create(p)
+			end)
+		end
 	end
 	
-	Players.PlayerAdded:Connect(function(p)
-		p.CharacterAdded:Connect(function()
-			task.wait(1)
-			Nametags.Create(p)
-		end)
+	for _, p in pairs(Players:GetPlayers()) do CheckAndTag(p) end
+	Players.PlayerAdded:Connect(CheckAndTag)
+	
+	task.spawn(function()
+		while task.wait(5) do
+			for _, p in pairs(Players:GetPlayers()) do
+				if p:GetAttribute("LunarUser") and not p.Character:FindFirstChild("Head"):FindFirstChild("LunarTag") then
+					Nametags.Create(p)
+				end
+			end
+		end
 	end)
 end
 
