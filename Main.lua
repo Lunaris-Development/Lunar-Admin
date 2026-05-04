@@ -1,4 +1,4 @@
-local BaseURL = "https://raw.githubusercontent.com/LunarisDEV/Lunar-Admin/main/"
+local BaseURL = "https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/"
 
 local function Load(file)
 	return loadstring(game:HttpGet(BaseURL .. file))()

@@ -208,7 +208,7 @@ local function grantAccess(key)
 	getgenv().SCRIPT_KEY = key
 	task.wait(1)
 	CloseUI()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/LunarisDEV/Lunar-Admin/main/Main.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/Main.lua"))()
 end
 
 CheckBtn.MouseButton1Click:Connect(function()
