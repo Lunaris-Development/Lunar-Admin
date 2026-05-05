@@ -2,9 +2,17 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local LogoID = "rbxassetid://73819038719454"
 
+local function GetFont()
+	if getcustomasset and isfile and isfile("Minecraft.ttf") then
+		return Font.new(getcustomasset("Minecraft.ttf"))
+	end
+	return Font.fromEnum(Enum.Font.GothamBold)
+end
+
 local Nametags = {}
 
 local function HumanType(label, text)
+	label.Text = ""
 	for i = 1, #text do
 		label.Text = string.sub(text, 1, i)
 		task.wait(0.15)
@@ -67,7 +75,7 @@ function Nametags.Create(player)
 		TagText.BackgroundTransparency = 1
 		TagText.Text = ""
 		TagText.TextColor3 = RoleColor
-		TagText.Font = Enum.Font.GothamBold
+		TagText.FontFace = GetFont()
 		TagText.TextSize = 11
 		TagText.TextXAlignment = Enum.TextXAlignment.Left
 		TagText.Parent = TagFrame
@@ -78,7 +86,7 @@ function Nametags.Create(player)
 		SubText.BackgroundTransparency = 1
 		SubText.Text = "@" .. player.Name
 		SubText.TextColor3 = Color3.fromRGB(200, 200, 200)
-		SubText.Font = Enum.Font.Gotham
+		SubText.FontFace = GetFont()
 		SubText.TextSize = 9
 		SubText.TextXAlignment = Enum.TextXAlignment.Left
 		SubText.Parent = TagFrame

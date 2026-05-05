@@ -6,6 +6,13 @@ local Player = Players.LocalPlayer
 local LogoID = "rbxassetid://73819038719454"
 local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 
+local function GetFont()
+	if getcustomasset and isfile and isfile("Minecraft.ttf") then
+		return Font.new(getcustomasset("Minecraft.ttf"))
+	end
+	return Font.fromEnum(Enum.Font.GothamBold)
+end
+
 local UI = {}
 
 function UI.Init()
@@ -65,8 +72,8 @@ function UI.Init()
 	Title.BackgroundTransparency = 1
 	Title.Text = "Lunar Admin"
 	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Title.Font = Enum.Font.GothamBold
-	Title.TextSize = 12
+	Title.FontFace = GetFont()
+	Title.TextSize = 14
 	Title.TextXAlignment = Enum.TextXAlignment.Left
 	Title.Parent = Info
 
@@ -76,7 +83,7 @@ function UI.Init()
 	ExecLabel.BackgroundTransparency = 1
 	ExecLabel.Text = Executor
 	ExecLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-	ExecLabel.Font = Enum.Font.Gotham
+	ExecLabel.FontFace = GetFont()
 	ExecLabel.TextSize = 10
 	ExecLabel.TextXAlignment = Enum.TextXAlignment.Left
 	ExecLabel.Parent = Info
@@ -93,7 +100,7 @@ function UI.Init()
 	FPSLabel.BackgroundTransparency = 1
 	FPSLabel.Text = "FPS: 0"
 	FPSLabel.TextColor3 = Color3.fromRGB(150, 255, 150)
-	FPSLabel.Font = Enum.Font.GothamBold
+	FPSLabel.FontFace = GetFont()
 	FPSLabel.TextSize = 10
 	FPSLabel.TextXAlignment = Enum.TextXAlignment.Left
 	FPSLabel.Parent = Stats
@@ -104,7 +111,7 @@ function UI.Init()
 	PingLabel.BackgroundTransparency = 1
 	PingLabel.Text = "PING: 0ms"
 	PingLabel.TextColor3 = Color3.fromRGB(150, 200, 255)
-	PingLabel.Font = Enum.Font.GothamBold
+	PingLabel.FontFace = GetFont()
 	PingLabel.TextSize = 10
 	PingLabel.TextXAlignment = Enum.TextXAlignment.Left
 	PingLabel.Parent = Stats
@@ -189,7 +196,7 @@ function UI.Init()
 	WelcomeText.BackgroundTransparency = 1
 	WelcomeText.Text = "Welcome to Lunar Admin"
 	WelcomeText.TextColor3 = Color3.fromRGB(255, 255, 255)
-	WelcomeText.Font = Enum.Font.GothamBold
+	WelcomeText.FontFace = GetFont()
 	WelcomeText.TextSize = 14
 	WelcomeText.Parent = NotifyFrame
 
