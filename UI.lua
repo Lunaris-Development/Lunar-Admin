@@ -129,7 +129,72 @@ function UI.Init()
 	UIList.Padding = UDim.new(0, 15)
 	UIList.Parent = Icons
 
-	local function CreateIcon(id)
+	local CmdMenu = Instance.new("Frame")
+	CmdMenu.Name = "CmdMenu"
+	CmdMenu.Size = UDim2.new(0, 250, 0, 0)
+	CmdMenu.Position = UDim2.new(0.5, -125, 0, 75)
+	CmdMenu.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	CmdMenu.BackgroundTransparency = 0.15
+	CmdMenu.BorderSizePixel = 0
+	CmdMenu.ClipsDescendants = true
+	CmdMenu.Visible = false
+	CmdMenu.Parent = ScreenGui
+
+	local MenuCorner = Instance.new("UICorner")
+	MenuCorner.CornerRadius = UDim.new(0, 12)
+	MenuCorner.Parent = CmdMenu
+
+	local MenuStroke = Instance.new("UIStroke")
+	MenuStroke.Color = Color3.fromRGB(255, 255, 255)
+	MenuStroke.Transparency = 0.85
+	MenuStroke.Thickness = 1.2
+	MenuStroke.Parent = CmdMenu
+
+	local MenuList = Instance.new("UIListLayout")
+	MenuList.SortOrder = Enum.SortOrder.LayoutOrder
+	MenuList.Padding = UDim.new(0, 5)
+	MenuList.Parent = CmdMenu
+
+	local MenuPadding = Instance.new("UIPadding")
+	MenuPadding.PaddingTop = UDim.new(0, 10)
+	MenuPadding.PaddingBottom = UDim.new(0, 10)
+	MenuPadding.PaddingLeft = UDim.new(0, 10)
+	MenuPadding.PaddingRight = UDim.new(0, 10)
+	MenuPadding.Parent = CmdMenu
+
+	local function CreateMenuBtn(name, callback)
+		local Btn = Instance.new("TextButton")
+		Btn.Name = name
+		Btn.Size = UDim2.new(1, 0, 0, 35)
+		Btn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Btn.BackgroundTransparency = 0.95
+		Btn.Text = "  " .. name
+		Btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+		Btn.FontFace = GetFont()
+		Btn.TextSize = 12
+		Btn.TextXAlignment = Enum.TextXAlignment.Left
+		Btn.AutoButtonColor = false
+		Btn.Parent = CmdMenu
+
+		local BtnCorner = Instance.new("UICorner")
+		BtnCorner.CornerRadius = UDim.new(0, 6)
+		BtnCorner.Parent = Btn
+
+		Btn.MouseEnter:Connect(function()
+			TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.85, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+		end)
+		Btn.MouseLeave:Connect(function()
+			TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.95, TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+		end)
+		Btn.MouseButton1Click:Connect(callback)
+	end
+
+	CreateMenuBtn("WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end)
+	CreateMenuBtn("JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
+	CreateMenuBtn("Fly", function() print("Fly toggled") end)
+	CreateMenuBtn("ESP", function() print("ESP toggled") end)
+
+	local function CreateIcon(id, callback)
 		local Icon = Instance.new("ImageButton")
 		Icon.Size = UDim2.new(0, 22, 0, 22)
 		Icon.BackgroundTransparency = 1
@@ -142,10 +207,24 @@ function UI.Init()
 		Icon.MouseLeave:Connect(function()
 			TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(180, 180, 180)}):Play()
 		end)
+		if callback then Icon.MouseButton1Click:Connect(callback) end
 		return Icon
 	end
 
-	CreateIcon("rbxassetid://10734898156")
+	local MenuVisible = false
+	local function ToggleMenu()
+		MenuVisible = not MenuVisible
+		if MenuVisible then
+			CmdMenu.Visible = true
+			TweenService:Create(CmdMenu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 250, 0, 180)}):Play()
+		else
+			TweenService:Create(CmdMenu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 250, 0, 0)}):Play()
+			task.wait(0.4)
+			if not MenuVisible then CmdMenu.Visible = false end
+		end
+	end
+
+	CreateIcon("rbxassetid://10734898156", ToggleMenu)
 	CreateIcon("rbxassetid://10734913301")
 	CreateIcon("rbxassetid://10734950309")
 
