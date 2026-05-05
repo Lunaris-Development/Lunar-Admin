@@ -3,7 +3,7 @@ local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 
 local Player = Players.LocalPlayer
-local LogoID = "rbxassetid://73819038719454"
+local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
 local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 
 local function GetFont()
@@ -51,6 +51,7 @@ function UI.Init()
 	LogoImg.Position = UDim2.new(0, 10, 0, 10)
 	LogoImg.BackgroundTransparency = 1
 	LogoImg.Image = LogoID
+	LogoImg.ScaleType = Enum.ScaleType.Fit
 	LogoImg.Parent = Island
 
 	local Content = Instance.new("Frame")

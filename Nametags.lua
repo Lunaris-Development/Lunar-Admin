@@ -1,6 +1,6 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local LogoID = "rbxassetid://73819038719454"
+local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
 
 local function GetFont()
 	if getcustomasset and isfile and isfile("Minecraft.ttf") then
