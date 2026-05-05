@@ -54,6 +54,15 @@ function UI.Init()
 	LogoImg.ScaleType = Enum.ScaleType.Fit
 	LogoImg.Parent = Island
 
+	task.spawn(function()
+		while true do
+			TweenService:Create(LogoImg, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.4}):Play()
+			task.wait(1)
+			TweenService:Create(LogoImg, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0}):Play()
+			task.wait(1)
+		end
+	end)
+
 	local Content = Instance.new("Frame")
 	Content.Name = "Content"
 	Content.Size = UDim2.new(1, -60, 1, 0)
@@ -130,40 +139,36 @@ function UI.Init()
 	UIList.Padding = UDim.new(0, 15)
 	UIList.Parent = Icons
 
-	local CmdMenu = Instance.new("Frame")
-	CmdMenu.Name = "CmdMenu"
-	CmdMenu.Size = UDim2.new(0, 250, 0, 0)
-	CmdMenu.Position = UDim2.new(0.5, -125, 0, 75)
-	CmdMenu.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-	CmdMenu.BackgroundTransparency = 0.15
-	CmdMenu.BorderSizePixel = 0
-	CmdMenu.ClipsDescendants = true
-	CmdMenu.Visible = false
-	CmdMenu.Parent = ScreenGui
+	local function CreateMenu(name, size)
+		local Menu = Instance.new("Frame")
+		Menu.Name = name
+		Menu.Size = UDim2.new(0, size.X, 0, 0)
+		Menu.Position = UDim2.new(0.5, -size.X/2, 0, 75)
+		Menu.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+		Menu.BackgroundTransparency = 0.15
+		Menu.BorderSizePixel = 0
+		Menu.ClipsDescendants = true
+		Menu.Visible = false
+		Menu.Parent = ScreenGui
+		Instance.new("UICorner", Menu).CornerRadius = UDim.new(0, 12)
+		local Stroke = Instance.new("UIStroke", Menu)
+		Stroke.Color = Color3.fromRGB(255, 255, 255)
+		Stroke.Transparency = 0.85
+		Stroke.Thickness = 1.2
+		local List = Instance.new("UIListLayout", Menu)
+		List.Padding = UDim.new(0, 5)
+		local Padding = Instance.new("UIPadding", Menu)
+		Padding.PaddingTop = UDim.new(0, 10)
+		Padding.PaddingBottom = UDim.new(0, 10)
+		Padding.PaddingLeft = UDim.new(0, 10)
+		Padding.PaddingRight = UDim.new(0, 10)
+		return Menu
+	end
 
-	local MenuCorner = Instance.new("UICorner")
-	MenuCorner.CornerRadius = UDim.new(0, 12)
-	MenuCorner.Parent = CmdMenu
+	local CmdMenu = CreateMenu("CmdMenu", Vector2.new(250, 0))
+	local SettingsMenu = CreateMenu("SettingsMenu", Vector2.new(250, 0))
 
-	local MenuStroke = Instance.new("UIStroke")
-	MenuStroke.Color = Color3.fromRGB(255, 255, 255)
-	MenuStroke.Transparency = 0.85
-	MenuStroke.Thickness = 1.2
-	MenuStroke.Parent = CmdMenu
-
-	local MenuList = Instance.new("UIListLayout")
-	MenuList.SortOrder = Enum.SortOrder.LayoutOrder
-	MenuList.Padding = UDim.new(0, 5)
-	MenuList.Parent = CmdMenu
-
-	local MenuPadding = Instance.new("UIPadding")
-	MenuPadding.PaddingTop = UDim.new(0, 10)
-	MenuPadding.PaddingBottom = UDim.new(0, 10)
-	MenuPadding.PaddingLeft = UDim.new(0, 10)
-	MenuPadding.PaddingRight = UDim.new(0, 10)
-	MenuPadding.Parent = CmdMenu
-
-	local function CreateMenuBtn(name, callback)
+	local function CreateBtn(parent, name, callback)
 		local Btn = Instance.new("TextButton")
 		Btn.Name = name
 		Btn.Size = UDim2.new(1, 0, 0, 35)
@@ -175,17 +180,19 @@ function UI.Init()
 		Btn.TextSize = 12
 		Btn.TextXAlignment = Enum.TextXAlignment.Left
 		Btn.AutoButtonColor = false
-		Btn.Parent = CmdMenu
-		local BtnCorner = Instance.new("UICorner")
-		BtnCorner.CornerRadius = UDim.new(0, 6)
-		BtnCorner.Parent = Btn
+		Btn.Parent = parent
+		Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 6)
 		Btn.MouseEnter:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.85, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play() end)
 		Btn.MouseLeave:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.95, TextColor3 = Color3.fromRGB(200, 200, 200)}):Play() end)
 		Btn.MouseButton1Click:Connect(callback)
 	end
 
-	CreateMenuBtn("WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end)
-	CreateMenuBtn("JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
+	CreateBtn(CmdMenu, "WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end)
+	CreateBtn(CmdMenu, "JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
+	
+	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)
+	CreateBtn(SettingsMenu, "Re-Authenticate", function() print("Re-auth triggered") end)
+	CreateBtn(SettingsMenu, "Unload Script", function() ScreenGui:Destroy() end)
 
 	local ConsoleFrame = Instance.new("Frame")
 	ConsoleFrame.Name = "ConsoleFrame"
@@ -196,19 +203,12 @@ function UI.Init()
 	ConsoleFrame.BorderSizePixel = 0
 	ConsoleFrame.ClipsDescendants = true
 	ConsoleFrame.Visible = false
-	ConsoleScreen = ConsoleFrame
 	ConsoleFrame.Parent = ScreenGui
-
-	local ConsoleCorner = Instance.new("UICorner")
-	ConsoleCorner.CornerRadius = UDim.new(0, 10)
-	ConsoleCorner.Parent = ConsoleFrame
-
-	local ConsoleStroke = Instance.new("UIStroke")
+	Instance.new("UICorner", ConsoleFrame).CornerRadius = UDim.new(0, 10)
+	local ConsoleStroke = Instance.new("UIStroke", ConsoleFrame)
 	ConsoleStroke.Color = Color3.fromRGB(255, 255, 255)
 	ConsoleStroke.Transparency = 0.85
 	ConsoleStroke.Thickness = 1.2
-	ConsoleStroke.Parent = ConsoleFrame
-
 	local ConsoleInput = Instance.new("TextBox")
 	ConsoleInput.Name = "ConsoleInput"
 	ConsoleInput.Size = UDim2.new(1, -20, 1, -20)
@@ -236,23 +236,20 @@ function UI.Init()
 		return Icon
 	end
 
-	local MenuVisible = false
-	local function ToggleMenu()
-		MenuVisible = not MenuVisible
-		if MenuVisible then
-			CmdMenu.Visible = true
-			TweenService:Create(CmdMenu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 250, 0, 120)}):Play()
+	local function AnimateMenu(menu, targetHeight)
+		if menu.Size.Y.Offset == 0 then
+			menu.Visible = true
+			TweenService:Create(menu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, menu.Size.X.Offset, 0, targetHeight)}):Play()
 		else
-			TweenService:Create(CmdMenu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 250, 0, 0)}):Play()
+			TweenService:Create(menu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, menu.Size.X.Offset, 0, 0)}):Play()
 			task.wait(0.4)
-			if not MenuVisible then CmdMenu.Visible = false end
+			if menu.Size.Y.Offset == 0 then menu.Visible = false end
 		end
 	end
 
-	local ConsoleVisible = false
-	local function ToggleConsole()
-		ConsoleVisible = not ConsoleVisible
-		if ConsoleVisible then
+	CreateIcon("rbxassetid://10734898156", function() AnimateMenu(CmdMenu, 120) end)
+	CreateIcon("rbxassetid://10734913301", function() 
+		if ConsoleFrame.Size.Y.Offset == 0 then
 			ConsoleFrame.Visible = true
 			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 45)}):Play()
 			task.wait(0.4)
@@ -261,20 +258,17 @@ function UI.Init()
 			ConsoleInput:ReleaseFocus()
 			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 0)}):Play()
 			task.wait(0.4)
-			if not ConsoleVisible then ConsoleFrame.Visible = false end
+			ConsoleFrame.Visible = false
 		end
-	end
-
-	CreateIcon("rbxassetid://10734898156", ToggleMenu)
-	CreateIcon("rbxassetid://10734913301", ToggleConsole)
-	CreateIcon("rbxassetid://10734950309")
+	end)
+	CreateIcon("rbxassetid://10734950309", function() AnimateMenu(SettingsMenu, 160) end)
 
 	ConsoleInput.FocusLost:Connect(function(enter)
 		if enter then
-			local cmd = ConsoleInput.Text
-			print("Lunar Console executed: " .. cmd)
 			ConsoleInput.Text = ""
-			ToggleConsole()
+			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 0)}):Play()
+			task.wait(0.4)
+			ConsoleFrame.Visible = false
 		end
 	end)
 
