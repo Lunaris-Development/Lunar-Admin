@@ -196,27 +196,27 @@ function UI.Init(Nametags, Commands, ESP)
 	ConsoleStroke.Color = Color3.fromRGB(255, 255, 255)
 	ConsoleStroke.Transparency = 0.8
 
+	local ConsoleLayout = Instance.new("UIListLayout", Console)
+	ConsoleLayout.FillDirection = Enum.FillDirection.Horizontal
+	ConsoleLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+	ConsoleLayout.Padding = UDim.new(0, 10)
+	Instance.new("UIPadding", Console).PaddingLeft = UDim.new(0, 12)
+
 	local Prompt = Instance.new("TextLabel")
-	Prompt.Size = UDim2.new(0, 200, 1, 0)
-	Prompt.Position = UDim2.new(0, 12, 0, 0)
+	Prompt.Name = "Prompt"
+	Prompt.Size = UDim2.new(0, 0, 1, 0)
 	Prompt.BackgroundTransparency = 1
 	Prompt.Text = Player.Name .. "@Lunar: ~/"
 	Prompt.TextColor3 = Color3.fromRGB(150, 255, 150)
 	Prompt.FontFace = GetFont()
 	Prompt.TextSize = 13
 	Prompt.TextXAlignment = Enum.TextXAlignment.Left
+	Prompt.AutomaticSize = Enum.AutomaticSize.X
 	Prompt.Parent = Console
-	
-	task.spawn(function()
-		while not Prompt.Parent do task.wait() end
-		local pText = Prompt.Text
-		local pSize = game:GetService("TextService"):GetTextSize(pText, 13, Enum.Font.GothamBold, Vector2.new(1000, 1000))
-		Prompt.Size = UDim2.new(0, pSize.X + 5, 1, 0)
-	end)
 
 	local ConsoleInput = Instance.new("TextBox")
+	ConsoleInput.Name = "Input"
 	ConsoleInput.Size = UDim2.new(1, -200, 1, 0)
-	ConsoleInput.Position = UDim2.new(0, 160, 0, 0)
 	ConsoleInput.BackgroundTransparency = 1
 	ConsoleInput.Text = ""
 	ConsoleInput.PlaceholderText = "enter command..."
