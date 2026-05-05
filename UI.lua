@@ -15,7 +15,7 @@ end
 
 local UI = {}
 
-function UI.Init()
+function UI.Init(Nametags)
 	if game.CoreGui:FindFirstChild("LunarDynamicIsland") then
 		game.CoreGui:FindFirstChild("LunarDynamicIsland"):Destroy()
 	end
@@ -42,17 +42,36 @@ function UI.Init()
 
 	local IslandStroke = Instance.new("UIStroke")
 	IslandStroke.Color = Color3.fromRGB(255, 255, 255)
-	IslandStroke.Transparency = 0.8
-	IslandStroke.Thickness = 1.5
+	IslandStroke.Transparency = 0.7
+	IslandStroke.Thickness = 1.8
 	IslandStroke.Parent = Island
 
 	local LogoImg = Instance.new("ImageLabel")
-	LogoImg.Size = UDim2.new(0, 36, 0, 36)
-	LogoImg.Position = UDim2.new(0, 7, 0, 7)
+	LogoImg.Size = UDim2.new(0, 38, 0, 38)
+	LogoImg.Position = UDim2.new(0, 6, 0, 6)
 	LogoImg.BackgroundTransparency = 1
 	LogoImg.Image = LogoID
+	LogoImg.ImageColor3 = Color3.fromRGB(255, 255, 255)
 	LogoImg.ScaleType = Enum.ScaleType.Fit
 	LogoImg.Parent = Island
+	
+	local LogoGlow = Instance.new("ImageLabel")
+	LogoGlow.Size = UDim2.new(1.5, 0, 1.5, 0)
+	LogoGlow.Position = UDim2.new(-0.25, 0, -0.25, 0)
+	LogoGlow.BackgroundTransparency = 1
+	LogoGlow.Image = "rbxassetid://6015538162"
+	LogoGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
+	LogoGlow.ImageTransparency = 0.8
+	LogoGlow.Parent = LogoImg
+
+	task.spawn(function()
+		while ScreenGui.Parent do
+			TweenService:Create(LogoGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.5}):Play()
+			task.wait(1.5)
+			TweenService:Create(LogoGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.8}):Play()
+			task.wait(1.5)
+		end
+	end)
 
 	local Content = Instance.new("Frame")
 	Content.Name = "Content"
@@ -186,7 +205,10 @@ function UI.Init()
 	CreateBtn(CmdMenu, "JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
 	
 	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)
-	CreateBtn(SettingsMenu, "Unload Script", function() ScreenGui:Destroy() end)
+	CreateBtn(SettingsMenu, "Unload Script", function() 
+		if Nametags then Nametags.Unload() end
+		ScreenGui:Destroy() 
+	end)
 
 	local ConsoleFrame = Instance.new("Frame")
 	ConsoleFrame.Name = "ConsoleFrame"

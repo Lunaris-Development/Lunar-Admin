@@ -10,15 +10,19 @@ local function GetFont()
 end
 
 local Nametags = {}
+local Connections = {}
+local Active = true
 
 local function HumanType(label, text)
 	label.Text = ""
 	for i = 1, #text do
+		if not Active then return end
 		label.Text = string.sub(text, 1, i)
 		task.wait(0.15)
 	end
 	task.wait(2)
 	for i = #text, 0, -1 do
+		if not Active then return end
 		label.Text = string.sub(text, 1, i)
 		task.wait(0.08)
 	end
@@ -94,14 +98,25 @@ function Nametags.Create(player)
 		SubText.Parent = TagFrame
 		
 		task.spawn(function()
-			while Tag.Parent do
+			while Tag.Parent and Active do
 				HumanType(TagText, Role)
 			end
 		end)
 	end
 end
 
+function Nametags.Unload()
+	Active = false
+	for _, v in pairs(Connections) do v:Disconnect() end
+	for _, p in pairs(Players:GetPlayers()) do
+		if p.Character and p.Character:FindFirstChild("Head") and p.Character.Head:FindFirstChild("LunarTag") then
+			p.Character.Head.LunarTag:Destroy()
+		end
+	end
+end
+
 function Nametags.Init()
+	Active = true
 	local function IsUser(p)
 		if p.Name == "lnrs_dev" then return true end
 		if p.Character and p.Character:FindFirstChild("__LunarUser") then return true end
@@ -117,12 +132,12 @@ function Nametags.Init()
 		end
 	end
 
-	Players.LocalPlayer.CharacterAdded:Connect(Mark)
+	table.insert(Connections, Players.LocalPlayer.CharacterAdded:Connect(Mark))
 	if Players.LocalPlayer.Character then Mark(Players.LocalPlayer.Character) end
 	Players.LocalPlayer:SetAttribute("LunarUser", true)
 
 	task.spawn(function()
-		while task.wait(3) do
+		while task.wait(3) and Active do
 			for _, p in pairs(Players:GetPlayers()) do
 				if IsUser(p) then
 					if p.Character and p.Character:FindFirstChild("Head") and not p.Character.Head:FindFirstChild("LunarTag") then
