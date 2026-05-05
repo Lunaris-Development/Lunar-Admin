@@ -309,9 +309,10 @@ function UI.Init(Nametags, Commands, ESP)
 	NotifyFrame.BorderSizePixel = 0
 	NotifyFrame.Parent = ScreenGui
 	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 10)
-	local NotifyStroke = Instance.new("UIStroke", NotifyFrame)
+	local NotifyStroke = Instance.new("UIStroke")
 	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
 	NotifyStroke.Transparency = 0.8
+	NotifyStroke.Parent = NotifyFrame
 	local NotifyLabel = Instance.new("TextLabel")
 	NotifyLabel.Size = UDim2.new(1, 0, 1, 0)
 	NotifyLabel.BackgroundTransparency = 1
@@ -362,7 +363,7 @@ function UI.Init(Nametags, Commands, ESP)
 		return Icon
 	end
 
-	CreateIcon("rbxassetid://10734898156", UI.ToggleMenu)
+	CreateIcon("rbxassetid://85860329666484", UI.ToggleMenu)
 	CreateIcon("rbxassetid://10734913301", ToggleConsole)
 	CreateIcon("rbxassetid://10734950309", function() AnimateMenu(SettingsMenu, 120) end)
 
