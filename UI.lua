@@ -47,21 +47,12 @@ function UI.Init()
 	IslandStroke.Parent = Island
 
 	local LogoImg = Instance.new("ImageLabel")
-	LogoImg.Size = UDim2.new(0, 30, 0, 30)
-	LogoImg.Position = UDim2.new(0, 10, 0, 10)
+	LogoImg.Size = UDim2.new(0, 36, 0, 36)
+	LogoImg.Position = UDim2.new(0, 7, 0, 7)
 	LogoImg.BackgroundTransparency = 1
 	LogoImg.Image = LogoID
 	LogoImg.ScaleType = Enum.ScaleType.Fit
 	LogoImg.Parent = Island
-
-	task.spawn(function()
-		while true do
-			TweenService:Create(LogoImg, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.4}):Play()
-			task.wait(1)
-			TweenService:Create(LogoImg, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0}):Play()
-			task.wait(1)
-		end
-	end)
 
 	local Content = Instance.new("Frame")
 	Content.Name = "Content"
@@ -72,7 +63,7 @@ function UI.Init()
 	Content.Parent = Island
 
 	local Info = Instance.new("Frame")
-	Info.Size = UDim2.new(0, 150, 1, 0)
+	Info.Size = UDim2.new(0, 160, 1, 0)
 	Info.BackgroundTransparency = 1
 	Info.Parent = Content
 
@@ -99,8 +90,8 @@ function UI.Init()
 	ExecLabel.Parent = Info
 
 	local Stats = Instance.new("Frame")
-	Stats.Size = UDim2.new(0, 120, 1, 0)
-	Stats.Position = UDim2.new(0, 160, 0, 0)
+	Stats.Size = UDim2.new(0, 130, 1, 0)
+	Stats.Position = UDim2.new(0, 170, 0, 0)
 	Stats.BackgroundTransparency = 1
 	Stats.Parent = Content
 
@@ -127,8 +118,8 @@ function UI.Init()
 	PingLabel.Parent = Stats
 
 	local Icons = Instance.new("Frame")
-	Icons.Size = UDim2.new(1, -290, 1, 0)
-	Icons.Position = UDim2.new(0, 290, 0, 0)
+	Icons.Size = UDim2.new(1, -310, 1, 0)
+	Icons.Position = UDim2.new(0, 310, 0, 0)
 	Icons.BackgroundTransparency = 1
 	Icons.Parent = Content
 
@@ -136,8 +127,12 @@ function UI.Init()
 	UIList.FillDirection = Enum.FillDirection.Horizontal
 	UIList.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	UIList.VerticalAlignment = Enum.VerticalAlignment.Center
-	UIList.Padding = UDim.new(0, 15)
+	UIList.Padding = UDim.new(0, 20)
 	UIList.Parent = Icons
+	
+	local UIPadding = Instance.new("UIPadding")
+	UIPadding.PaddingRight = UDim.new(0, 15)
+	UIPadding.Parent = Icons
 
 	local function CreateMenu(name, size)
 		local Menu = Instance.new("Frame")
@@ -191,13 +186,12 @@ function UI.Init()
 	CreateBtn(CmdMenu, "JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
 	
 	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)
-	CreateBtn(SettingsMenu, "Re-Authenticate", function() print("Re-auth triggered") end)
 	CreateBtn(SettingsMenu, "Unload Script", function() ScreenGui:Destroy() end)
 
 	local ConsoleFrame = Instance.new("Frame")
 	ConsoleFrame.Name = "ConsoleFrame"
-	ConsoleFrame.Size = UDim2.new(0, 350, 0, 0)
-	ConsoleFrame.Position = UDim2.new(0.5, -175, 0, 75)
+	ConsoleFrame.Size = UDim2.new(0, 400, 0, 0)
+	ConsoleFrame.Position = UDim2.new(0.5, -200, 0, 75)
 	ConsoleFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 	ConsoleFrame.BackgroundTransparency = 0.15
 	ConsoleFrame.BorderSizePixel = 0
@@ -225,13 +219,13 @@ function UI.Init()
 
 	local function CreateIcon(id, callback)
 		local Icon = Instance.new("ImageButton")
-		Icon.Size = UDim2.new(0, 22, 0, 22)
+		Icon.Size = UDim2.new(0, 24, 0, 24)
 		Icon.BackgroundTransparency = 1
 		Icon.Image = id
-		Icon.ImageColor3 = Color3.fromRGB(180, 180, 180)
+		Icon.ImageColor3 = Color3.fromRGB(200, 200, 200)
 		Icon.Parent = Icons
 		Icon.MouseEnter:Connect(function() TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play() end)
-		Icon.MouseLeave:Connect(function() TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(180, 180, 180)}):Play() end)
+		Icon.MouseLeave:Connect(function() TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(200, 200, 200)}):Play() end)
 		if callback then Icon.MouseButton1Click:Connect(callback) end
 		return Icon
 	end
@@ -251,22 +245,22 @@ function UI.Init()
 	CreateIcon("rbxassetid://10734913301", function() 
 		if ConsoleFrame.Size.Y.Offset == 0 then
 			ConsoleFrame.Visible = true
-			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 45)}):Play()
+			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 45)}):Play()
 			task.wait(0.4)
 			ConsoleInput:CaptureFocus()
 		else
 			ConsoleInput:ReleaseFocus()
-			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 0)}):Play()
+			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 0)}):Play()
 			task.wait(0.4)
 			ConsoleFrame.Visible = false
 		end
 	end)
-	CreateIcon("rbxassetid://10734950309", function() AnimateMenu(SettingsMenu, 160) end)
+	CreateIcon("rbxassetid://10734950309", function() AnimateMenu(SettingsMenu, 120) end)
 
 	ConsoleInput.FocusLost:Connect(function(enter)
 		if enter then
 			ConsoleInput.Text = ""
-			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 0)}):Play()
+			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 0)}):Play()
 			task.wait(0.4)
 			ConsoleFrame.Visible = false
 		end
@@ -278,8 +272,8 @@ function UI.Init()
 		if state then
 			Content.Visible = true
 			TweenService:Create(Island, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				Size = UDim2.new(0, 480, 0, 50),
-				Position = UDim2.new(0.5, -240, 0, 15)
+				Size = UDim2.new(0, 520, 0, 50),
+				Position = UDim2.new(0.5, -260, 0, 15)
 			}):Play()
 			TweenService:Create(IslandCorner, TweenInfo.new(0.6), {CornerRadius = UDim.new(0, 15)}):Play()
 		else
