@@ -72,7 +72,6 @@ local function StepFreecam(dt)
 	local pan = panSpring:Update(dt, mouse.Delta * (pi/64))
 	mouse.Delta = Vector2.new()
 	local zoomFactor = sqrt(tan(rad(70/2))/tan(rad(cameraFov/2)))
-	cameraFov = clamp(cameraFov + 0, 1, 120)
 	cameraRot = cameraRot + pan * PAN_GAIN * (dt/zoomFactor)
 	cameraRot = Vector2.new(clamp(cameraRot.x, -PITCH_LIMIT, PITCH_LIMIT), cameraRot.y%(2*pi))
 	local cameraCFrame = CFrame.new(cameraPos) * CFrame.fromOrientation(cameraRot.x, cameraRot.y, 0) * CFrame.new(vel * NAV_GAIN * dt)
@@ -86,6 +85,7 @@ local freecamEnabled = false
 function Commands.ToggleFreecam()
 	freecamEnabled = not freecamEnabled
 	if freecamEnabled then
+		Camera.CameraType = Enum.CameraType.Scriptable
 		local cameraCFrame = Camera.CFrame
 		cameraRot = Vector2.new(cameraCFrame:toEulerAnglesYXZ())
 		cameraPos = cameraCFrame.p

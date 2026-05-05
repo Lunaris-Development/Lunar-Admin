@@ -1,11 +1,20 @@
 local BaseURL = "https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/"
 local function GetBust() return "?t=" .. tostring(math.random(1, 100000)) end
 
-if writefile and isfile and not isfile("Minecraft.ttf") then
-	pcall(function()
-		writefile("Minecraft.ttf", game:HttpGet(BaseURL .. "Minecraft.ttf"))
-	end)
+local function SetupFont()
+	if writefile and isfile then
+		if not isfile("Minecraft.ttf") then
+			local success, result = pcall(function()
+				return game:HttpGet(BaseURL .. "Minecraft.ttf")
+			end)
+			if success and result then
+				writefile("Minecraft.ttf", result)
+			end
+		end
+	end
 end
+
+SetupFont()
 
 local function Load(file)
 	local content = game:HttpGet(BaseURL .. file .. GetBust())
