@@ -82,7 +82,7 @@ function UI.Init(Nametags, Commands)
 	Content.Parent = Island
 
 	local Info = Instance.new("Frame")
-	Info.Size = UDim2.new(0, 140, 1, 0)
+	Info.Size = UDim2.new(0, 130, 1, 0)
 	Info.BackgroundTransparency = 1
 	Info.Parent = Content
 
@@ -109,8 +109,8 @@ function UI.Init(Nametags, Commands)
 	ExecLabel.Parent = Info
 
 	local Stats = Instance.new("Frame")
-	Stats.Size = UDim2.new(0, 130, 1, 0)
-	Stats.Position = UDim2.new(0, 150, 0, 0)
+	Stats.Size = UDim2.new(0, 110, 1, 0)
+	Stats.Position = UDim2.new(0, 140, 0, 0)
 	Stats.BackgroundTransparency = 1
 	Stats.Parent = Content
 
@@ -137,8 +137,8 @@ function UI.Init(Nametags, Commands)
 	PingLabel.Parent = Stats
 
 	local Icons = Instance.new("Frame")
-	Icons.Size = UDim2.new(1, -290, 1, 0)
-	Icons.Position = UDim2.new(0, 290, 0, 0)
+	Icons.Size = UDim2.new(1, -260, 1, 0)
+	Icons.Position = UDim2.new(0, 260, 0, 0)
 	Icons.BackgroundTransparency = 1
 	Icons.Parent = Content
 
@@ -146,7 +146,7 @@ function UI.Init(Nametags, Commands)
 	UIList.FillDirection = Enum.FillDirection.Horizontal
 	UIList.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	UIList.VerticalAlignment = Enum.VerticalAlignment.Center
-	UIList.Padding = UDim.new(0, 18)
+	UIList.Padding = UDim.new(0, 15)
 	UIList.Parent = Icons
 	
 	local UIPadding = Instance.new("UIPadding")
