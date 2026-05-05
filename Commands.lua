@@ -6,7 +6,7 @@ local ContextActionService = game:GetService("ContextActionService")
 local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
 
-local Commands = {}
+local Commands = { _UI = nil }
 
 local pi = math.pi
 local abs = math.abs
@@ -87,12 +87,14 @@ local oldWS = 16
 function Commands.ToggleFreecam(UI)
 	freecamEnabled = not freecamEnabled
 	local char = LocalPlayer.Character
+	local hrp = char and char:FindFirstChild("HumanoidRootPart")
 	if freecamEnabled then
 		if UI and UI.Notify then UI.Notify("Freecam Enabled. Toggle with Ctrl + P") end
 		if char and char:FindFirstChild("Humanoid") then
 			oldWS = char.Humanoid.WalkSpeed
 			char.Humanoid.WalkSpeed = 0
 		end
+		if hrp then hrp.Anchored = true end
 		Camera.CameraType = Enum.CameraType.Scriptable
 		local cameraCFrame = Camera.CFrame
 		cameraRot = Vector2.new(cameraCFrame:toEulerAnglesYXZ())
@@ -114,6 +116,7 @@ function Commands.ToggleFreecam(UI)
 	else
 		if UI and UI.Notify then UI.Notify("Freecam Disabled") end
 		if char and char:FindFirstChild("Humanoid") then char.Humanoid.WalkSpeed = oldWS end
+		if hrp then hrp.Anchored = false end
 		RunService:UnbindFromRenderStep("LunarFreecam")
 		ContextActionService:UnbindAction("FreecamInput")
 		Camera.CameraType = Enum.CameraType.Custom
