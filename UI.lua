@@ -199,9 +199,20 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local ConsoleLayout = Instance.new("UIListLayout", Console)
 	ConsoleLayout.FillDirection = Enum.FillDirection.Horizontal
+	ConsoleLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 	ConsoleLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-	ConsoleLayout.Padding = UDim.new(0, 10)
-	Instance.new("UIPadding", Console).PaddingLeft = UDim.new(0, 12)
+	ConsoleLayout.Padding = UDim.new(0, 4)
+	
+	local ConsolePadding = Instance.new("UIPadding", Console)
+	ConsolePadding.PaddingLeft = UDim.new(0, 12)
+
+	local ConsoleIcon = Instance.new("ImageLabel")
+	ConsoleIcon.Size = UDim2.new(0, 18, 0, 18)
+	ConsoleIcon.BackgroundTransparency = 1
+	ConsoleIcon.Image = "rbxassetid://85860329666484"
+	ConsoleIcon.ImageColor3 = Color3.fromRGB(150, 255, 150)
+	ConsoleIcon.LayoutOrder = 1
+	ConsoleIcon.Parent = Console
 
 	local Prompt = Instance.new("TextLabel")
 	Prompt.Name = "Prompt"
@@ -213,6 +224,7 @@ function UI.Init(Nametags, Commands, ESP)
 	Prompt.TextSize = 13
 	Prompt.TextXAlignment = Enum.TextXAlignment.Left
 	Prompt.AutomaticSize = Enum.AutomaticSize.X
+	Prompt.LayoutOrder = 2
 	Prompt.Parent = Console
 
 	local ConsoleInput = Instance.new("TextBox")
@@ -226,6 +238,7 @@ function UI.Init(Nametags, Commands, ESP)
 	ConsoleInput.FontFace = GetFont()
 	ConsoleInput.TextSize = 13
 	ConsoleInput.TextXAlignment = Enum.TextXAlignment.Left
+	ConsoleInput.LayoutOrder = 3
 	ConsoleInput.Parent = Console
 
 	local function ToggleConsole()
