@@ -176,24 +176,52 @@ function UI.Init()
 		Btn.TextXAlignment = Enum.TextXAlignment.Left
 		Btn.AutoButtonColor = false
 		Btn.Parent = CmdMenu
-
 		local BtnCorner = Instance.new("UICorner")
 		BtnCorner.CornerRadius = UDim.new(0, 6)
 		BtnCorner.Parent = Btn
-
-		Btn.MouseEnter:Connect(function()
-			TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.85, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-		end)
-		Btn.MouseLeave:Connect(function()
-			TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.95, TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
-		end)
+		Btn.MouseEnter:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.85, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play() end)
+		Btn.MouseLeave:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.95, TextColor3 = Color3.fromRGB(200, 200, 200)}):Play() end)
 		Btn.MouseButton1Click:Connect(callback)
 	end
 
 	CreateMenuBtn("WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end)
 	CreateMenuBtn("JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
-	CreateMenuBtn("Fly", function() print("Fly toggled") end)
-	CreateMenuBtn("ESP", function() print("ESP toggled") end)
+
+	local ConsoleFrame = Instance.new("Frame")
+	ConsoleFrame.Name = "ConsoleFrame"
+	ConsoleFrame.Size = UDim2.new(0, 350, 0, 0)
+	ConsoleFrame.Position = UDim2.new(0.5, -175, 0, 75)
+	ConsoleFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	ConsoleFrame.BackgroundTransparency = 0.15
+	ConsoleFrame.BorderSizePixel = 0
+	ConsoleFrame.ClipsDescendants = true
+	ConsoleFrame.Visible = false
+	ConsoleScreen = ConsoleFrame
+	ConsoleFrame.Parent = ScreenGui
+
+	local ConsoleCorner = Instance.new("UICorner")
+	ConsoleCorner.CornerRadius = UDim.new(0, 10)
+	ConsoleCorner.Parent = ConsoleFrame
+
+	local ConsoleStroke = Instance.new("UIStroke")
+	ConsoleStroke.Color = Color3.fromRGB(255, 255, 255)
+	ConsoleStroke.Transparency = 0.85
+	ConsoleStroke.Thickness = 1.2
+	ConsoleStroke.Parent = ConsoleFrame
+
+	local ConsoleInput = Instance.new("TextBox")
+	ConsoleInput.Name = "ConsoleInput"
+	ConsoleInput.Size = UDim2.new(1, -20, 1, -20)
+	ConsoleInput.Position = UDim2.new(0, 10, 0, 10)
+	ConsoleInput.BackgroundTransparency = 1
+	ConsoleInput.Text = ""
+	ConsoleInput.PlaceholderText = "Enter command..."
+	ConsoleInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
+	ConsoleInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ConsoleInput.FontFace = GetFont()
+	ConsoleInput.TextSize = 14
+	ConsoleInput.TextXAlignment = Enum.TextXAlignment.Left
+	ConsoleInput.Parent = ConsoleFrame
 
 	local function CreateIcon(id, callback)
 		local Icon = Instance.new("ImageButton")
@@ -202,12 +230,8 @@ function UI.Init()
 		Icon.Image = id
 		Icon.ImageColor3 = Color3.fromRGB(180, 180, 180)
 		Icon.Parent = Icons
-		Icon.MouseEnter:Connect(function()
-			TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-		end)
-		Icon.MouseLeave:Connect(function()
-			TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(180, 180, 180)}):Play()
-		end)
+		Icon.MouseEnter:Connect(function() TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play() end)
+		Icon.MouseLeave:Connect(function() TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(180, 180, 180)}):Play() end)
 		if callback then Icon.MouseButton1Click:Connect(callback) end
 		return Icon
 	end
@@ -217,7 +241,7 @@ function UI.Init()
 		MenuVisible = not MenuVisible
 		if MenuVisible then
 			CmdMenu.Visible = true
-			TweenService:Create(CmdMenu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 250, 0, 180)}):Play()
+			TweenService:Create(CmdMenu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 250, 0, 120)}):Play()
 		else
 			TweenService:Create(CmdMenu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 250, 0, 0)}):Play()
 			task.wait(0.4)
@@ -225,9 +249,34 @@ function UI.Init()
 		end
 	end
 
+	local ConsoleVisible = false
+	local function ToggleConsole()
+		ConsoleVisible = not ConsoleVisible
+		if ConsoleVisible then
+			ConsoleFrame.Visible = true
+			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 45)}):Play()
+			task.wait(0.4)
+			ConsoleInput:CaptureFocus()
+		else
+			ConsoleInput:ReleaseFocus()
+			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 0)}):Play()
+			task.wait(0.4)
+			if not ConsoleVisible then ConsoleFrame.Visible = false end
+		end
+	end
+
 	CreateIcon("rbxassetid://10734898156", ToggleMenu)
-	CreateIcon("rbxassetid://10734913301")
+	CreateIcon("rbxassetid://10734913301", ToggleConsole)
 	CreateIcon("rbxassetid://10734950309")
+
+	ConsoleInput.FocusLost:Connect(function(enter)
+		if enter then
+			local cmd = ConsoleInput.Text
+			print("Lunar Console executed: " .. cmd)
+			ConsoleInput.Text = ""
+			ToggleConsole()
+		end
+	end)
 
 	local Expanded = false
 	local function ToggleIsland(state)
@@ -263,7 +312,7 @@ function UI.Init()
 	NotifyFrame.Parent = ScreenGui
 
 	local NotifyCorner = Instance.new("UICorner")
-	NotifyCorner.CornerRadius = UDim.new(0, 12)
+	NotifyCorner.CornerRadius = UDim.new(0, 10)
 	NotifyCorner.Parent = NotifyFrame
 
 	local NotifyStroke = Instance.new("UIStroke")
