@@ -326,9 +326,21 @@ function UI.Init(Nametags, Commands, ESP)
 	NotifyFrame.BorderSizePixel = 0
 	NotifyFrame.Parent = ScreenGui
 	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 10)
+	
+	local NotifyGlow = Instance.new("ImageLabel")
+	NotifyGlow.Size = UDim2.new(1.2, 0, 1.4, 0)
+	NotifyGlow.Position = UDim2.new(-0.1, 0, -0.2, 0)
+	NotifyGlow.BackgroundTransparency = 1
+	NotifyGlow.Image = "rbxassetid://6015538162"
+	NotifyGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
+	NotifyGlow.ImageTransparency = 0.5
+	NotifyGlow.Parent = NotifyFrame
+
 	local NotifyStroke = Instance.new("UIStroke", NotifyFrame)
 	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
-	NotifyStroke.Transparency = 0.8
+	NotifyStroke.Transparency = 0.6
+	NotifyStroke.Thickness = 2
+	
 	local NotifyLabel = Instance.new("TextLabel")
 	NotifyLabel.Size = UDim2.new(1, 0, 1, 0)
 	NotifyLabel.BackgroundTransparency = 1
@@ -337,8 +349,18 @@ function UI.Init(Nametags, Commands, ESP)
 	NotifyLabel.TextSize = 13
 	NotifyLabel.Parent = NotifyFrame
 
-	UI.Notify = function(text)
+	UI.Notify = function(text, nType)
+		local color = Color3.fromRGB(255, 255, 255)
+		if nType == "Success" then color = Color3.fromRGB(100, 255, 100)
+		elseif nType == "Warn" then color = Color3.fromRGB(255, 180, 50)
+		elseif nType == "Error" then color = Color3.fromRGB(255, 80, 80)
+		end
+		
 		NotifyLabel.Text = text
+		NotifyLabel.TextColor3 = color
+		NotifyStroke.Color = color
+		NotifyGlow.ImageColor3 = color
+		
 		TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -150, 0, 85)}):Play()
 		task.delay(3, function()
 			TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -150, 0, -200)}):Play()
