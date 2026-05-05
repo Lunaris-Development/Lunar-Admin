@@ -374,8 +374,8 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local FlightStatus = Instance.new("Frame")
 	FlightStatus.Name = "FlightStatus"
-	FlightStatus.Size = UDim2.new(0, 160, 0, 50)
-	FlightStatus.Position = UDim2.new(0, 15, 1, 70)
+	FlightStatus.Size = UDim2.new(0, 180, 0, 75)
+	FlightStatus.Position = UDim2.new(0, 15, 1, 100)
 	FlightStatus.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 	FlightStatus.BackgroundTransparency = 0.3
 	FlightStatus.BorderSizePixel = 0
@@ -386,19 +386,45 @@ function UI.Init(Nametags, Commands, ESP)
 	FlightStroke.Transparency = 0.5
 	
 	local FlightLabel = Instance.new("TextLabel")
-	FlightLabel.Size = UDim2.new(1, 0, 0.5, 0)
-	FlightLabel.Position = UDim2.new(0, 10, 0, 5)
+	FlightLabel.Size = UDim2.new(1, 0, 0, 25)
+	FlightLabel.Position = UDim2.new(0, 12, 0, 5)
 	FlightLabel.BackgroundTransparency = 1
 	FlightLabel.Text = "FLIGHT ACTIVE"
 	FlightLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
 	FlightLabel.FontFace = GetFont()
-	FlightLabel.TextSize = 12
+	FlightLabel.TextSize = 13
 	FlightLabel.TextXAlignment = Enum.TextXAlignment.Left
 	FlightLabel.Parent = FlightStatus
 	
+	local SliderBack = Instance.new("Frame")
+	SliderBack.Name = "SliderBack"
+	SliderBack.Size = UDim2.new(1, -24, 0, 6)
+	SliderBack.Position = UDim2.new(0, 12, 0, 45)
+	SliderBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	SliderBack.BorderSizePixel = 0
+	SliderBack.Parent = FlightStatus
+	Instance.new("UICorner", SliderBack).CornerRadius = UDim.new(0, 3)
+	
+	local SliderFill = Instance.new("Frame")
+	SliderFill.Name = "SliderFill"
+	SliderFill.Size = UDim2.new(0.5, 0, 1, 0)
+	SliderFill.BackgroundColor3 = Color3.fromRGB(0, 255, 150)
+	SliderFill.BorderSizePixel = 0
+	SliderFill.Parent = SliderBack
+	Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(0, 3)
+	
+	local SliderBtn = Instance.new("TextButton")
+	SliderBtn.Name = "SliderBtn"
+	SliderBtn.Size = UDim2.new(0, 12, 0, 12)
+	SliderBtn.Position = UDim2.new(0.5, -6, 0.5, -6)
+	SliderBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SliderBtn.Text = ""
+	SliderBtn.Parent = SliderBack
+	Instance.new("UICorner", SliderBtn).CornerRadius = UDim.new(1, 0)
+	
 	local FlightSpeed = Instance.new("TextLabel")
-	FlightSpeed.Size = UDim2.new(1, 0, 0.5, 0)
-	FlightSpeed.Position = UDim2.new(0, 10, 0.5, 0)
+	FlightSpeed.Size = UDim2.new(1, 0, 0, 15)
+	FlightSpeed.Position = UDim2.new(0, 12, 0, 55)
 	FlightSpeed.BackgroundTransparency = 1
 	FlightSpeed.Text = "SPEED: 32"
 	FlightSpeed.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -407,10 +433,32 @@ function UI.Init(Nametags, Commands, ESP)
 	FlightSpeed.TextXAlignment = Enum.TextXAlignment.Left
 	FlightSpeed.Parent = FlightStatus
 
+	local dragging = false
+	SliderBtn.MouseButton1Down:Connect(function() dragging = true end)
+	UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
+	
+	RunService.RenderStepped:Connect(function()
+		if dragging then
+			local mousePos = UserInputService:GetMouseLocation().X
+			local relPos = math.clamp((mousePos - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+			SliderFill.Size = UDim2.new(relPos, 0, 1, 0)
+			SliderBtn.Position = UDim2.new(relPos, -6, 0.5, -6)
+			local val = math.floor(relPos * 200)
+			if Commands and Commands.HandleChat then 
+				Commands.HandleChat("ws " .. val, nil, nil, true) 
+			end
+		end
+	end)
+
 	UI.UpdateFlightStatus = function(active, speed)
-		local Target = active and -65 or 70
+		local Target = active and -85 or 100
 		TweenService:Create(FlightStatus, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 15, 1, Target)}):Play()
-		if speed then FlightSpeed.Text = "SPEED: " .. math.floor(speed) end
+		if speed then 
+			FlightSpeed.Text = "SPEED: " .. math.floor(speed) 
+			local rel = math.clamp(speed / 200, 0, 1)
+			SliderFill.Size = UDim2.new(rel, 0, 1, 0)
+			SliderBtn.Position = UDim2.new(rel, -6, 0.5, -6)
+		end
 	end
 
 	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)

@@ -80,7 +80,7 @@ local function toggleFly(UI)
 		
 		hum.PlatformStand = true
 		if UI and UI.Notify then UI.Notify("Fly: ON", "Success") end
-		if UI and UI.UpdateFlightStatus then UI.UpdateFlightStatus(true, hum.WalkSpeed * 2) end
+		if UI and UI.UpdateFlightStatus then UI.UpdateFlightStatus(true, hum.WalkSpeed) end
 		
 		task.spawn(function()
 			while flyActive and hrp.Parent do
@@ -138,7 +138,7 @@ end)
 
 function Commands.ToggleFreecam(UI) toggleFreecam(UI) end
 
-function Commands.HandleChat(msg, UI, ESP)
+function Commands.HandleChat(msg, UI, ESP, silent)
 	local cleanMsg = msg:lower()
 	local args = cleanMsg:split(" ")
 	local cmd = args[1]
@@ -155,13 +155,15 @@ function Commands.HandleChat(msg, UI, ESP)
 		local num = tonumber(args[2])
 		if num and lp.Character and lp.Character:FindFirstChild("Humanoid") then
 			lp.Character.Humanoid.WalkSpeed = num
-			if UI then 
+			if UI and not silent then 
 				UI.Notify("Speed: " .. num, "Success")
-				if flyActive then UI.UpdateFlightStatus(true, num * 2) end
+			end
+			if UI and UI.UpdateFlightStatus and flyActive then 
+				UI.UpdateFlightStatus(true, num) 
 			end
 		elseif not num then
 			fcSpeed = 1.2
-			if UI then UI.Notify("FC Speed Reset", "Warn") end
+			if UI and not silent then UI.Notify("FC Speed Reset", "Warn") end
 		end
 	elseif cmd == "esp" then
 		if ESP then 
