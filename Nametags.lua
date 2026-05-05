@@ -34,7 +34,8 @@ function Nametags.Create(player)
 		Tag.Name = "LunarTag"
 		Tag.Size = UDim2.new(0, 160, 0, 50)
 		Tag.StudsOffset = Vector3.new(0, 3.5, 0)
-		Tag.AlwaysOnTop = true
+		Tag.AlwaysOnTop = false
+		Tag.MaxDistance = 150
 		Tag.Parent = Head
 		
 		local TagFrame = Instance.new("Frame")
@@ -58,6 +59,7 @@ function Nametags.Create(player)
 		TagLogo.Position = UDim2.new(0, 10, 0.5, -14)
 		TagLogo.BackgroundTransparency = 1
 		TagLogo.Image = LogoID
+		TagLogo.ScaleType = Enum.ScaleType.Fit
 		TagLogo.Parent = TagFrame
 		
 		local Role = "LUNAR USER"
