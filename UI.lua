@@ -1,5 +1,6 @@
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 
 local Player = Players.LocalPlayer
@@ -30,8 +31,8 @@ function UI.Init(Nametags, Commands, ESP)
 	Island.Name = "Island"
 	Island.Size = UDim2.new(0, 50, 0, 50)
 	Island.Position = UDim2.new(0.5, -25, 0, 15)
-	Island.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-	Island.BackgroundTransparency = 0.1
+	Island.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	Island.BackgroundTransparency = 0.4
 	Island.BorderSizePixel = 0
 	Island.ClipsDescendants = true
 	Island.Parent = ScreenGui
@@ -42,7 +43,7 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local IslandStroke = Instance.new("UIStroke")
 	IslandStroke.Color = Color3.fromRGB(255, 255, 255)
-	IslandStroke.Transparency = 0.7
+	IslandStroke.Transparency = 0.8
 	IslandStroke.Thickness = 1.8
 	IslandStroke.Parent = Island
 
@@ -61,14 +62,14 @@ function UI.Init(Nametags, Commands, ESP)
 	LogoGlow.BackgroundTransparency = 1
 	LogoGlow.Image = "rbxassetid://6015538162"
 	LogoGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
-	LogoGlow.ImageTransparency = 0.8
+	LogoGlow.ImageTransparency = 0.85
 	LogoGlow.Parent = LogoImg
 
 	task.spawn(function()
 		while ScreenGui.Parent do
-			TweenService:Create(LogoGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.5}):Play()
+			TweenService:Create(LogoGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.6}):Play()
 			task.wait(1.5)
-			TweenService:Create(LogoGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.8}):Play()
+			TweenService:Create(LogoGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.85}):Play()
 			task.wait(1.5)
 		end
 	end)
@@ -158,8 +159,8 @@ function UI.Init(Nametags, Commands, ESP)
 		Menu.Name = name
 		Menu.Size = UDim2.new(0, size.X, 0, 0)
 		Menu.Position = UDim2.new(0.5, -size.X/2, 0, 75)
-		Menu.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-		Menu.BackgroundTransparency = 0.15
+		Menu.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+		Menu.BackgroundTransparency = 0.3
 		Menu.BorderSizePixel = 0
 		Menu.ClipsDescendants = true
 		Menu.Visible = false
@@ -167,7 +168,7 @@ function UI.Init(Nametags, Commands, ESP)
 		Instance.new("UICorner", Menu).CornerRadius = UDim.new(0, 12)
 		local Stroke = Instance.new("UIStroke", Menu)
 		Stroke.Color = Color3.fromRGB(255, 255, 255)
-		Stroke.Transparency = 0.85
+		Stroke.Transparency = 0.8
 		Stroke.Thickness = 1.2
 		local List = Instance.new("UIListLayout", Menu)
 		List.Padding = UDim.new(0, 5)
@@ -181,6 +182,62 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local CmdMenu = CreateMenu("CmdMenu", Vector2.new(280, 0))
 	local SettingsMenu = CreateMenu("SettingsMenu", Vector2.new(250, 0))
+
+	local Console = Instance.new("Frame")
+	Console.Name = "Console"
+	Console.Size = UDim2.new(0, 450, 0, 40)
+	Console.Position = UDim2.new(0.5, -225, 1, 50)
+	Console.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
+	Console.BackgroundTransparency = 0.2
+	Console.BorderSizePixel = 0
+	Console.Parent = ScreenGui
+	Instance.new("UICorner", Console).CornerRadius = UDim.new(0, 6)
+	local ConsoleStroke = Instance.new("UIStroke", Console)
+	ConsoleStroke.Color = Color3.fromRGB(255, 255, 255)
+	ConsoleStroke.Transparency = 0.8
+
+	local Prompt = Instance.new("TextLabel")
+	Prompt.Size = UDim2.new(0, 100, 1, 0)
+	Prompt.Position = UDim2.new(0, 12, 0, 0)
+	Prompt.BackgroundTransparency = 1
+	Prompt.Text = "lnrs@lnrs~/ "
+	Prompt.TextColor3 = Color3.fromRGB(150, 255, 150)
+	Prompt.FontFace = GetFont()
+	Prompt.TextSize = 13
+	Prompt.TextXAlignment = Enum.TextXAlignment.Left
+	Prompt.Parent = Console
+
+	local ConsoleInput = Instance.new("TextBox")
+	ConsoleInput.Size = UDim2.new(1, -120, 1, 0)
+	ConsoleInput.Position = UDim2.new(0, 110, 0, 0)
+	ConsoleInput.BackgroundTransparency = 1
+	ConsoleInput.Text = ""
+	ConsoleInput.PlaceholderText = "enter command..."
+	ConsoleInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
+	ConsoleInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ConsoleInput.FontFace = GetFont()
+	ConsoleInput.TextSize = 13
+	ConsoleInput.TextXAlignment = Enum.TextXAlignment.Left
+	ConsoleInput.Parent = Console
+
+	local function ToggleConsole()
+		local Target = Console.Position.Y.Offset == -60 and 50 or -60
+		TweenService:Create(Console, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -225, 1, Target)}):Play()
+		if Target == -60 then task.wait(0.1) ConsoleInput:CaptureFocus() end
+	end
+
+	UserInputService.InputBegan:Connect(function(input, gpe)
+		if not gpe and input.KeyCode == Enum.KeyCode.F2 then ToggleConsole() end
+	end)
+
+	ConsoleInput.FocusLost:Connect(function(enter)
+		if enter then
+			local msg = ConsoleInput.Text
+			ConsoleInput.Text = ""
+			if Commands then Commands.HandleChat("l?" .. msg, UI, ESP) end
+		end
+		ToggleConsole()
+	end)
 
 	local SearchBox = Instance.new("TextBox")
 	SearchBox.Size = UDim2.new(1, 0, 0, 35)
@@ -243,14 +300,14 @@ function UI.Init(Nametags, Commands, ESP)
 	NotifyFrame.Name = "NotifyFrame"
 	NotifyFrame.Size = UDim2.new(0, 300, 0, 70)
 	NotifyFrame.Position = UDim2.new(0.5, -150, 0, -200)
-	NotifyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	NotifyFrame.BackgroundTransparency = 0.1
+	NotifyFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	NotifyFrame.BackgroundTransparency = 0.3
 	NotifyFrame.BorderSizePixel = 0
 	NotifyFrame.Parent = ScreenGui
 	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 10)
 	local NotifyStroke = Instance.new("UIStroke", NotifyFrame)
 	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
-	NotifyStroke.Transparency = 0.9
+	NotifyStroke.Transparency = 0.8
 	local NotifyLabel = Instance.new("TextLabel")
 	NotifyLabel.Size = UDim2.new(1, 0, 1, 0)
 	NotifyLabel.BackgroundTransparency = 1
@@ -302,7 +359,7 @@ function UI.Init(Nametags, Commands, ESP)
 	end
 
 	CreateIcon("rbxassetid://10734898156", UI.ToggleMenu)
-	CreateIcon("rbxassetid://10734913301", function() print("Console clicked") end)
+	CreateIcon("rbxassetid://10734913301", ToggleConsole)
 	CreateIcon("rbxassetid://10734950309", function() AnimateMenu(SettingsMenu, 120) end)
 
 	if Commands then Commands._UI = UI end

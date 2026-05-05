@@ -121,12 +121,13 @@ function Commands.ToggleFreecam(UI)
 	end
 end
 
-function Commands.HandleChat(msg, UI)
+function Commands.HandleChat(msg, UI, ESP)
 	local prefix = "l?"
 	if msg:sub(1, 2) == prefix then
 		local args = msg:sub(3):split(" ")
 		local cmd = args[1]:lower()
 		if cmd == "freecam" then Commands.ToggleFreecam(UI)
+		elseif cmd == "esp" then if ESP then ESP.Toggle(not ESP.Enabled) end
 		elseif cmd == "cmds" then if UI and UI.ToggleMenu then UI.ToggleMenu() end end
 	end
 end
