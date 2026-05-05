@@ -1,5 +1,5 @@
-if getgenv().LunarLoaded then return end
-getgenv().LunarLoaded = true
+if getgenv().LunarKeyLoaded then return end
+getgenv().LunarKeyLoaded = true
 
 local qot = queue_on_teleport or queueonteleport
 if qot then
@@ -196,6 +196,7 @@ local function grantAccess(key)
 	getgenv().SCRIPT_KEY = key
 	if writefile then writefile("LunarKey.txt", key) end
 	task.wait(1)
+	getgenv().LunarKeyLoaded = false
 	CloseUI()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/Main.lua"))()
 end
