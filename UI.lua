@@ -201,14 +201,42 @@ function UI.Init(Nametags, Commands)
 		Btn.MouseButton1Click:Connect(callback)
 	end
 
-	CreateBtn(CmdMenu, "Freecam", function() if Commands then Commands.ToggleFreecam() end end)
+	local NotifyFrame = Instance.new("Frame")
+	NotifyFrame.Name = "NotifyFrame"
+	NotifyFrame.Size = UDim2.new(0, 300, 0, 70)
+	NotifyFrame.Position = UDim2.new(0.5, -150, 0, -200)
+	NotifyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	NotifyFrame.BackgroundTransparency = 0.1
+	NotifyFrame.BorderSizePixel = 0
+	NotifyFrame.Parent = ScreenGui
+	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 10)
+	local NotifyStroke = Instance.new("UIStroke", NotifyFrame)
+	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
+	NotifyStroke.Transparency = 0.9
+	local NotifyLabel = Instance.new("TextLabel")
+	NotifyLabel.Size = UDim2.new(1, 0, 1, 0)
+	NotifyLabel.BackgroundTransparency = 1
+	NotifyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	NotifyLabel.FontFace = GetFont()
+	NotifyLabel.TextSize = 13
+	NotifyLabel.Parent = NotifyFrame
+
+	UI.Notify = function(text)
+		NotifyLabel.Text = text
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -150, 0, 85)}):Play()
+		task.delay(3, function()
+			TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -150, 0, -200)}):Play()
+		end)
+	end
+
+	CreateBtn(CmdMenu, "Freecam", function() if Commands then Commands.ToggleFreecam(UI) end end)
 	CreateBtn(CmdMenu, "WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end)
 	CreateBtn(CmdMenu, "JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
 	
 	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)
 	CreateBtn(SettingsMenu, "Unload Script", function() 
 		if Nametags then Nametags.Unload() end
-		if Commands and Commands.ToggleFreecam and Commands.freecamEnabled then Commands.ToggleFreecam() end
+		if Commands and Commands.ToggleFreecam and Commands.freecamEnabled then Commands.ToggleFreecam(UI) end
 		ScreenGui:Destroy() 
 	end)
 
@@ -241,6 +269,8 @@ function UI.Init(Nametags, Commands)
 	CreateIcon("rbxassetid://10734898156", UI.ToggleMenu)
 	CreateIcon("rbxassetid://10734913301", function() print("Console clicked") end)
 	CreateIcon("rbxassetid://10734950309", function() AnimateMenu(SettingsMenu, 120) end)
+
+	if Commands then Commands._UI = UI end
 
 	local Expanded = false
 	local function ToggleIsland(state)

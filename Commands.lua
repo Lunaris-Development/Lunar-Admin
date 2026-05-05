@@ -82,9 +82,17 @@ local function StepFreecam(dt)
 end
 
 local freecamEnabled = false
-function Commands.ToggleFreecam()
+local oldWS = 16
+
+function Commands.ToggleFreecam(UI)
 	freecamEnabled = not freecamEnabled
+	local char = LocalPlayer.Character
 	if freecamEnabled then
+		if UI and UI.Notify then UI.Notify("Freecam Enabled. Toggle with Ctrl + P") end
+		if char and char:FindFirstChild("Humanoid") then
+			oldWS = char.Humanoid.WalkSpeed
+			char.Humanoid.WalkSpeed = 0
+		end
 		Camera.CameraType = Enum.CameraType.Scriptable
 		local cameraCFrame = Camera.CFrame
 		cameraRot = Vector2.new(cameraCFrame:toEulerAnglesYXZ())
@@ -104,6 +112,8 @@ function Commands.ToggleFreecam()
 			return Enum.ContextActionResult.Sink
 		end, false, Enum.ContextActionPriority.High.Value, Enum.KeyCode.W, Enum.KeyCode.A, Enum.KeyCode.S, Enum.KeyCode.D, Enum.KeyCode.E, Enum.KeyCode.Q, Enum.KeyCode.Up, Enum.KeyCode.Down, Enum.UserInputType.MouseMovement)
 	else
+		if UI and UI.Notify then UI.Notify("Freecam Disabled") end
+		if char and char:FindFirstChild("Humanoid") then char.Humanoid.WalkSpeed = oldWS end
 		RunService:UnbindFromRenderStep("LunarFreecam")
 		ContextActionService:UnbindAction("FreecamInput")
 		Camera.CameraType = Enum.CameraType.Custom
@@ -115,9 +125,15 @@ function Commands.HandleChat(msg, UI)
 	if msg:sub(1, 2) == prefix then
 		local args = msg:sub(3):split(" ")
 		local cmd = args[1]:lower()
-		if cmd == "freecam" then Commands.ToggleFreecam()
+		if cmd == "freecam" then Commands.ToggleFreecam(UI)
 		elseif cmd == "cmds" then if UI and UI.ToggleMenu then UI.ToggleMenu() end end
 	end
 end
+
+UserInputService.InputBegan:Connect(function(input, gpe)
+	if not gpe and input.KeyCode == Enum.KeyCode.P and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+		Commands.ToggleFreecam(Commands._UI)
+	end
+end)
 
 return Commands
