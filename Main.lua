@@ -5,7 +5,7 @@ end
 getgenv().LunarLoaded = true
 
 local BaseURL = "https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/"
-local function GetBust() return "?t=" .. tostring(math.random(1, 100000)) end
+local function GetBust() return "?t=" .. tostring(tick()) end
 
 local function SetupFont()
 	if writefile and isfile then

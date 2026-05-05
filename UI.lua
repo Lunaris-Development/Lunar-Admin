@@ -9,7 +9,8 @@ local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname a
 
 local function GetFont()
 	if getcustomasset and isfile and isfile("Minecraft.ttf") then
-		return Font.new(getcustomasset("Minecraft.ttf"))
+		local s, f = pcall(function() return Font.new(getcustomasset("Minecraft.ttf")) end)
+		if s then return f end
 	end
 	return Font.fromEnum(Enum.Font.GothamBold)
 end
