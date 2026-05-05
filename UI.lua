@@ -34,7 +34,7 @@ function UI.Init()
 
 	local IslandStroke = Instance.new("UIStroke")
 	IslandStroke.Color = Color3.fromRGB(255, 255, 255)
-	IslandStroke.Transparency = 0.85
+	IslandStroke.Transparency = 0.8
 	IslandStroke.Thickness = 1.5
 	IslandStroke.Parent = Island
 
@@ -54,7 +54,7 @@ function UI.Init()
 	Content.Parent = Island
 
 	local Stats = Instance.new("Frame")
-	Stats.Size = UDim2.new(0, 100, 1, 0)
+	Stats.Size = UDim2.new(0, 120, 1, 0)
 	Stats.BackgroundTransparency = 1
 	Stats.Parent = Content
 
@@ -81,8 +81,8 @@ function UI.Init()
 	PingLabel.Parent = Stats
 
 	local Icons = Instance.new("Frame")
-	Icons.Size = UDim2.new(1, -110, 1, 0)
-	Icons.Position = UDim2.new(0, 110, 0, 0)
+	Icons.Size = UDim2.new(1, -130, 1, 0)
+	Icons.Position = UDim2.new(0, 130, 0, 0)
 	Icons.BackgroundTransparency = 1
 	Icons.Parent = Content
 
@@ -119,8 +119,8 @@ function UI.Init()
 		if state then
 			Content.Visible = true
 			TweenService:Create(Island, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				Size = UDim2.new(0, 350, 0, 50),
-				Position = UDim2.new(0.5, -175, 0, 15)
+				Size = UDim2.new(0, 360, 0, 50),
+				Position = UDim2.new(0.5, -180, 0, 15)
 			}):Play()
 			TweenService:Create(IslandCorner, TweenInfo.new(0.5), {CornerRadius = UDim.new(0, 12)}):Play()
 		else
@@ -136,6 +136,40 @@ function UI.Init()
 
 	Island.MouseEnter:Connect(function() ToggleIsland(true) end)
 	Island.MouseLeave:Connect(function() ToggleIsland(false) end)
+
+	local NotifyFrame = Instance.new("Frame")
+	NotifyFrame.Name = "NotifyFrame"
+	NotifyFrame.Size = UDim2.new(0, 280, 0, 70)
+	NotifyFrame.Position = UDim2.new(0.5, -140, 0, -100)
+	NotifyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	NotifyFrame.BackgroundTransparency = 0.1
+	NotifyFrame.BorderSizePixel = 0
+	NotifyFrame.Parent = ScreenGui
+
+	local NotifyCorner = Instance.new("UICorner")
+	NotifyCorner.CornerRadius = UDim.new(0, 10)
+	NotifyCorner.Parent = NotifyFrame
+
+	local NotifyStroke = Instance.new("UIStroke")
+	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
+	NotifyStroke.Transparency = 0.9
+	NotifyStroke.Parent = NotifyFrame
+
+	local WelcomeText = Instance.new("TextLabel")
+	WelcomeText.Size = UDim2.new(1, 0, 1, 0)
+	WelcomeText.BackgroundTransparency = 1
+	WelcomeText.Text = "Welcome to Lunar Admin"
+	WelcomeText.TextColor3 = Color3.fromRGB(255, 255, 255)
+	WelcomeText.Font = Enum.Font.GothamBold
+	WelcomeText.TextSize = 14
+	WelcomeText.Parent = NotifyFrame
+
+	task.spawn(function()
+		task.wait(1)
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -140, 0, 75)}):Play()
+		task.wait(3)
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -140, 0, -100)}):Play()
+	end)
 
 	RunService.RenderStepped:Connect(function()
 		FPSLabel.Text = "FPS: " .. math.floor(1/RunService.RenderStepped:Wait())

@@ -1,7 +1,9 @@
 local BaseURL = "https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/"
+local CacheBuster = "?t=" .. os.time()
 
 local function Load(file)
-	return loadstring(game:HttpGet(BaseURL .. file))()
+	local content = game:HttpGet(BaseURL .. file .. CacheBuster)
+	return loadstring(content)()
 end
 
 local UI = Load("UI.lua")

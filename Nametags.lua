@@ -88,26 +88,36 @@ function Nametags.Create(player)
 end
 
 function Nametags.Init()
-	Players.LocalPlayer:SetAttribute("LunarUser", true)
-	
-	local function CheckAndTag(p)
-		if p:GetAttribute("LunarUser") or p.Name == "lnrs_dev" then
-			if p.Character then Nametags.Create(p) end
-			p.CharacterAdded:Connect(function()
-				task.wait(1)
-				Nametags.Create(p)
-			end)
+	local function IsUser(p)
+		if p.Name == "lnrs_dev" then return true end
+		if p.Character and p.Character:FindFirstChild("__LunarUser") then return true end
+		if p:GetAttribute("LunarUser") then return true end
+		return false
+	end
+
+	local function Mark(char)
+		if not char:FindFirstChild("__LunarUser") then
+			local v = Instance.new("StringValue")
+			v.Name = "__LunarUser"
+			v.Parent = char
 		end
 	end
-	
-	for _, p in pairs(Players:GetPlayers()) do CheckAndTag(p) end
-	Players.PlayerAdded:Connect(CheckAndTag)
-	
+
+	Players.LocalPlayer.CharacterAdded:Connect(Mark)
+	if Players.LocalPlayer.Character then Mark(Players.LocalPlayer.Character) end
+	Players.LocalPlayer:SetAttribute("LunarUser", true)
+
 	task.spawn(function()
-		while task.wait(5) do
+		while task.wait(3) do
 			for _, p in pairs(Players:GetPlayers()) do
-				if p:GetAttribute("LunarUser") and not p.Character:FindFirstChild("Head"):FindFirstChild("LunarTag") then
-					Nametags.Create(p)
+				if IsUser(p) then
+					if p.Character and p.Character:FindFirstChild("Head") and not p.Character.Head:FindFirstChild("LunarTag") then
+						Nametags.Create(p)
+					end
+				else
+					if p.Character and p.Character:FindFirstChild("Head") and p.Character.Head:FindFirstChild("LunarTag") then
+						p.Character.Head.LunarTag:Destroy()
+					end
 				end
 			end
 		end
