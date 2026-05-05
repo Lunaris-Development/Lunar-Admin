@@ -1,4 +1,4 @@
-if getgenv().LunarLoaded then 
+if getgenv().LunarLoaded and game:GetService("CoreGui"):FindFirstChild("LunarDynamicIsland") then 
 	warn("Lunar Admin is already running!")
 	return 
 end
