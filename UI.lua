@@ -15,7 +15,7 @@ end
 
 local UI = {}
 
-function UI.Init(Nametags, Commands)
+function UI.Init(Nametags, Commands, ESP)
 	if game.CoreGui:FindFirstChild("LunarDynamicIsland") then
 		game.CoreGui:FindFirstChild("LunarDynamicIsland"):Destroy()
 	end
@@ -237,6 +237,7 @@ function UI.Init(Nametags, Commands)
 	CreateBtn(SettingsMenu, "Unload Script", function() 
 		if Nametags then Nametags.Unload() end
 		if Commands and Commands.ToggleFreecam and Commands.freecamEnabled then Commands.ToggleFreecam(UI) end
+		getgenv().LunarLoaded = false
 		ScreenGui:Destroy() 
 	end)
 
