@@ -166,10 +166,11 @@ function UI.Init(Nametags, Commands, ESP)
 		Menu.Visible = false
 		Menu.Parent = ScreenGui
 		Instance.new("UICorner", Menu).CornerRadius = UDim.new(0, 12)
-		local Stroke = Instance.new("UIStroke", Menu)
+		local Stroke = Instance.new("UIStroke")
 		Stroke.Color = Color3.fromRGB(255, 255, 255)
 		Stroke.Transparency = 0.8
 		Stroke.Thickness = 1.2
+		Stroke.Parent = Menu
 		local List = Instance.new("UIListLayout", Menu)
 		List.Padding = UDim.new(0, 5)
 		local Padding = Instance.new("UIPadding", Menu)
@@ -185,8 +186,8 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local Console = Instance.new("Frame")
 	Console.Name = "Console"
-	Console.Size = UDim2.new(0, 450, 0, 40)
-	Console.Position = UDim2.new(0.5, -225, 1, 50)
+	Console.Size = UDim2.new(0, 500, 0, 40)
+	Console.Position = UDim2.new(0.5, -250, 1, 50)
 	Console.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
 	Console.BackgroundTransparency = 0.2
 	Console.BorderSizePixel = 0
@@ -197,19 +198,22 @@ function UI.Init(Nametags, Commands, ESP)
 	ConsoleStroke.Transparency = 0.8
 
 	local Prompt = Instance.new("TextLabel")
-	Prompt.Size = UDim2.new(0, 100, 1, 0)
+	Prompt.Size = UDim2.new(0, 200, 1, 0)
 	Prompt.Position = UDim2.new(0, 12, 0, 0)
 	Prompt.BackgroundTransparency = 1
-	Prompt.Text = "lnrs@lnrs~/ "
+	Prompt.Text = Player.Name .. "@Lunar: ~/"
 	Prompt.TextColor3 = Color3.fromRGB(150, 255, 150)
 	Prompt.FontFace = GetFont()
 	Prompt.TextSize = 13
 	Prompt.TextXAlignment = Enum.TextXAlignment.Left
 	Prompt.Parent = Console
+	
+	local PromptSize = game:GetService("TextService"):GetTextSize(Prompt.Text, Prompt.TextSize, Prompt.Font, Vector2.new(1000, 1000))
+	Prompt.Size = UDim2.new(0, PromptSize.X + 5, 1, 0)
 
 	local ConsoleInput = Instance.new("TextBox")
-	ConsoleInput.Size = UDim2.new(1, -120, 1, 0)
-	ConsoleInput.Position = UDim2.new(0, 110, 0, 0)
+	ConsoleInput.Size = UDim2.new(1, -PromptSize.X - 30, 1, 0)
+	ConsoleInput.Position = UDim2.new(0, PromptSize.X + 20, 0, 0)
 	ConsoleInput.BackgroundTransparency = 1
 	ConsoleInput.Text = ""
 	ConsoleInput.PlaceholderText = "enter command..."
@@ -222,7 +226,7 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local function ToggleConsole()
 		local Target = Console.Position.Y.Offset == -60 and 50 or -60
-		TweenService:Create(Console, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -225, 1, Target)}):Play()
+		TweenService:Create(Console, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -250, 1, Target)}):Play()
 		if Target == -60 then task.wait(0.1) ConsoleInput:CaptureFocus() end
 	end
 
