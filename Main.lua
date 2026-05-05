@@ -8,6 +8,11 @@ end
 
 local UI = Load("UI.lua")
 local Nametags = Load("Nametags.lua")
+local Commands = Load("Commands.lua")
 
-UI.Init()
+UI.Init(Nametags, Commands)
 Nametags.Init()
+
+game:GetService("Players").LocalPlayer.Chatted:Connect(function(msg)
+	Commands.HandleChat(msg, UI)
+end)

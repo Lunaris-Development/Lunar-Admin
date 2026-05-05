@@ -15,7 +15,7 @@ end
 
 local UI = {}
 
-function UI.Init(Nametags)
+function UI.Init(Nametags, Commands)
 	if game.CoreGui:FindFirstChild("LunarDynamicIsland") then
 		game.CoreGui:FindFirstChild("LunarDynamicIsland"):Destroy()
 	end
@@ -87,7 +87,7 @@ function UI.Init(Nametags)
 	Info.Parent = Content
 
 	local Title = Instance.new("TextLabel")
-	Title.Size = UDim2.new(1, 0, 0.5, 0)
+	Title.Size = UDim2.new(1, 0, 0, 30)
 	Title.Position = UDim2.new(0, 0, 0, 8)
 	Title.BackgroundTransparency = 1
 	Title.Text = "Lunar Admin"
@@ -98,8 +98,8 @@ function UI.Init(Nametags)
 	Title.Parent = Info
 
 	local ExecLabel = Instance.new("TextLabel")
-	ExecLabel.Size = UDim2.new(1, 0, 0.5, 0)
-	ExecLabel.Position = UDim2.new(0, 0, 0.5, -4)
+	ExecLabel.Size = UDim2.new(1, 0, 0, 15)
+	ExecLabel.Position = UDim2.new(0, 0, 0, 26)
 	ExecLabel.BackgroundTransparency = 1
 	ExecLabel.Text = Executor
 	ExecLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
@@ -201,43 +201,29 @@ function UI.Init(Nametags)
 		Btn.MouseButton1Click:Connect(callback)
 	end
 
+	CreateBtn(CmdMenu, "Freecam", function() if Commands then Commands.ToggleFreecam() end end)
 	CreateBtn(CmdMenu, "WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end)
 	CreateBtn(CmdMenu, "JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
 	
 	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)
 	CreateBtn(SettingsMenu, "Unload Script", function() 
 		if Nametags then Nametags.Unload() end
+		if Commands and Commands.ToggleFreecam and Commands.freecamEnabled then Commands.ToggleFreecam() end
 		ScreenGui:Destroy() 
 	end)
 
-	local ConsoleFrame = Instance.new("Frame")
-	ConsoleFrame.Name = "ConsoleFrame"
-	ConsoleFrame.Size = UDim2.new(0, 400, 0, 0)
-	ConsoleFrame.Position = UDim2.new(0.5, -200, 0, 75)
-	ConsoleFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-	ConsoleFrame.BackgroundTransparency = 0.15
-	ConsoleFrame.BorderSizePixel = 0
-	ConsoleFrame.ClipsDescendants = true
-	ConsoleFrame.Visible = false
-	ConsoleFrame.Parent = ScreenGui
-	Instance.new("UICorner", ConsoleFrame).CornerRadius = UDim.new(0, 10)
-	local ConsoleStroke = Instance.new("UIStroke", ConsoleFrame)
-	ConsoleStroke.Color = Color3.fromRGB(255, 255, 255)
-	ConsoleStroke.Transparency = 0.85
-	ConsoleStroke.Thickness = 1.2
-	local ConsoleInput = Instance.new("TextBox")
-	ConsoleInput.Name = "ConsoleInput"
-	ConsoleInput.Size = UDim2.new(1, -20, 1, -20)
-	ConsoleInput.Position = UDim2.new(0, 10, 0, 10)
-	ConsoleInput.BackgroundTransparency = 1
-	ConsoleInput.Text = ""
-	ConsoleInput.PlaceholderText = "Enter command..."
-	ConsoleInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
-	ConsoleInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ConsoleInput.FontFace = GetFont()
-	ConsoleInput.TextSize = 14
-	ConsoleInput.TextXAlignment = Enum.TextXAlignment.Left
-	ConsoleInput.Parent = ConsoleFrame
+	local function AnimateMenu(menu, targetHeight)
+		if menu.Size.Y.Offset == 0 then
+			menu.Visible = true
+			TweenService:Create(menu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, menu.Size.X.Offset, 0, targetHeight)}):Play()
+		else
+			TweenService:Create(menu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, menu.Size.X.Offset, 0, 0)}):Play()
+			task.wait(0.4)
+			if menu.Size.Y.Offset == 0 then menu.Visible = false end
+		end
+	end
+
+	UI.ToggleMenu = function() AnimateMenu(CmdMenu, 160) end
 
 	local function CreateIcon(id, callback)
 		local Icon = Instance.new("ImageButton")
@@ -252,41 +238,9 @@ function UI.Init(Nametags)
 		return Icon
 	end
 
-	local function AnimateMenu(menu, targetHeight)
-		if menu.Size.Y.Offset == 0 then
-			menu.Visible = true
-			TweenService:Create(menu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, menu.Size.X.Offset, 0, targetHeight)}):Play()
-		else
-			TweenService:Create(menu, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, menu.Size.X.Offset, 0, 0)}):Play()
-			task.wait(0.4)
-			if menu.Size.Y.Offset == 0 then menu.Visible = false end
-		end
-	end
-
-	CreateIcon("rbxassetid://10734898156", function() AnimateMenu(CmdMenu, 120) end)
-	CreateIcon("rbxassetid://10734913301", function() 
-		if ConsoleFrame.Size.Y.Offset == 0 then
-			ConsoleFrame.Visible = true
-			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 45)}):Play()
-			task.wait(0.4)
-			ConsoleInput:CaptureFocus()
-		else
-			ConsoleInput:ReleaseFocus()
-			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 0)}):Play()
-			task.wait(0.4)
-			ConsoleFrame.Visible = false
-		end
-	end)
+	CreateIcon("rbxassetid://10734898156", UI.ToggleMenu)
+	CreateIcon("rbxassetid://10734913301", function() print("Console clicked") end)
 	CreateIcon("rbxassetid://10734950309", function() AnimateMenu(SettingsMenu, 120) end)
-
-	ConsoleInput.FocusLost:Connect(function(enter)
-		if enter then
-			ConsoleInput.Text = ""
-			TweenService:Create(ConsoleFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 0)}):Play()
-			task.wait(0.4)
-			ConsoleFrame.Visible = false
-		end
-	end)
 
 	local Expanded = false
 	local function ToggleIsland(state)
@@ -311,40 +265,6 @@ function UI.Init(Nametags)
 
 	Island.MouseEnter:Connect(function() ToggleIsland(true) end)
 	Island.MouseLeave:Connect(function() ToggleIsland(false) end)
-
-	local NotifyFrame = Instance.new("Frame")
-	NotifyFrame.Name = "NotifyFrame"
-	NotifyFrame.Size = UDim2.new(0, 280, 0, 70)
-	NotifyFrame.Position = UDim2.new(0.5, -140, 0, -200)
-	NotifyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	NotifyFrame.BackgroundTransparency = 0.1
-	NotifyFrame.BorderSizePixel = 0
-	NotifyFrame.Parent = ScreenGui
-
-	local NotifyCorner = Instance.new("UICorner")
-	NotifyCorner.CornerRadius = UDim.new(0, 10)
-	NotifyCorner.Parent = NotifyFrame
-
-	local NotifyStroke = Instance.new("UIStroke")
-	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
-	NotifyStroke.Transparency = 0.9
-	NotifyStroke.Parent = NotifyFrame
-
-	local WelcomeText = Instance.new("TextLabel")
-	WelcomeText.Size = UDim2.new(1, 0, 1, 0)
-	WelcomeText.BackgroundTransparency = 1
-	WelcomeText.Text = "Welcome to Lunar Admin"
-	WelcomeText.TextColor3 = Color3.fromRGB(255, 255, 255)
-	WelcomeText.FontFace = GetFont()
-	WelcomeText.TextSize = 14
-	WelcomeText.Parent = NotifyFrame
-
-	task.spawn(function()
-		task.wait(1.5)
-		TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -140, 0, 85)}):Play()
-		task.wait(4)
-		TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -140, 0, -200)}):Play()
-	end)
 
 	RunService.RenderStepped:Connect(function()
 		FPSLabel.Text = "FPS: " .. math.floor(1/RunService.RenderStepped:Wait())
