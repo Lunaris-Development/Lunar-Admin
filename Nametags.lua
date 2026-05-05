@@ -1,15 +1,20 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local LogoID = "rbxassetid://95343151225680"
+local LogoID = "rbxassetid://73819038719454"
 
 local Nametags = {}
 
-local function TypeWrite(label, text)
-	label.Text = ""
+local function HumanType(label, text)
 	for i = 1, #text do
 		label.Text = string.sub(text, 1, i)
-		task.wait(0.05)
+		task.wait(0.15)
 	end
+	task.wait(2)
+	for i = #text, 0, -1 do
+		label.Text = string.sub(text, 1, i)
+		task.wait(0.08)
+	end
+	task.wait(0.5)
 end
 
 function Nametags.Create(player)
@@ -19,8 +24,8 @@ function Nametags.Create(player)
 		
 		local Tag = Instance.new("BillboardGui")
 		Tag.Name = "LunarTag"
-		Tag.Size = UDim2.new(0, 140, 0, 45)
-		Tag.StudsOffset = Vector3.new(0, 3, 0)
+		Tag.Size = UDim2.new(0, 160, 0, 50)
+		Tag.StudsOffset = Vector3.new(0, 3.5, 0)
 		Tag.AlwaysOnTop = true
 		Tag.Parent = Head
 		
@@ -31,18 +36,18 @@ function Nametags.Create(player)
 		TagFrame.Parent = Tag
 		
 		local TagCorner = Instance.new("UICorner")
-		TagCorner.CornerRadius = UDim.new(0, 10)
+		TagCorner.CornerRadius = UDim.new(0, 12)
 		TagCorner.Parent = TagFrame
 		
 		local TagStroke = Instance.new("UIStroke")
 		TagStroke.Color = Color3.fromRGB(255, 255, 255)
-		TagStroke.Transparency = 0.8
-		TagStroke.Thickness = 1.2
+		TagStroke.Transparency = 0.85
+		TagStroke.Thickness = 1.5
 		TagStroke.Parent = TagFrame
 		
 		local TagLogo = Instance.new("ImageLabel")
-		TagLogo.Size = UDim2.new(0, 24, 0, 24)
-		TagLogo.Position = UDim2.new(0, 8, 0.5, -12)
+		TagLogo.Size = UDim2.new(0, 28, 0, 28)
+		TagLogo.Position = UDim2.new(0, 10, 0.5, -14)
 		TagLogo.BackgroundTransparency = 1
 		TagLogo.Image = LogoID
 		TagLogo.Parent = TagFrame
@@ -57,19 +62,19 @@ function Nametags.Create(player)
 		end
 		
 		local TagText = Instance.new("TextLabel")
-		TagText.Size = UDim2.new(1, -40, 0.5, 0)
-		TagText.Position = UDim2.new(0, 35, 0, 8)
+		TagText.Size = UDim2.new(1, -45, 0.5, 0)
+		TagText.Position = UDim2.new(0, 42, 0, 10)
 		TagText.BackgroundTransparency = 1
 		TagText.Text = ""
 		TagText.TextColor3 = RoleColor
 		TagText.Font = Enum.Font.GothamBold
-		TagText.TextSize = 10
+		TagText.TextSize = 11
 		TagText.TextXAlignment = Enum.TextXAlignment.Left
 		TagText.Parent = TagFrame
 		
 		local SubText = Instance.new("TextLabel")
-		SubText.Size = UDim2.new(1, -40, 0.5, 0)
-		SubText.Position = UDim2.new(0, 35, 0.5, -4)
+		SubText.Size = UDim2.new(1, -45, 0.5, 0)
+		SubText.Position = UDim2.new(0, 42, 0.5, -4)
 		SubText.BackgroundTransparency = 1
 		SubText.Text = "@" .. player.Name
 		SubText.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -80,8 +85,7 @@ function Nametags.Create(player)
 		
 		task.spawn(function()
 			while Tag.Parent do
-				TypeWrite(TagText, Role)
-				task.wait(3)
+				HumanType(TagText, Role)
 			end
 		end)
 	end
