@@ -166,11 +166,10 @@ function UI.Init(Nametags, Commands, ESP)
 		Menu.Visible = false
 		Menu.Parent = ScreenGui
 		Instance.new("UICorner", Menu).CornerRadius = UDim.new(0, 12)
-		local Stroke = Instance.new("UIStroke")
+		local Stroke = Instance.new("UIStroke", Menu)
 		Stroke.Color = Color3.fromRGB(255, 255, 255)
 		Stroke.Transparency = 0.8
 		Stroke.Thickness = 1.2
-		Stroke.Parent = Menu
 		local List = Instance.new("UIListLayout", Menu)
 		List.Padding = UDim.new(0, 5)
 		local Padding = Instance.new("UIPadding", Menu)
@@ -208,12 +207,16 @@ function UI.Init(Nametags, Commands, ESP)
 	Prompt.TextXAlignment = Enum.TextXAlignment.Left
 	Prompt.Parent = Console
 	
-	local PromptSize = game:GetService("TextService"):GetTextSize(Prompt.Text, Prompt.TextSize, Prompt.Font, Vector2.new(1000, 1000))
-	Prompt.Size = UDim2.new(0, PromptSize.X + 5, 1, 0)
+	task.spawn(function()
+		while not Prompt.Parent do task.wait() end
+		local pText = Prompt.Text
+		local pSize = game:GetService("TextService"):GetTextSize(pText, 13, Enum.Font.GothamBold, Vector2.new(1000, 1000))
+		Prompt.Size = UDim2.new(0, pSize.X + 5, 1, 0)
+	end)
 
 	local ConsoleInput = Instance.new("TextBox")
-	ConsoleInput.Size = UDim2.new(1, -PromptSize.X - 30, 1, 0)
-	ConsoleInput.Position = UDim2.new(0, PromptSize.X + 20, 0, 0)
+	ConsoleInput.Size = UDim2.new(1, -200, 1, 0)
+	ConsoleInput.Position = UDim2.new(0, 160, 0, 0)
 	ConsoleInput.BackgroundTransparency = 1
 	ConsoleInput.Text = ""
 	ConsoleInput.PlaceholderText = "enter command..."
@@ -309,10 +312,9 @@ function UI.Init(Nametags, Commands, ESP)
 	NotifyFrame.BorderSizePixel = 0
 	NotifyFrame.Parent = ScreenGui
 	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 10)
-	local NotifyStroke = Instance.new("UIStroke")
+	local NotifyStroke = Instance.new("UIStroke", NotifyFrame)
 	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
 	NotifyStroke.Transparency = 0.8
-	NotifyStroke.Parent = NotifyFrame
 	local NotifyLabel = Instance.new("TextLabel")
 	NotifyLabel.Size = UDim2.new(1, 0, 1, 0)
 	NotifyLabel.BackgroundTransparency = 1
