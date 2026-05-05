@@ -80,6 +80,7 @@ local function toggleFly(UI)
 		
 		hum.PlatformStand = true
 		if UI and UI.Notify then UI.Notify("Fly: ON", "Success") end
+		if UI and UI.UpdateFlightStatus then UI.UpdateFlightStatus(true, hum.WalkSpeed * 2) end
 		
 		task.spawn(function()
 			while flyActive and hrp.Parent do
@@ -104,6 +105,7 @@ local function toggleFly(UI)
 		if hrp:FindFirstChild("LunarGyro") then hrp.LunarGyro:Destroy() end
 		hum.PlatformStand = false
 		if UI and UI.Notify then UI.Notify("Fly: OFF", "Warn") end
+		if UI and UI.UpdateFlightStatus then UI.UpdateFlightStatus(false) end
 	end
 end
 
@@ -153,7 +155,10 @@ function Commands.HandleChat(msg, UI, ESP)
 		local num = tonumber(args[2])
 		if num and lp.Character and lp.Character:FindFirstChild("Humanoid") then
 			lp.Character.Humanoid.WalkSpeed = num
-			if UI then UI.Notify("Speed: " .. num, "Success") end
+			if UI then 
+				UI.Notify("Speed: " .. num, "Success")
+				if flyActive then UI.UpdateFlightStatus(true, num * 2) end
+			end
 		elseif not num then
 			fcSpeed = 1.2
 			if UI then UI.Notify("FC Speed Reset", "Warn") end

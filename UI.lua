@@ -321,10 +321,10 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local NotifyFrame = Instance.new("Frame")
 	NotifyFrame.Name = "NotifyFrame"
-	NotifyFrame.Size = UDim2.new(0, 320, 0, 60)
-	NotifyFrame.Position = UDim2.new(0.5, -160, 0, -200)
+	NotifyFrame.Size = UDim2.new(0, 280, 0, 55)
+	NotifyFrame.Position = UDim2.new(1, 300, 1, -80)
 	NotifyFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-	NotifyFrame.BackgroundTransparency = 0.1
+	NotifyFrame.BackgroundTransparency = 0.15
 	NotifyFrame.BorderSizePixel = 0
 	NotifyFrame.ZIndex = 100
 	NotifyFrame.Parent = ScreenGui
@@ -336,21 +336,21 @@ function UI.Init(Nametags, Commands, ESP)
 	NotifyGlow.BackgroundTransparency = 1
 	NotifyGlow.Image = "rbxassetid://6015538162"
 	NotifyGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
-	NotifyGlow.ImageTransparency = 0.3
+	NotifyGlow.ImageTransparency = 0.35
 	NotifyGlow.ZIndex = 99
 	NotifyGlow.Parent = NotifyFrame
 
 	local NotifyStroke = Instance.new("UIStroke", NotifyFrame)
 	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
-	NotifyStroke.Transparency = 0.2
-	NotifyStroke.Thickness = 2.5
+	NotifyStroke.Transparency = 0.25
+	NotifyStroke.Thickness = 2.2
 	
 	local NotifyLabel = Instance.new("TextLabel")
 	NotifyLabel.Size = UDim2.new(1, 0, 1, 0)
 	NotifyLabel.BackgroundTransparency = 1
 	NotifyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	NotifyLabel.FontFace = GetFont()
-	NotifyLabel.TextSize = 14
+	NotifyLabel.TextSize = 13
 	NotifyLabel.ZIndex = 101
 	NotifyLabel.Parent = NotifyFrame
 
@@ -366,10 +366,51 @@ function UI.Init(Nametags, Commands, ESP)
 		NotifyStroke.Color = color
 		NotifyGlow.ImageColor3 = color
 		
-		TweenService:Create(NotifyFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -160, 0, 80)}):Play()
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -300, 1, -80)}):Play()
 		task.delay(2.5, function()
-			TweenService:Create(NotifyFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -160, 0, -200)}):Play()
+			TweenService:Create(NotifyFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 300, 1, -80)}):Play()
 		end)
+	end
+
+	local FlightStatus = Instance.new("Frame")
+	FlightStatus.Name = "FlightStatus"
+	FlightStatus.Size = UDim2.new(0, 160, 0, 50)
+	FlightStatus.Position = UDim2.new(0, 15, 1, 70)
+	FlightStatus.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	FlightStatus.BackgroundTransparency = 0.3
+	FlightStatus.BorderSizePixel = 0
+	FlightStatus.Parent = ScreenGui
+	Instance.new("UICorner", FlightStatus).CornerRadius = UDim.new(0, 8)
+	local FlightStroke = Instance.new("UIStroke", FlightStatus)
+	FlightStroke.Color = Color3.fromRGB(0, 255, 150)
+	FlightStroke.Transparency = 0.5
+	
+	local FlightLabel = Instance.new("TextLabel")
+	FlightLabel.Size = UDim2.new(1, 0, 0.5, 0)
+	FlightLabel.Position = UDim2.new(0, 10, 0, 5)
+	FlightLabel.BackgroundTransparency = 1
+	FlightLabel.Text = "FLIGHT ACTIVE"
+	FlightLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
+	FlightLabel.FontFace = GetFont()
+	FlightLabel.TextSize = 12
+	FlightLabel.TextXAlignment = Enum.TextXAlignment.Left
+	FlightLabel.Parent = FlightStatus
+	
+	local FlightSpeed = Instance.new("TextLabel")
+	FlightSpeed.Size = UDim2.new(1, 0, 0.5, 0)
+	FlightSpeed.Position = UDim2.new(0, 10, 0.5, 0)
+	FlightSpeed.BackgroundTransparency = 1
+	FlightSpeed.Text = "SPEED: 32"
+	FlightSpeed.TextColor3 = Color3.fromRGB(200, 200, 200)
+	FlightSpeed.FontFace = GetFont()
+	FlightSpeed.TextSize = 10
+	FlightSpeed.TextXAlignment = Enum.TextXAlignment.Left
+	FlightSpeed.Parent = FlightStatus
+
+	UI.UpdateFlightStatus = function(active, speed)
+		local Target = active and -65 or 70
+		TweenService:Create(FlightStatus, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 15, 1, Target)}):Play()
+		if speed then FlightSpeed.Text = "SPEED: " .. math.floor(speed) end
 	end
 
 	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)
