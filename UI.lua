@@ -179,8 +179,32 @@ function UI.Init(Nametags, Commands, ESP)
 		return Menu
 	end
 
-	local CmdMenu = CreateMenu("CmdMenu", Vector2.new(250, 0))
+	local CmdMenu = CreateMenu("CmdMenu", Vector2.new(280, 0))
 	local SettingsMenu = CreateMenu("SettingsMenu", Vector2.new(250, 0))
+
+	local SearchBox = Instance.new("TextBox")
+	SearchBox.Size = UDim2.new(1, 0, 0, 35)
+	SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	SearchBox.BackgroundTransparency = 0.5
+	SearchBox.PlaceholderText = "Search for commands..."
+	SearchBox.Text = ""
+	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SearchBox.FontFace = GetFont()
+	SearchBox.TextSize = 12
+	SearchBox.Parent = CmdMenu
+	Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0, 6)
+	local SearchPadding = Instance.new("UIPadding", SearchBox)
+	SearchPadding.PaddingLeft = UDim.new(0, 10)
+
+	local CmdScroll = Instance.new("ScrollingFrame")
+	CmdScroll.Size = UDim2.new(1, 0, 0, 200)
+	CmdScroll.BackgroundTransparency = 1
+	CmdScroll.BorderSizePixel = 0
+	CmdScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+	CmdScroll.ScrollBarThickness = 2
+	CmdScroll.Parent = CmdMenu
+	local CmdList = Instance.new("UIListLayout", CmdScroll)
+	CmdList.Padding = UDim.new(0, 5)
 
 	local function CreateBtn(parent, name, callback)
 		local Btn = Instance.new("TextButton")
@@ -199,7 +223,21 @@ function UI.Init(Nametags, Commands, ESP)
 		Btn.MouseEnter:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.85, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play() end)
 		Btn.MouseLeave:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.95, TextColor3 = Color3.fromRGB(200, 200, 200)}):Play() end)
 		Btn.MouseButton1Click:Connect(callback)
+		return Btn
 	end
+
+	local btns = {}
+	table.insert(btns, CreateBtn(CmdScroll, "Freecam", function() if Commands then Commands.ToggleFreecam(UI) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "ESP Toggle", function() if ESP then ESP.Toggle(not ESP.Enabled) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end))
+	table.insert(btns, CreateBtn(CmdScroll, "JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end))
+
+	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+		local query = SearchBox.Text:lower()
+		for _, btn in pairs(btns) do
+			btn.Visible = btn.Name:lower():find(query) ~= nil
+		end
+	end)
 
 	local NotifyFrame = Instance.new("Frame")
 	NotifyFrame.Name = "NotifyFrame"
@@ -229,10 +267,6 @@ function UI.Init(Nametags, Commands, ESP)
 		end)
 	end
 
-	CreateBtn(CmdMenu, "Freecam", function() if Commands then Commands.ToggleFreecam(UI) end end)
-	CreateBtn(CmdMenu, "WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end)
-	CreateBtn(CmdMenu, "JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end)
-	
 	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)
 	CreateBtn(SettingsMenu, "Unload Script", function() 
 		if Nametags then Nametags.Unload() end
@@ -252,7 +286,7 @@ function UI.Init(Nametags, Commands, ESP)
 		end
 	end
 
-	UI.ToggleMenu = function() AnimateMenu(CmdMenu, 160) end
+	UI.ToggleMenu = function() AnimateMenu(CmdMenu, 260) end
 
 	local function CreateIcon(id, callback)
 		local Icon = Instance.new("ImageButton")

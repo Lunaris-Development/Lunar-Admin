@@ -1,3 +1,6 @@
+if getgenv().LunarLoaded then return end
+getgenv().LunarLoaded = true
+
 local qot = queue_on_teleport or queueonteleport
 if qot then
 	qot('loadstring(game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/Key.lua"))()')

@@ -68,6 +68,7 @@ local function GetInputs(dt)
 end
 
 local function StepFreecam(dt)
+	Camera.CameraType = Enum.CameraType.Scriptable
 	local vel = velSpring:Update(dt, GetInputs(dt))
 	local pan = panSpring:Update(dt, mouse.Delta * (pi/64))
 	mouse.Delta = Vector2.new()
@@ -79,6 +80,10 @@ local function StepFreecam(dt)
 	Camera.CFrame = cameraCFrame
 	Camera.Focus = cameraCFrame
 	Camera.FieldOfView = cameraFov
+	local char = LocalPlayer.Character
+	if char and char:FindFirstChild("HumanoidRootPart") then
+		char.HumanoidRootPart.Anchored = true
+	end
 end
 
 local freecamEnabled = false
@@ -94,7 +99,6 @@ function Commands.ToggleFreecam(UI)
 			oldWS = char.Humanoid.WalkSpeed
 			char.Humanoid.WalkSpeed = 0
 		end
-		if hrp then hrp.Anchored = true end
 		Camera.CameraType = Enum.CameraType.Scriptable
 		local cameraCFrame = Camera.CFrame
 		cameraRot = Vector2.new(cameraCFrame:toEulerAnglesYXZ())
