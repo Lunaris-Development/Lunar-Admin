@@ -111,9 +111,9 @@ function Commands.ToggleFreecam()
 end
 
 function Commands.HandleChat(msg, UI)
-	local prefix = ">"
-	if msg:sub(1, 1) == prefix then
-		local args = msg:sub(2):split(" ")
+	local prefix = "l?"
+	if msg:sub(1, 2) == prefix then
+		local args = msg:sub(3):split(" ")
 		local cmd = args[1]:lower()
 		if cmd == "freecam" then Commands.ToggleFreecam()
 		elseif cmd == "cmds" then if UI and UI.ToggleMenu then UI.ToggleMenu() end end
