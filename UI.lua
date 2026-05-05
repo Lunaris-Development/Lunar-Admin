@@ -256,7 +256,7 @@ function UI.Init(Nametags, Commands, ESP)
 		if enter then
 			local msg = ConsoleInput.Text
 			ConsoleInput.Text = ""
-			if Commands then Commands.HandleChat("l?" .. msg, UI, ESP) end
+			if Commands then Commands.HandleChat(msg, UI, ESP) end
 		end
 		ToggleConsole()
 	end)
@@ -276,7 +276,7 @@ function UI.Init(Nametags, Commands, ESP)
 	SearchPadding.PaddingLeft = UDim.new(0, 10)
 
 	local CmdScroll = Instance.new("ScrollingFrame")
-	CmdScroll.Size = UDim2.new(1, 0, 0, 200)
+	CmdScroll.Size = UDim2.new(1, 0, 0, 240)
 	CmdScroll.BackgroundTransparency = 1
 	CmdScroll.BorderSizePixel = 0
 	CmdScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -306,10 +306,11 @@ function UI.Init(Nametags, Commands, ESP)
 	end
 
 	local btns = {}
-	table.insert(btns, CreateBtn(CmdScroll, "Freecam", function() if Commands then Commands.ToggleFreecam(UI) end end))
-	table.insert(btns, CreateBtn(CmdScroll, "ESP Toggle", function() if ESP then ESP.Toggle(not ESP.Enabled) end end))
-	table.insert(btns, CreateBtn(CmdScroll, "WalkSpeed (50)", function() Player.Character.Humanoid.WalkSpeed = 50 end))
-	table.insert(btns, CreateBtn(CmdScroll, "JumpPower (100)", function() Player.Character.Humanoid.JumpPower = 100 end))
+	table.insert(btns, CreateBtn(CmdScroll, "Fly Toggle", function() if Commands then Commands.HandleChat("fly", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Freecam Toggle", function() if Commands then Commands.HandleChat("fc", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "ESP Toggle", function() if Commands then Commands.HandleChat("esp", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Speed (50)", function() if Commands then Commands.HandleChat("ws 50", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Reset Speed", function() if Commands then Commands.HandleChat("ws 16", UI, ESP) end end))
 
 	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
 		local query = SearchBox.Text:lower()
@@ -320,41 +321,44 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local NotifyFrame = Instance.new("Frame")
 	NotifyFrame.Name = "NotifyFrame"
-	NotifyFrame.Size = UDim2.new(0, 300, 0, 70)
-	NotifyFrame.Position = UDim2.new(0.5, -150, 0, -200)
-	NotifyFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	NotifyFrame.BackgroundTransparency = 0.3
+	NotifyFrame.Size = UDim2.new(0, 320, 0, 60)
+	NotifyFrame.Position = UDim2.new(0.5, -160, 0, -200)
+	NotifyFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
+	NotifyFrame.BackgroundTransparency = 0.1
 	NotifyFrame.BorderSizePixel = 0
+	NotifyFrame.ZIndex = 100
 	NotifyFrame.Parent = ScreenGui
-	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 10)
+	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 8)
 	
 	local NotifyGlow = Instance.new("ImageLabel")
-	NotifyGlow.Size = UDim2.new(1.2, 0, 1.4, 0)
-	NotifyGlow.Position = UDim2.new(-0.1, 0, -0.2, 0)
+	NotifyGlow.Size = UDim2.new(1.3, 0, 1.6, 0)
+	NotifyGlow.Position = UDim2.new(-0.15, 0, -0.3, 0)
 	NotifyGlow.BackgroundTransparency = 1
 	NotifyGlow.Image = "rbxassetid://6015538162"
 	NotifyGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
-	NotifyGlow.ImageTransparency = 0.5
+	NotifyGlow.ImageTransparency = 0.3
+	NotifyGlow.ZIndex = 99
 	NotifyGlow.Parent = NotifyFrame
 
 	local NotifyStroke = Instance.new("UIStroke", NotifyFrame)
 	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
-	NotifyStroke.Transparency = 0.6
-	NotifyStroke.Thickness = 2
+	NotifyStroke.Transparency = 0.2
+	NotifyStroke.Thickness = 2.5
 	
 	local NotifyLabel = Instance.new("TextLabel")
 	NotifyLabel.Size = UDim2.new(1, 0, 1, 0)
 	NotifyLabel.BackgroundTransparency = 1
 	NotifyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	NotifyLabel.FontFace = GetFont()
-	NotifyLabel.TextSize = 13
+	NotifyLabel.TextSize = 14
+	NotifyLabel.ZIndex = 101
 	NotifyLabel.Parent = NotifyFrame
 
 	UI.Notify = function(text, nType)
 		local color = Color3.fromRGB(255, 255, 255)
-		if nType == "Success" then color = Color3.fromRGB(100, 255, 100)
-		elseif nType == "Warn" then color = Color3.fromRGB(255, 180, 50)
-		elseif nType == "Error" then color = Color3.fromRGB(255, 80, 80)
+		if nType == "Success" then color = Color3.fromRGB(0, 255, 150)
+		elseif nType == "Warn" then color = Color3.fromRGB(255, 170, 0)
+		elseif nType == "Error" then color = Color3.fromRGB(255, 50, 50)
 		end
 		
 		NotifyLabel.Text = text
@@ -362,9 +366,9 @@ function UI.Init(Nametags, Commands, ESP)
 		NotifyStroke.Color = color
 		NotifyGlow.ImageColor3 = color
 		
-		TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -150, 0, 85)}):Play()
-		task.delay(3, function()
-			TweenService:Create(NotifyFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -150, 0, -200)}):Play()
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -160, 0, 80)}):Play()
+		task.delay(2.5, function()
+			TweenService:Create(NotifyFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -160, 0, -200)}):Play()
 		end)
 	end
 
@@ -387,7 +391,7 @@ function UI.Init(Nametags, Commands, ESP)
 		end
 	end
 
-	UI.ToggleMenu = function() AnimateMenu(CmdMenu, 260) end
+	UI.ToggleMenu = function() AnimateMenu(CmdMenu, 300) end
 
 	local function CreateIcon(id, callback)
 		local Icon = Instance.new("ImageButton")
