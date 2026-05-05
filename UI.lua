@@ -201,6 +201,7 @@ function UI.Init(Nametags, Commands, ESP)
 	ConsoleLayout.FillDirection = Enum.FillDirection.Horizontal
 	ConsoleLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 	ConsoleLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+	ConsoleLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	ConsoleLayout.Padding = UDim.new(0, 4)
 	
 	local ConsolePadding = Instance.new("UIPadding", Console)
@@ -229,7 +230,7 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local ConsoleInput = Instance.new("TextBox")
 	ConsoleInput.Name = "Input"
-	ConsoleInput.Size = UDim2.new(1, -200, 1, 0)
+	ConsoleInput.Size = UDim2.new(1, -180, 1, 0)
 	ConsoleInput.BackgroundTransparency = 1
 	ConsoleInput.Text = ""
 	ConsoleInput.PlaceholderText = "enter command..."
