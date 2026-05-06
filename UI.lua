@@ -18,6 +18,7 @@ end
 local UI = {}
 
 function UI.Init(Nametags, Commands, ESP)
+	local isMobile = UserInputService.TouchEnabled
 	if game.CoreGui:FindFirstChild("LunarDynamicIsland") then
 		game.CoreGui:FindFirstChild("LunarDynamicIsland"):Destroy()
 	end
@@ -453,7 +454,10 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local flightDragging = false
 	SliderBtn.MouseButton1Down:Connect(function() flightDragging = true end)
-	UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then flightDragging = false end end)
+	SliderBtn.InputBegan:Connect(function(input) if input.UserInputType == Enum.UserInputType.Touch then flightDragging = true end end)
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then flightDragging = false end
+	end)
 
 	RunService.RenderStepped:Connect(function()
 		if flightDragging then
@@ -539,8 +543,9 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local speedDragging = false
 	SpeedSliderBtn.MouseButton1Down:Connect(function() speedDragging = true end)
+	SpeedSliderBtn.InputBegan:Connect(function(input) if input.UserInputType == Enum.UserInputType.Touch then speedDragging = true end end)
 	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then speedDragging = false end
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then speedDragging = false end
 	end)
 
 	RunService.RenderStepped:Connect(function()
@@ -801,8 +806,18 @@ function UI.Init(Nametags, Commands, ESP)
 		end
 	end
 
-	Island.MouseEnter:Connect(function() ToggleIsland(true) end)
-	Island.MouseLeave:Connect(function() ToggleIsland(false) end)
+	if isMobile then
+		local MobileTap = Instance.new("TextButton")
+		MobileTap.Size = UDim2.new(0, 50, 0, 50)
+		MobileTap.BackgroundTransparency = 1
+		MobileTap.Text = ""
+		MobileTap.ZIndex = 10
+		MobileTap.Parent = Island
+		MobileTap.MouseButton1Click:Connect(function() ToggleIsland(not Expanded) end)
+	else
+		Island.MouseEnter:Connect(function() ToggleIsland(true) end)
+		Island.MouseLeave:Connect(function() ToggleIsland(false) end)
+	end
 
 	local _fpsAccum, _fpsFrames = 0, 0
 	RunService.RenderStepped:Connect(function(dt)
