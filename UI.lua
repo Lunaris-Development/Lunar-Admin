@@ -321,54 +321,58 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local NotifyFrame = Instance.new("Frame")
 	NotifyFrame.Name = "NotifyFrame"
-	NotifyFrame.Size = UDim2.new(0, 280, 0, 55)
-	NotifyFrame.Position = UDim2.new(1, 300, 1, -80)
-	NotifyFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-	NotifyFrame.BackgroundTransparency = 0.15
+	NotifyFrame.Size = UDim2.new(0, 290, 0, 58)
+	NotifyFrame.Position = UDim2.new(1, 320, 1, -80)
+	NotifyFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+	NotifyFrame.BackgroundTransparency = 0.08
 	NotifyFrame.BorderSizePixel = 0
 	NotifyFrame.ZIndex = 100
 	NotifyFrame.Parent = ScreenGui
 	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 8)
-	
-	local NotifyGlow = Instance.new("ImageLabel")
-	NotifyGlow.Size = UDim2.new(1.3, 0, 1.6, 0)
-	NotifyGlow.Position = UDim2.new(-0.15, 0, -0.3, 0)
-	NotifyGlow.BackgroundTransparency = 1
-	NotifyGlow.Image = "rbxassetid://6015538162"
-	NotifyGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
-	NotifyGlow.ImageTransparency = 0.35
-	NotifyGlow.ZIndex = 99
-	NotifyGlow.Parent = NotifyFrame
 
 	local NotifyStroke = Instance.new("UIStroke", NotifyFrame)
 	NotifyStroke.Color = Color3.fromRGB(255, 255, 255)
-	NotifyStroke.Transparency = 0.25
-	NotifyStroke.Thickness = 2.2
-	
+	NotifyStroke.Transparency = 0.82
+	NotifyStroke.Thickness = 1.2
+
+	local NotifyAccent = Instance.new("Frame")
+	NotifyAccent.Size = UDim2.new(0, 3, 1, -20)
+	NotifyAccent.Position = UDim2.new(0, 10, 0.5, 0)
+	NotifyAccent.AnchorPoint = Vector2.new(0, 0.5)
+	NotifyAccent.BackgroundColor3 = Color3.fromRGB(0, 255, 150)
+	NotifyAccent.BorderSizePixel = 0
+	NotifyAccent.ZIndex = 101
+	NotifyAccent.Parent = NotifyFrame
+	Instance.new("UICorner", NotifyAccent).CornerRadius = UDim.new(1, 0)
+
 	local NotifyLabel = Instance.new("TextLabel")
-	NotifyLabel.Size = UDim2.new(1, 0, 1, 0)
+	NotifyLabel.Size = UDim2.new(1, -26, 1, 0)
+	NotifyLabel.Position = UDim2.new(0, 22, 0, 0)
 	NotifyLabel.BackgroundTransparency = 1
-	NotifyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	NotifyLabel.TextColor3 = Color3.fromRGB(235, 235, 235)
 	NotifyLabel.FontFace = GetFont()
 	NotifyLabel.TextSize = 13
-	NotifyLabel.ZIndex = 101
+	NotifyLabel.TextXAlignment = Enum.TextXAlignment.Left
+	NotifyLabel.TextYAlignment = Enum.TextYAlignment.Center
+	NotifyLabel.ZIndex = 102
 	NotifyLabel.Parent = NotifyFrame
 
 	UI.Notify = function(text, nType)
-		local color = Color3.fromRGB(255, 255, 255)
+		local color = Color3.fromRGB(200, 200, 200)
 		if nType == "Success" then color = Color3.fromRGB(0, 255, 150)
 		elseif nType == "Warn" then color = Color3.fromRGB(255, 170, 0)
-		elseif nType == "Error" then color = Color3.fromRGB(255, 50, 50)
+		elseif nType == "Error" then color = Color3.fromRGB(255, 60, 60)
 		end
-		
+
 		NotifyLabel.Text = text
-		NotifyLabel.TextColor3 = color
+		NotifyAccent.BackgroundColor3 = color
 		NotifyStroke.Color = color
-		NotifyGlow.ImageColor3 = color
-		
-		TweenService:Create(NotifyFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -300, 1, -80)}):Play()
+		NotifyStroke.Transparency = 0.65
+
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -310, 1, -80)}):Play()
 		task.delay(2.5, function()
-			TweenService:Create(NotifyFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 300, 1, -80)}):Play()
+			TweenService:Create(NotifyStroke, TweenInfo.new(0.3), {Transparency = 0.82}):Play()
+			TweenService:Create(NotifyFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 320, 1, -80)}):Play()
 		end)
 	end
 
@@ -525,9 +529,16 @@ function UI.Init(Nametags, Commands, ESP)
 	Island.MouseEnter:Connect(function() ToggleIsland(true) end)
 	Island.MouseLeave:Connect(function() ToggleIsland(false) end)
 
-	RunService.RenderStepped:Connect(function()
-		FPSLabel.Text = "FPS: " .. math.floor(1/RunService.RenderStepped:Wait())
-		PingLabel.Text = "PING: " .. math.floor(Player:GetNetworkPing() * 1000) .. "ms"
+	local _fpsAccum, _fpsFrames = 0, 0
+	RunService.RenderStepped:Connect(function(dt)
+		_fpsAccum += dt
+		_fpsFrames += 1
+		if _fpsAccum >= 0.5 then
+			FPSLabel.Text = "FPS: " .. math.floor(_fpsFrames / _fpsAccum)
+			PingLabel.Text = "PING: " .. math.floor(Player:GetNetworkPing() * 1000) .. "ms"
+			_fpsAccum = 0
+			_fpsFrames = 0
+		end
 	end)
 end
 
