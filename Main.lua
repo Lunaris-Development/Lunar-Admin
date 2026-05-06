@@ -46,8 +46,16 @@ local LoopSpeed = Load("LoopSpeed.lua")
 local TouchFling = Load("TouchFling.lua")
 local ShLow = Load("ShLow.lua")
 local ShMost = Load("ShMost.lua")
+local Noclip = Load("Noclip.lua")
+local InfJump = Load("InfJump.lua")
+local GodMode = Load("GodMode.lua")
+local PlayerTP = Load("PlayerTP.lua")
 
-local allModules = {Freecam, AntiAFK, ClickTP, LagSpoof, UserSpoofer, ServerInfo, ServerList, LoopSpeed, TouchFling, ShLow, ShMost}
+local allModules = {
+	Freecam, AntiAFK, ClickTP, LagSpoof, UserSpoofer,
+	ServerInfo, ServerList, LoopSpeed, TouchFling,
+	ShLow, ShMost, Noclip, InfJump, GodMode, PlayerTP
+}
 
 local Commands = {}
 setmetatable(Commands, {
