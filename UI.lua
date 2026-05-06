@@ -280,6 +280,7 @@ function UI.Init(Nametags, Commands, ESP)
 	CmdScroll.BackgroundTransparency = 1
 	CmdScroll.BorderSizePixel = 0
 	CmdScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+	CmdScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 	CmdScroll.ScrollBarThickness = 2
 	CmdScroll.Parent = CmdMenu
 	local CmdList = Instance.new("UIListLayout", CmdScroll)
@@ -311,6 +312,16 @@ function UI.Init(Nametags, Commands, ESP)
 	table.insert(btns, CreateBtn(CmdScroll, "ESP Toggle", function() if Commands then Commands.HandleChat("esp", UI, ESP) end end))
 	table.insert(btns, CreateBtn(CmdScroll, "Speed (50)", function() if Commands then Commands.HandleChat("ws 50", UI, ESP) end end))
 	table.insert(btns, CreateBtn(CmdScroll, "Reset Speed", function() if Commands then Commands.HandleChat("ws 16", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Anti AFK", function() if Commands then Commands.HandleChat("antiafk", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Click TP", function() if Commands then Commands.HandleChat("ftpmobile", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Lag Spoof", function() if Commands then Commands.HandleChat("lag", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "User Spoofer", function() if Commands then Commands.HandleChat("userspoofer player", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Server Info", function() if Commands then Commands.HandleChat("serverinfo", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Server List", function() if Commands then Commands.HandleChat("serverh", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Loop Speed", function() if Commands then Commands.HandleChat("loopspeed 50", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Touch Fling", function() if Commands then Commands.HandleChat("touchfling", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Show Low HP", function() if Commands then Commands.HandleChat("shlow", UI, ESP) end end))
+	table.insert(btns, CreateBtn(CmdScroll, "Show Most HP", function() if Commands then Commands.HandleChat("shmost", UI, ESP) end end))
 
 	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
 		local query = SearchBox.Text:lower()
@@ -484,7 +495,7 @@ function UI.Init(Nametags, Commands, ESP)
 		end
 	end
 
-	UI.ToggleMenu = function() AnimateMenu(CmdMenu, 300) end
+	UI.ToggleMenu = function() AnimateMenu(CmdMenu, 380) end
 
 	local function CreateIcon(id, callback)
 		local Icon = Instance.new("ImageButton")

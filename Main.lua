@@ -1,6 +1,6 @@
-if getgenv().LunarLoaded and game:GetService("CoreGui"):FindFirstChild("LunarDynamicIsland") then 
+if getgenv().LunarLoaded and game:GetService("CoreGui"):FindFirstChild("LunarDynamicIsland") then
 	warn("Lunar Admin is already running!")
-	return 
+	return
 end
 getgenv().LunarLoaded = true
 
@@ -35,7 +35,39 @@ end
 local UI = Load("UI.lua")
 local Nametags = Load("Nametags.lua")
 local ESP = Load("ESP.lua")
-local Commands = Load("Commands.lua")
+local Freecam = Load("Freecam.lua")
+local AntiAFK = Load("AntiAFK.lua")
+local ClickTP = Load("ClickTP.lua")
+local LagSpoof = Load("LagSpoof.lua")
+local UserSpoofer = Load("UserSpoofer.lua")
+local ServerInfo = Load("ServerInfo.lua")
+local ServerList = Load("ServerList.lua")
+local LoopSpeed = Load("LoopSpeed.lua")
+local TouchFling = Load("TouchFling.lua")
+local ShLow = Load("ShLow.lua")
+local ShMost = Load("ShMost.lua")
+
+local allModules = {Freecam, AntiAFK, ClickTP, LagSpoof, UserSpoofer, ServerInfo, ServerList, LoopSpeed, TouchFling, ShLow, ShMost}
+
+local Commands = {}
+setmetatable(Commands, {
+	__newindex = function(t, k, v)
+		rawset(t, k, v)
+		if k == "_UI" then Freecam._UI = v end
+	end
+})
+
+function Commands.HandleChat(msg, UI_ref, ESP_ref, silent)
+	for _, mod in ipairs(allModules) do
+		if mod.HandleChat then
+			pcall(mod.HandleChat, msg, UI_ref or Commands._UI, ESP_ref, silent)
+		end
+	end
+end
+
+Commands.ToggleFreecam = function(UI_ref)
+	if Freecam.ToggleFreecam then Freecam.ToggleFreecam(UI_ref) end
+end
 
 UI.Init(Nametags, Commands, ESP)
 Nametags.Init()
