@@ -8,15 +8,20 @@ local BaseURL = "https://raw.githubusercontent.com/Lunaris-Development/Lunar-Adm
 local function GetBust() return "?t=" .. tostring(tick()) end
 
 local function SetupFont()
-	if writefile and isfile then
-		if not isfile("Minecraft.ttf") then
-			local success, result = pcall(function()
-				return game:HttpGet(BaseURL .. "Minecraft.ttf")
-			end)
-			if success and result then
-				writefile("Minecraft.ttf", result)
-			end
-		end
+	if not (writefile and isfile and getcustomasset) then return end
+	if isfile("Minecraft.ttf") then return end
+	local ok, data
+	if request then
+		ok, data = pcall(function()
+			local res = request({ Url = BaseURL .. "Minecraft.ttf", Method = "GET" })
+			return res and res.Body
+		end)
+	end
+	if not (ok and data and #data > 1000) then
+		ok, data = pcall(game.HttpGet, game, BaseURL .. "Minecraft.ttf")
+	end
+	if ok and data and #data > 1000 then
+		pcall(writefile, "Minecraft.ttf", data)
 	end
 end
 

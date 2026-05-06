@@ -4,7 +4,8 @@ local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
 
 local function GetFont()
 	if getcustomasset and isfile and isfile("Minecraft.ttf") then
-		return Font.new(getcustomasset("Minecraft.ttf"))
+		local ok, f = pcall(function() return Font.new(getcustomasset("Minecraft.ttf")) end)
+		if ok then return f end
 	end
 	return Font.fromEnum(Enum.Font.GothamBold)
 end
