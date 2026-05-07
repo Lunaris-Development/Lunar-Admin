@@ -116,8 +116,8 @@ function Nametags.Create(player)
 
 	local Tag = Instance.new("BillboardGui")
 	Tag.Name = "LunarTag"
-	Tag.Size = UDim2.new(0, 200, 0, 54)
-	Tag.StudsOffset = Vector3.new(0, 3.8, 0)
+	Tag.Size = UDim2.new(0, 230, 0, 66)
+	Tag.StudsOffset = Vector3.new(0, 4, 0)
 	Tag.AlwaysOnTop = false
 	Tag.MaxDistance = 150
 	Tag.Parent = Head
@@ -152,8 +152,8 @@ function Nametags.Create(player)
 	Glow.ZIndex = 2
 
 	local TagLogo = Instance.new("ImageLabel", TagFrame)
-	TagLogo.Size = UDim2.new(0, 30, 0, 30)
-	TagLogo.Position = UDim2.new(0, 11, 0.5, -15)
+	TagLogo.Size = UDim2.new(0, 38, 0, 38)
+	TagLogo.Position = UDim2.new(0, 12, 0.5, -19)
 	TagLogo.BackgroundTransparency = 1
 	TagLogo.Image = "rbxthumb://type=AvatarHeadShot&id=" .. player.UserId .. "&w=48&h=48"
 	TagLogo.ScaleType = Enum.ScaleType.Fit
@@ -161,24 +161,24 @@ function Nametags.Create(player)
 	Instance.new("UICorner", TagLogo).CornerRadius = UDim.new(1, 0)
 
 	local TagText = Instance.new("TextLabel", TagFrame)
-	TagText.Size = UDim2.new(1, -50, 0, 22)
-	TagText.Position = UDim2.new(0, 46, 0, 7)
+	TagText.Size = UDim2.new(1, -56, 0, 26)
+	TagText.Position = UDim2.new(0, 56, 0, 10)
 	TagText.BackgroundTransparency = 1
 	TagText.Text = rank.label
 	TagText.TextColor3 = rank.color
 	TagText.FontFace = GetFont()
-	TagText.TextSize = 14
+	TagText.TextSize = 16
 	TagText.TextXAlignment = Enum.TextXAlignment.Left
 	TagText.ZIndex = 4
 
 	local SubText = Instance.new("TextLabel", TagFrame)
-	SubText.Size = UDim2.new(1, -50, 0, 16)
-	SubText.Position = UDim2.new(0, 46, 0, 29)
+	SubText.Size = UDim2.new(1, -56, 0, 18)
+	SubText.Position = UDim2.new(0, 56, 1, -20)
 	SubText.BackgroundTransparency = 1
 	SubText.Text = "@" .. player.Name
 	SubText.TextColor3 = Color3.fromRGB(140, 140, 140)
 	SubText.FontFace = GetFontSub()
-	SubText.TextSize = 11
+	SubText.TextSize = 12
 	SubText.TextXAlignment = Enum.TextXAlignment.Left
 	SubText.ZIndex = 4
 

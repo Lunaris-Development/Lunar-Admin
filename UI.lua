@@ -159,10 +159,11 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	Bar.Name = "LunarBar"
 	Bar.Size = UDim2.new(0, 480, 0, 50)
 	Bar.AnchorPoint = Vector2.new(1, 0)
-	Bar.Position = UDim2.new(1, -10, 0, 10)
+	Bar.Position = UDim2.new(1, -10, 0, 5)
 	Bar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 	Bar.BackgroundTransparency = 0.3
 	Bar.BorderSizePixel = 0
+	Bar.ClipsDescendants = true
 	Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 14)
 	local BarStroke = Instance.new("UIStroke", Bar)
 	BarStroke.Color = Color3.fromRGB(255, 255, 255)
@@ -250,6 +251,28 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	UIList.Padding = UDim.new(0, 8)
 	local IconsPad = Instance.new("UIPadding", Icons)
 	IconsPad.PaddingRight = UDim.new(0, 10)
+
+	local ColBtn = Instance.new("TextButton", Bar)
+	ColBtn.Size = UDim2.new(0, 18, 0, 28)
+	ColBtn.AnchorPoint = Vector2.new(0, 0.5)
+	ColBtn.Position = UDim2.new(0, 147, 0.5, 0)
+	ColBtn.BackgroundTransparency = 1
+	ColBtn.Text = "◀"
+	ColBtn.TextColor3 = Color3.fromRGB(90, 90, 90)
+	ColBtn.FontFace = GetFontBold()
+	ColBtn.TextSize = 10
+	ColBtn.AutoButtonColor = false
+	ColBtn.ZIndex = 40
+	local barExpanded = true
+	ColBtn.MouseButton1Click:Connect(function()
+		barExpanded = not barExpanded
+		ColBtn.Text = barExpanded and "◀" or "▶"
+		TweenService:Create(Bar, TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+			Size = UDim2.new(0, barExpanded and 480 or 158, 0, 50)
+		}):Play()
+	end)
+	ColBtn.MouseEnter:Connect(function() ColBtn.TextColor3 = Color3.fromRGB(200,200,200) end)
+	ColBtn.MouseLeave:Connect(function() ColBtn.TextColor3 = Color3.fromRGB(90,90,90) end)
 
 	local UISnd = Instance.new("Sound")
 	UISnd.SoundId = "rbxassetid://7545317681"

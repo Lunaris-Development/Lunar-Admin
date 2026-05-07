@@ -143,10 +143,11 @@ local function ApplyTag(UI)
 		local Head = char.Head
 		if Head:FindFirstChild("LunarTag") then Head.LunarTag:Destroy() end
 
+		local ts = Config.textSize or 14
 		local Tag = Instance.new("BillboardGui")
 		Tag.Name = "LunarTag"
-		Tag.Size = UDim2.new(0, 200, 0, 54)
-		Tag.StudsOffset = Vector3.new(0, 3.8, 0)
+		Tag.Size = UDim2.new(0, 230, 0, 66)
+		Tag.StudsOffset = Vector3.new(0, 4, 0)
 		Tag.AlwaysOnTop = false
 		Tag.MaxDistance = 150
 		Tag.Parent = Head
@@ -156,7 +157,7 @@ local function ApplyTag(UI)
 		BorderFrame.BackgroundColor3 = Config.textColor
 		BorderFrame.BorderSizePixel = 0
 		BorderFrame.ZIndex = 1
-		Instance.new("UICorner", BorderFrame).CornerRadius = UDim.new(0, 14)
+		Instance.new("UICorner", BorderFrame).CornerRadius = UDim.new(0, 16)
 
 		local TagFrame = Instance.new("Frame", Tag)
 		TagFrame.Size = UDim2.new(1, -2, 1, -2)
@@ -165,71 +166,71 @@ local function ApplyTag(UI)
 		TagFrame.BackgroundTransparency = Config.bgTransparency
 		TagFrame.BorderSizePixel = 0
 		TagFrame.ZIndex = 2
-		Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 13)
+		Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 15)
 
 		local Img = Instance.new("ImageLabel", TagFrame)
-		Img.Size = UDim2.new(0, 28, 0, 28)
-		Img.Position = UDim2.new(0, 10, 0.5, -14)
+		Img.Size = UDim2.new(0, 36, 0, 36)
+		Img.Position = UDim2.new(0, 12, 0.5, -18)
 		Img.BackgroundTransparency = 1
 		Img.ScaleType = Enum.ScaleType.Fit
 		Img.ZIndex = 3
-		if Config.decalId ~= "" then
-			Img.Image = "rbxassetid://" .. Config.decalId
-		else
-			Img.Image = "rbxthumb://type=AvatarHeadShot&id=" .. lp.UserId .. "&w=48&h=48"
-		end
+		Instance.new("UICorner", Img).CornerRadius = UDim.new(1, 0)
+		Img.Image = Config.decalId ~= "" and ("rbxthumb://type=Asset&id=" .. Config.decalId .. "&w=420&h=420")
+			or ("rbxthumb://type=AvatarHeadShot&id=" .. lp.UserId .. "&w=48&h=48")
 
 		local TL = Instance.new("TextLabel", TagFrame)
-		TL.Size = UDim2.new(1, -48, 0.5, 0)
-		TL.Position = UDim2.new(0, 44, 0, 7)
+		TL.Size = UDim2.new(1, -58, 0, ts + 4)
+		TL.Position = UDim2.new(0, 54, 0, 10)
 		TL.BackgroundTransparency = 1
 		TL.Text = Config.text
 		TL.TextColor3 = Config.textColor
 		TL.FontFace = Font.fromEnum(Config.font)
-		TL.TextSize = 11
+		TL.TextSize = ts
 		TL.TextXAlignment = Enum.TextXAlignment.Left
+		TL.TextTruncate = Enum.TextTruncate.AtEnd
 		TL.ZIndex = 3
 
 		local SL = Instance.new("TextLabel", TagFrame)
-		SL.Size = UDim2.new(1, -48, 0.5, 0)
-		SL.Position = UDim2.new(0, 44, 0.5, -3)
+		SL.Size = UDim2.new(1, -58, 0, 16)
+		SL.Position = UDim2.new(0, 54, 1, -20)
 		SL.BackgroundTransparency = 1
 		SL.Text = "@" .. lp.Name
-		SL.TextColor3 = Color3.fromRGB(180, 180, 180)
+		SL.TextColor3 = Color3.fromRGB(170, 170, 170)
 		SL.FontFace = Font.fromEnum(Config.font)
-		SL.TextSize = 9
+		SL.TextSize = math.max(9, ts - 4)
 		SL.TextXAlignment = Enum.TextXAlignment.Left
 		SL.ZIndex = 3
 
 		if Config.effect == "Typewriter" then
 			task.spawn(function()
+				task.wait(1)
 				while Tag.Parent do
-					TL.Text = ""
-					for i = 1, #Config.text do
-						if not Tag.Parent then return end
-						TL.Text = Config.text:sub(1, i); task.wait(0.12)
-					end
-					task.wait(2)
 					for i = #Config.text, 0, -1 do
 						if not Tag.Parent then return end
-						TL.Text = Config.text:sub(1, i); task.wait(0.07)
+						TL.Text = Config.text:sub(1, i); task.wait(0.06)
 					end
-					task.wait(0.4)
+					task.wait(0.25)
+					for i = 1, #Config.text do
+						if not Tag.Parent then return end
+						TL.Text = Config.text:sub(1, i); task.wait(0.1)
+					end
+					task.wait(2.5)
 				end
 			end)
 		elseif Config.effect == "Glitch" then
 			local gc = "!@#$%^&*<>?{}~█▓░"
 			task.spawn(function()
 				while Tag.Parent do
-					for _ = 1, 5 do
+					task.wait(2.5 + math.random())
+					for _ = 1, 6 do
 						if not Tag.Parent then return end
 						local g = ""
 						for i = 1, #Config.text do
-							g = g .. (math.random() < 0.3 and gc:sub(math.random(1,#gc),math.random(1,#gc)) or Config.text:sub(i,i))
+							g = g .. (math.random() < 0.35 and gc:sub(math.random(1,#gc),math.random(1,#gc)) or Config.text:sub(i,i))
 						end
-						TL.Text = g; task.wait(0.06)
+						TL.Text = g; task.wait(0.055)
 					end
-					TL.Text = Config.text; task.wait(2 + math.random())
+					TL.Text = Config.text
 				end
 			end)
 		end
@@ -529,7 +530,7 @@ local function BuildGUI(UI)
 	local PImg = Instance.new("ImageLabel", PTagFrame)
 	PImg.Size = UDim2.new(0,26,0,26); PImg.Position = UDim2.new(0,8,0.5,-13)
 	PImg.BackgroundTransparency = 1; PImg.ScaleType = Enum.ScaleType.Fit; PImg.ZIndex = 35
-	PImg.Image = Config.decalId ~= "" and ("rbxassetid://"..Config.decalId) or ("rbxthumb://type=AvatarHeadShot&id="..lp.UserId.."&w=48&h=48")
+	PImg.Image = Config.decalId ~= "" and ("rbxthumb://type=Asset&id="..Config.decalId.."&w=420&h=420") or ("rbxthumb://type=AvatarHeadShot&id="..lp.UserId.."&w=48&h=48")
 
 	local PTL = Instance.new("TextLabel", PTagFrame)
 	PTL.Size = UDim2.new(1,-42,0.5,0); PTL.Position = UDim2.new(0,38,0,5)
@@ -553,7 +554,7 @@ local function BuildGUI(UI)
 		PTL.TextColor3 = tc
 		PTL.FontFace = Font.fromEnum(Config.font)
 		PTL.Text = Config.text ~= "" and Config.text or "LUNAR USER"
-		PImg.Image = Config.decalId ~= "" and ("rbxassetid://"..Config.decalId) or ("rbxthumb://type=AvatarHeadShot&id="..lp.UserId.."&w=48&h=48")
+		PImg.Image = Config.decalId ~= "" and ("rbxthumb://type=Asset&id="..Config.decalId.."&w=420&h=420") or ("rbxthumb://type=AvatarHeadShot&id="..lp.UserId.."&w=48&h=48")
 	end
 
 	task.spawn(function()
