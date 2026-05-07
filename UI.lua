@@ -12,7 +12,7 @@ local function GetFontBold() return Font.fromEnum(Enum.Font.GothamBold) end
 
 local UI = {}
 
-function UI.Init(Nametags, Commands, ESP, Rizzlines)
+function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	local isMobile = UserInputService.TouchEnabled
 
 	if game.CoreGui:FindFirstChild("LunarDynamicIsland") then
@@ -334,6 +334,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines)
 	local TPWin, TPContent, ToggleTPWin = CreateWindow("Teleport", 268, 320)
 	local FlingWin, FlingContent, ToggleFlingWin = CreateWindow("Fling Players", 268, 320)
 	local RizzWin, RizzContent, ToggleRizzWin = CreateWindow("Rizzlines", 300, 310)
+	local AnimWin, AnimContent, ToggleAnimWin = CreateWindow("Animations", 340, 360)
 
 	local SearchBox = Instance.new("TextBox", CmdContent)
 	SearchBox.Size = UDim2.new(1, 0, 0, 34)
@@ -393,6 +394,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines)
 	addBtn("Show Most HP", "shmost")
 	addBtn("Server List", "serverh")
 	addBtn("Server Info", "serverinfo")
+	addBtn("Animations", function() ToggleAnimWin() end)
 	addBtn("Send Rizz", function() ToggleRizzWin() end)
 	addBtn("Fling Players", function() ToggleFlingWin() end)
 	addBtn("Teleport to Player", function() ToggleTPWin() end)
@@ -716,21 +718,10 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines)
 	Instance.new("UIListLayout", FlingScroll).Padding = UDim.new(0, 5)
 
 	local function RefreshFling() BuildPlayerListWindow(FlingScroll, {label="Fling", fn=function(p)
-		local myHrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
-		local tHrp = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
-		if not myHrp or not tHrp then return end
-		myHrp.CFrame = tHrp.CFrame * CFrame.new(0, 0, 2)
-		myHrp.CanCollide = false
-		task.delay(1.5, function()
-			if myHrp and myHrp.Parent then myHrp.CanCollide = true end
-		end)
-		local bv = Instance.new("BodyVelocity")
-		local dir = (tHrp.Position - myHrp.Position + Vector3.new(0, 0.5, 0)).Unit
-		bv.Velocity = dir * 480 + Vector3.new(0, 360, 0)
-		bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-		bv.Parent = tHrp
-		game:GetService("Debris"):AddItem(bv, 0.18)
-		UI.Notify("Flinging " .. p.Name, "Success")
+		if ProperFling then
+			UI.Notify("Flinging " .. p.Name, "Success")
+			task.spawn(ProperFling.Fling, p)
+		end
 	end}) end
 	local origFling = ToggleFlingWin
 	ToggleFlingWin = function() RefreshFling() origFling() end
@@ -791,6 +782,98 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines)
 			Row.MouseLeave:Connect(function() TweenService:Create(Row, TweenInfo.new(0.12), {BackgroundTransparency = 0.94}):Play() end)
 		end
 	end
+
+	local AnimSearchBox = Instance.new("TextBox", AnimContent)
+	AnimSearchBox.Size = UDim2.new(1, 0, 0, 34)
+	AnimSearchBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	AnimSearchBox.BackgroundTransparency = 0.3
+	AnimSearchBox.PlaceholderText = "  Search animations..."
+	AnimSearchBox.Text = ""
+	AnimSearchBox.TextColor3 = Color3.fromRGB(220, 220, 220)
+	AnimSearchBox.PlaceholderColor3 = Color3.fromRGB(90, 90, 90)
+	AnimSearchBox.FontFace = GetFont()
+	AnimSearchBox.TextSize = 12
+	Instance.new("UICorner", AnimSearchBox).CornerRadius = UDim.new(0, 7)
+	local ASBPad = Instance.new("UIPadding", AnimSearchBox); ASBPad.PaddingLeft = UDim.new(0, 8)
+
+	local AnimStopBtn = Instance.new("TextButton", AnimContent)
+	AnimStopBtn.Size = UDim2.new(1, 0, 0, 30)
+	AnimStopBtn.BackgroundColor3 = Color3.fromRGB(255, 65, 65)
+	AnimStopBtn.BackgroundTransparency = 0.4
+	AnimStopBtn.Text = "  Stop Current Animation"
+	AnimStopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	AnimStopBtn.FontFace = GetFontBold()
+	AnimStopBtn.TextSize = 11
+	AnimStopBtn.TextXAlignment = Enum.TextXAlignment.Left
+	AnimStopBtn.AutoButtonColor = false
+	Instance.new("UICorner", AnimStopBtn).CornerRadius = UDim.new(0, 7)
+	AnimStopBtn.MouseButton1Click:Connect(function()
+		if Animations then Animations.Stop(UI) end
+	end)
+	AnimStopBtn.MouseEnter:Connect(function() TweenService:Create(AnimStopBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.1}):Play() end)
+	AnimStopBtn.MouseLeave:Connect(function() TweenService:Create(AnimStopBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.4}):Play() end)
+
+	local AnimScroll = Instance.new("ScrollingFrame", AnimContent)
+	AnimScroll.Size = UDim2.new(1, 0, 0, 272)
+	AnimScroll.BackgroundTransparency = 1
+	AnimScroll.BorderSizePixel = 0
+	AnimScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+	AnimScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	AnimScroll.ScrollBarThickness = 2
+	AnimScroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 100)
+	local AnimListLayout = Instance.new("UIListLayout", AnimScroll)
+	AnimListLayout.Padding = UDim.new(0, 4)
+
+	local animBtns = {}
+	if Animations then
+		for _, entry in ipairs(Animations.List) do
+			local Row = Instance.new("Frame", AnimScroll)
+			Row.Size = UDim2.new(1, 0, 0, 34)
+			Row.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Row.BackgroundTransparency = 0.94
+			Row.BorderSizePixel = 0
+			Instance.new("UICorner", Row).CornerRadius = UDim.new(0, 7)
+			local Lbl = Instance.new("TextLabel", Row)
+			Lbl.Size = UDim2.new(1, -68, 1, 0)
+			Lbl.Position = UDim2.new(0, 10, 0, 0)
+			Lbl.BackgroundTransparency = 1
+			Lbl.Text = entry.n
+			Lbl.TextColor3 = Color3.fromRGB(200, 200, 200)
+			Lbl.FontFace = GetFont()
+			Lbl.TextSize = 11
+			Lbl.TextXAlignment = Enum.TextXAlignment.Left
+			Lbl.TextTruncate = Enum.TextTruncate.AtEnd
+			local PlayBtn = Instance.new("TextButton", Row)
+			PlayBtn.Size = UDim2.new(0, 52, 0, 24)
+			PlayBtn.Position = UDim2.new(1, -58, 0.5, -12)
+			PlayBtn.BackgroundColor3 = Color3.fromRGB(100, 170, 255)
+			PlayBtn.BackgroundTransparency = 0.25
+			PlayBtn.Text = "Play"
+			PlayBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+			PlayBtn.FontFace = GetFontBold()
+			PlayBtn.TextSize = 11
+			PlayBtn.AutoButtonColor = false
+			Instance.new("UICorner", PlayBtn).CornerRadius = UDim.new(0, 6)
+			PlayBtn.MouseEnter:Connect(function() TweenService:Create(PlayBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0}):Play() end)
+			PlayBtn.MouseLeave:Connect(function() TweenService:Create(PlayBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.25}):Play() end)
+			local eid = entry.id
+			local en  = entry.n
+			PlayBtn.MouseButton1Click:Connect(function()
+				Animations.Play(eid, UI)
+				Lbl.TextColor3 = Color3.fromRGB(100, 220, 150)
+				task.delay(1.5, function() Lbl.TextColor3 = Color3.fromRGB(200, 200, 200) end)
+			end)
+			Row.Name = entry.n
+			table.insert(animBtns, Row)
+		end
+	end
+
+	AnimSearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+		local q = AnimSearchBox.Text:lower()
+		for _, row in pairs(animBtns) do
+			row.Visible = q == "" or row.Name:lower():find(q) ~= nil
+		end
+	end)
 
 	local NotifyFrame = Instance.new("Frame", ScreenGui)
 	NotifyFrame.Size = UDim2.new(0, 295, 0, 58)

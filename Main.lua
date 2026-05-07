@@ -37,12 +37,15 @@ local AimLock = Load("AimLock.lua")
 local Hug = Load("Hug.lua")
 local Flip = Load("Flip.lua")
 local Rizzlines = Load("Rizzlines.lua")
+local ProperFling = Load("ProperFling.lua")
+local Animations = Load("Animations.lua")
 
 local allModules = {
 	Freecam, AntiAFK, ClickTP, LagSpoof, UserSpoofer,
 	ServerInfo, ServerList, LoopSpeed, TouchFling,
 	ShLow, ShMost, Noclip, InfJump, GodMode, PlayerTP,
-	WalkOnAir, Invisible, Reach, AimLock, Hug, Flip, Rizzlines
+	WalkOnAir, Invisible, Reach, AimLock, Hug, Flip,
+	Rizzlines, ProperFling, Animations
 }
 
 local Commands = {}
@@ -65,7 +68,7 @@ Commands.ToggleFreecam = function(UI_ref)
 	if Freecam.ToggleFreecam then Freecam.ToggleFreecam(UI_ref) end
 end
 
-UI.Init(Nametags, Commands, ESP, Rizzlines)
+UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 Nametags.Init()
 
 game:GetService("Players").LocalPlayer.Chatted:Connect(function(msg)
