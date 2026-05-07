@@ -225,14 +225,7 @@ local function closeUI()
 end
 
 local function grantAccess(key)
-	local username = Player.Name
-	pcall(function()
-		local data = Junkie.get_key_data(key)
-		if data and data.data and data.data.username then
-			username = data.data.username
-		end
-	end)
-	statusLbl.Text = "Welcome, " .. username .. "!"
+	statusLbl.Text = "Welcome, " .. (Player and Player.Name or "User") .. "!"
 	tw(statusLbl, {TextColor3 = Color3.fromRGB(0, 220, 130)}, 0.4)
 	sounds.success:Play()
 	tw(progressBar, {Size = UDim2.new(1, 0, 1, 0)}, 0.7)
