@@ -144,7 +144,7 @@ local function ApplyTag(UI)
 		local Head = char.Head
 		if Head:FindFirstChild("LunarTag") then Head.LunarTag:Destroy() end
 
-		local ts = Config.textSize or 12
+		local ts = 10
 		local rawId = (Config.decalId or ""):match("^%s*(.-)%s*$")
 		rawId = rawId:match("%d+") or rawId
 		local imgUrl = rawId ~= "" and ("rbxthumb://type=Asset&id=" .. rawId .. "&w=420&h=420") or LogoID
@@ -234,6 +234,34 @@ local function ApplyTag(UI)
 						TL.Text = g; task.wait(0.055)
 					end
 					TL.Text = Config.text
+				end
+			end)
+		end
+
+		local c1 = Config.textColor
+		local c2 = Config.bgColor
+		for _ = 1, 5 do
+			task.spawn(function()
+				task.wait(math.random() * 1.2)
+				while Tag and Tag.Parent do
+					local sz = math.random(3, 8)
+					local p = Instance.new("Frame", Tag)
+					p.Size = UDim2.new(0, sz, 0, sz)
+					p.Position = UDim2.new(math.random() * 0.75 + 0.1, 0, math.random() * 0.3 + 0.65, 0)
+					p.BackgroundColor3 = math.random() > 0.5 and c1 or Color3.fromRGB(255, 255, 255)
+					p.BackgroundTransparency = 0
+					p.BorderSizePixel = 0
+					p.ZIndex = 10
+					Instance.new("UICorner", p).CornerRadius = UDim.new(1, 0)
+					local dur = math.random(9, 18) / 10
+					TweenService:Create(p, TweenInfo.new(dur, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+						Position = UDim2.new(p.Position.X.Scale + (math.random()-0.5)*0.35, 0, -0.55, 0),
+						BackgroundTransparency = 1,
+						Size = UDim2.new(0, 0, 0, 0),
+					}):Play()
+					task.wait(dur)
+					if p and p.Parent then p:Destroy() end
+					task.wait(math.random(5, 18) / 100)
 				end
 			end)
 		end
@@ -609,43 +637,8 @@ local function BuildGUI(UI)
 	Instance.new("UICorner", TextInput).CornerRadius = UDim.new(0,8)
 	Instance.new("UIPadding", TextInput).PaddingLeft = UDim.new(0,10)
 
-	SLabel(CenterP, "TEXT SIZE", 162)
-	local sizeVal = Config.textSize or 14
-	local SzValLbl = Instance.new("TextLabel", CenterP)
-	SzValLbl.Size = UDim2.new(0,28,0,14); SzValLbl.Position = UDim2.new(1,-36,0,162)
-	SzValLbl.BackgroundTransparency = 1; SzValLbl.Text = tostring(sizeVal)
-	SzValLbl.TextColor3 = Color3.fromRGB(100,180,255); SzValLbl.FontFace = Font.fromEnum(Enum.Font.GothamBold)
-	SzValLbl.TextSize = 9; SzValLbl.TextXAlignment = Enum.TextXAlignment.Right; SzValLbl.ZIndex = 32
-	local SzTrack = Instance.new("Frame", CenterP)
-	SzTrack.Size = UDim2.new(1,-20,0,6); SzTrack.Position = UDim2.new(0,10,0,178)
-	SzTrack.BackgroundColor3 = Color3.fromRGB(35,35,35); SzTrack.BorderSizePixel = 0; SzTrack.ZIndex = 32
-	Instance.new("UICorner", SzTrack).CornerRadius = UDim.new(0,3)
-	local SzFill = Instance.new("Frame", SzTrack)
-	SzFill.Size = UDim2.new((sizeVal-8)/24, 0, 1, 0); SzFill.BackgroundColor3 = Color3.fromRGB(100,180,255)
-	SzFill.BorderSizePixel = 0; SzFill.ZIndex = 33
-	Instance.new("UICorner", SzFill).CornerRadius = UDim.new(0,3)
-	local SzKnob = Instance.new("TextButton", SzTrack)
-	SzKnob.Size = UDim2.new(0,14,0,14); SzKnob.Position = UDim2.new((sizeVal-8)/24,-7,0.5,-7)
-	SzKnob.BackgroundColor3 = Color3.fromRGB(240,240,240); SzKnob.Text = ""
-	SzKnob.AutoButtonColor = false; SzKnob.ZIndex = 34; SzKnob.BorderSizePixel = 0
-	Instance.new("UICorner", SzKnob).CornerRadius = UDim.new(1,0)
-	local szDrag = false
-	SzKnob.MouseButton1Down:Connect(function() szDrag = true end)
-	SzKnob.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.Touch then szDrag = true end end)
-	UserInputService.InputEnded:Connect(function(i)
-		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then szDrag = false end
-	end)
-	UserInputService.InputChanged:Connect(function(i)
-		if szDrag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
-			local r = math.clamp((i.Position.X - SzTrack.AbsolutePosition.X) / SzTrack.AbsoluteSize.X, 0, 1)
-			sizeVal = math.floor(r * 24 + 8)
-			SzFill.Size = UDim2.new(r,0,1,0); SzKnob.Position = UDim2.new(r,-7,0.5,-7)
-			SzValLbl.Text = tostring(sizeVal); Config.textSize = sizeVal
-		end
-	end)
-
 	local EffectBadge = Instance.new("TextLabel", CenterP)
-	EffectBadge.Size = UDim2.new(1,-20,0,18); EffectBadge.Position = UDim2.new(0,10,0,196)
+	EffectBadge.Size = UDim2.new(1,-20,0,18); EffectBadge.Position = UDim2.new(0,10,0,164)
 	EffectBadge.BackgroundTransparency = 1; EffectBadge.Text = "Effect: "..Config.effect
 	EffectBadge.TextColor3 = Color3.fromRGB(100,180,255); EffectBadge.FontFace = Font.fromEnum(Enum.Font.Gotham)
 	EffectBadge.TextSize = 10; EffectBadge.TextXAlignment = Enum.TextXAlignment.Center; EffectBadge.ZIndex = 32

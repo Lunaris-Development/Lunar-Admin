@@ -13,6 +13,37 @@ local CoreGui = game:GetService("CoreGui")
 local Player = Players.LocalPlayer
 
 local setclipboard = setclipboard or function() end
+local HttpService = game:GetService("HttpService")
+
+local function checkKey(inputKey)
+	local trimmed = (inputKey or ""):match("^%s*(.-)%s*$")
+	if trimmed == "" then return false end
+	local ok, raw = pcall(function()
+		return game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/key.json")
+	end)
+	if ok and raw then
+		local ok2, data = pcall(function() return HttpService:JSONDecode(raw) end)
+		if ok2 and data and data.keys then
+			for _, k in ipairs(data.keys) do
+				if tostring(k) == trimmed then return true end
+			end
+			return false
+		end
+	end
+	local ok3, result = pcall(function() return Junkie.check_key(trimmed) end)
+	return ok3 and result and result.valid == true
+end
+
+local function getSavedKey()
+	if not (isfile and readfile) then return nil end
+	local ok, v = pcall(function()
+		if isfile("LunarKey.txt") then
+			local s = readfile("LunarKey.txt"):match("^%s*(.-)%s*$")
+			return s ~= "" and s or nil
+		end
+	end)
+	return ok and v or nil
+end
 
 local function tw(inst, props, t)
 	TweenService:Create(inst, TweenInfo.new(t or 0.5, Enum.EasingStyle.Quart), props):Play()
@@ -277,11 +308,11 @@ task.wait(0.15)
 tw(statusLbl, {TextTransparency = 0}, 0.4)
 tw(progressBar, {Size = UDim2.new(0.45, 0, 1, 0)}, 0.8)
 
-local savedKey = isfile and isfile("LunarKey.txt") and readfile("LunarKey.txt")
+local savedKey = getSavedKey()
 if savedKey then
 	statusLbl.Text = "Validating saved key..."
-	local result = Junkie.check_key(savedKey)
-	if result and result.valid then
+	tw(progressBar, {Size = UDim2.new(0.55, 0, 1, 0)}, 0.4)
+	if checkKey(savedKey) then
 		tw(progressBar, {Size = UDim2.new(0.85, 0, 1, 0)}, 0.5)
 		statusLbl.Text = "Loading Lunar Admin..."
 		tw(statusLbl, {TextColor3 = Color3.fromRGB(0, 220, 130)}, 0.4)
@@ -326,8 +357,8 @@ submitBtn.MouseButton1Click:Connect(function()
 	tw(statusLbl, {TextColor3 = Color3.fromRGB(160, 160, 170)}, 0.2)
 	tw(progressBar, {Size = UDim2.new(0.7, 0, 1, 0)}, 0.5)
 	task.wait(0.8)
-	local result = Junkie.check_key(key)
-	if result and result.valid then
+	local valid = checkKey(key)
+	if valid then
 		tw(progressBar, {Size = UDim2.new(0.9, 0, 1, 0)}, 0.4)
 		keyContainer.Visible = false
 		tw(main, {Size = UDim2.new(0, 420, 0, 100)}, 0.6)

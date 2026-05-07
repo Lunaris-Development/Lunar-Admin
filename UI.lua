@@ -23,6 +23,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	ScreenGui.Name = "LunarDynamicIsland"
 	ScreenGui.ResetOnSpawn = false
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	ScreenGui.IgnoreGuiInset = true
 	ScreenGui.Parent = game.CoreGui
 
 	local function CreateWindow(title, w, contentH)
@@ -164,7 +165,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	Bar.BackgroundTransparency = 0.3
 	Bar.BorderSizePixel = 0
 	Bar.ClipsDescendants = true
-	Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 14)
+	Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 8)
 	local BarStroke = Instance.new("UIStroke", Bar)
 	BarStroke.Color = Color3.fromRGB(255, 255, 255)
 	BarStroke.Transparency = 0.82
@@ -209,7 +210,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	BarExec.Text = Executor
 	BarExec.TextColor3 = Color3.fromRGB(110, 110, 110)
 	BarExec.FontFace = GetFontBold()
-	BarExec.TextSize = 9
+	BarExec.TextSize = 11
 	BarExec.TextXAlignment = Enum.TextXAlignment.Left
 
 	local Sep1 = Instance.new("Frame", Bar)
@@ -1049,7 +1050,10 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	TCDescLbl.TextWrapped = true
 	TCDescLbl.ZIndex = 101
 
+	local _notifyThread = nil
 	UI.Notify = function(text, nType)
+		if _notifyThread then pcall(task.cancel, _notifyThread); _notifyThread = nil end
+		NotifyFrame.Position = UDim2.new(1, 285, 0, 20)
 		local typeText, typeColor = "Info", Color3.fromRGB(190, 190, 190)
 		if nType == "Success" then typeText = "Success"; typeColor = Color3.fromRGB(0, 220, 130)
 		elseif nType == "Warn" then typeText = "Warning"; typeColor = Color3.fromRGB(255, 170, 50)
@@ -1060,10 +1064,11 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		NDetailLabel.Text = text
 		NStroke.Color = typeColor
 		NStroke.Transparency = 0.58
-		TweenService:Create(NotifyFrame, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -275, 0, 20)}):Play()
-		task.delay(3.2, function()
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -275, 0, 20)}):Play()
+		_notifyThread = task.delay(3.0, function()
 			TweenService:Create(NStroke, TweenInfo.new(0.35), {Transparency = 0.86}):Play()
 			TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 285, 0, 20)}):Play()
+			_notifyThread = nil
 		end)
 	end
 
