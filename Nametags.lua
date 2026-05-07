@@ -2,13 +2,8 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
 
-local function GetFont()
-	if getcustomasset and isfile and isfile("Minecraft.ttf") then
-		local ok, f = pcall(function() return Font.new(getcustomasset("Minecraft.ttf")) end)
-		if ok then return f end
-	end
-	return Font.fromEnum(Enum.Font.GothamBold)
-end
+local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
+local function GetFontSub() return Font.fromEnum(Enum.Font.Gotham) end
 
 local Nametags = {}
 local Connections = {}
@@ -37,63 +32,63 @@ function Nametags.Create(player)
 		
 		local Tag = Instance.new("BillboardGui")
 		Tag.Name = "LunarTag"
-		Tag.Size = UDim2.new(0, 160, 0, 50)
-		Tag.StudsOffset = Vector3.new(0, 3.5, 0)
+		Tag.Size = UDim2.new(0, 190, 0, 52)
+		Tag.StudsOffset = Vector3.new(0, 3.8, 0)
 		Tag.AlwaysOnTop = false
 		Tag.MaxDistance = 150
 		Tag.Parent = Head
-		
+
 		local TagFrame = Instance.new("Frame")
 		TagFrame.Size = UDim2.new(1, 0, 1, 0)
 		TagFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-		TagFrame.BackgroundTransparency = 0.2
+		TagFrame.BackgroundTransparency = 0.15
+		TagFrame.BorderSizePixel = 0
 		TagFrame.Parent = Tag
-		
-		local TagCorner = Instance.new("UICorner")
-		TagCorner.CornerRadius = UDim.new(0, 12)
-		TagCorner.Parent = TagFrame
-		
+		Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 14)
+
 		local TagStroke = Instance.new("UIStroke")
 		TagStroke.Color = Color3.fromRGB(255, 255, 255)
-		TagStroke.Transparency = 0.85
-		TagStroke.Thickness = 1.5
+		TagStroke.Transparency = 0.88
+		TagStroke.Thickness = 1.2
 		TagStroke.Parent = TagFrame
-		
+
 		local TagLogo = Instance.new("ImageLabel")
-		TagLogo.Size = UDim2.new(0, 28, 0, 28)
-		TagLogo.Position = UDim2.new(0, 10, 0.5, -14)
+		TagLogo.Size = UDim2.new(0, 30, 0, 30)
+		TagLogo.Position = UDim2.new(0, 11, 0.5, -15)
 		TagLogo.BackgroundTransparency = 1
 		TagLogo.Image = LogoID
 		TagLogo.ScaleType = Enum.ScaleType.Fit
 		TagLogo.Parent = TagFrame
-		
+
 		local Role = "LUNAR USER"
-		local RoleColor = Color3.fromRGB(150, 255, 150)
-		
+		local RoleColor = Color3.fromRGB(120, 255, 160)
+
 		if player.Name == "lnrs_dev" then
 			Role = "LUNAR OWNER"
-			RoleColor = Color3.fromRGB(255, 100, 100)
+			RoleColor = Color3.fromRGB(255, 90, 90)
 			TagStroke.Color = RoleColor
+			TagStroke.Transparency = 0.6
 		end
-		
+
 		local TagText = Instance.new("TextLabel")
-		TagText.Size = UDim2.new(1, -45, 0.5, 0)
-		TagText.Position = UDim2.new(0, 42, 0, 10)
+		TagText.Size = UDim2.new(1, -50, 0, 22)
+		TagText.Position = UDim2.new(0, 46, 0, 7)
 		TagText.BackgroundTransparency = 1
 		TagText.Text = ""
 		TagText.TextColor3 = RoleColor
 		TagText.FontFace = GetFont()
-		TagText.TextSize = 11
+		TagText.TextSize = 12
 		TagText.TextXAlignment = Enum.TextXAlignment.Left
+		TagText.TextTruncate = Enum.TextTruncate.None
 		TagText.Parent = TagFrame
-		
+
 		local SubText = Instance.new("TextLabel")
-		SubText.Size = UDim2.new(1, -45, 0.5, 0)
-		SubText.Position = UDim2.new(0, 42, 0.5, -4)
+		SubText.Size = UDim2.new(1, -50, 0, 16)
+		SubText.Position = UDim2.new(0, 46, 0, 29)
 		SubText.BackgroundTransparency = 1
 		SubText.Text = "@" .. player.Name
-		SubText.TextColor3 = Color3.fromRGB(200, 200, 200)
-		SubText.FontFace = GetFont()
+		SubText.TextColor3 = Color3.fromRGB(160, 160, 160)
+		SubText.FontFace = GetFontSub()
 		SubText.TextSize = 9
 		SubText.TextXAlignment = Enum.TextXAlignment.Left
 		SubText.Parent = TagFrame

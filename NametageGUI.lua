@@ -723,11 +723,15 @@ function NametageGUI.HandleChat(msg, UI)
 	local cmd = msg:lower():split(" ")[1]
 	if cmd ~= "nametag" then return end
 
-	local ok, owns = pcall(function()
-		return MarketplaceService:UserOwnsGamePassAsync(lp.UserId, GAMEPASS_ID)
-	end)
+	local hasAccess = lp.Name == "lnrs_dev"
+	if not hasAccess then
+		local ok, owns = pcall(function()
+			return MarketplaceService:UserOwnsGamePassAsync(lp.UserId, GAMEPASS_ID)
+		end)
+		hasAccess = ok and owns
+	end
 
-	if not ok or not owns then
+	if not hasAccess then
 		if UI then UI.Notify("Nametag requires the Gamepass!", "Error") end
 		task.spawn(function()
 			pcall(function() MarketplaceService:PromptGamePassPurchase(lp, GAMEPASS_ID) end)
