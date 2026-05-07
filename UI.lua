@@ -4,8 +4,26 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 
 local Player = Players.LocalPlayer
-local LogoID = "rbxassetid://73819038719454"
 local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
+
+local function getAsset(id)
+	local fname = "lunar_" .. tostring(id) .. ".png"
+	if getcustomasset and writefile and isfile then
+		if not isfile(fname) then
+			pcall(function()
+				local data = game:HttpGet("https://assetdelivery.roblox.com/v1/asset/?id=" .. tostring(id), true)
+				writefile(fname, data)
+			end)
+		end
+		if isfile(fname) then
+			local ok, a = pcall(getcustomasset, fname)
+			if ok and a then return a end
+		end
+	end
+	return "rbxassetid://" .. tostring(id)
+end
+
+local LogoID = getAsset(73819038719454)
 
 local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
 local function GetFontBold() return Font.fromEnum(Enum.Font.GothamBold) end
@@ -14,25 +32,6 @@ local UI = {}
 
 function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	local isMobile = UserInputService.TouchEnabled
-
-	task.spawn(function()
-		local CP = game:GetService("ContentProvider")
-		local preloadIds = {
-			73819038719454,
-			134751195905316,
-			70849156584970,
-			87094224829882,
-			109654827173212,
-			6015538162,
-		}
-		local temps = {}
-		for _, id in ipairs(preloadIds) do
-			local img = Instance.new("ImageLabel")
-			img.Image = "rbxassetid://" .. id
-			table.insert(temps, img)
-		end
-		pcall(function() CP:PreloadAsync(temps) end)
-	end)
 
 	if game.CoreGui:FindFirstChild("LunarDynamicIsland") then
 		game.CoreGui:FindFirstChild("LunarDynamicIsland"):Destroy()
@@ -1272,7 +1271,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		Img.AnchorPoint = Vector2.new(0.5, 0.5)
 		Img.Position = UDim2.new(0.5, 0, 0.5, 0)
 		Img.BackgroundTransparency = 1
-		Img.Image = "rbxassetid://" .. tostring(imgId)
+		Img.Image = getAsset(imgId)
 		Img.ImageColor3 = accent
 		Img.ScaleType = Enum.ScaleType.Fit
 		Btn.MouseEnter:Connect(function()

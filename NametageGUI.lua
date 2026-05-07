@@ -6,7 +6,25 @@ local HttpService = game:GetService("HttpService")
 
 local GAMEPASS_ID = 9339207514
 local lp = Players.LocalPlayer
-local LogoID = "rbxassetid://73819038719454"
+
+local function getAsset(id)
+	local fname = "lunar_" .. tostring(id) .. ".png"
+	if getcustomasset and writefile and isfile then
+		if not isfile(fname) then
+			pcall(function()
+				local data = game:HttpGet("https://assetdelivery.roblox.com/v1/asset/?id=" .. tostring(id), true)
+				writefile(fname, data)
+			end)
+		end
+		if isfile(fname) then
+			local ok, a = pcall(getcustomasset, fname)
+			if ok and a then return a end
+		end
+	end
+	return "rbxassetid://" .. tostring(id)
+end
+
+local LogoID = getAsset(73819038719454)
 
 local NametageGUI = {}
 
@@ -147,7 +165,7 @@ local function ApplyTag(UI)
 		local ts = 10
 		local rawId = (Config.decalId or ""):match("^%s*(.-)%s*$")
 		rawId = rawId:match("%d+") or rawId
-		local imgUrl = rawId ~= "" and ("rbxassetid://" .. rawId) or LogoID
+		local imgUrl = rawId ~= "" and getAsset(tonumber(rawId) or rawId) or LogoID
 
 		local Tag = Instance.new("BillboardGui")
 		Tag.Name = "LunarTag"
@@ -561,7 +579,7 @@ local function BuildGUI(UI)
 	local PImg = Instance.new("ImageLabel", PTagFrame)
 	PImg.Size = UDim2.new(0,26,0,26); PImg.Position = UDim2.new(0,8,0.5,-13)
 	PImg.BackgroundTransparency = 1; PImg.ScaleType = Enum.ScaleType.Fit; PImg.ZIndex = 35
-	PImg.Image = ((Config.decalId or ""):match("%d+") or "") ~= "" and ("rbxassetid://"..(Config.decalId:match("%d+") or "")) or LogoID
+	PImg.Image = ((Config.decalId or ""):match("%d+") or "") ~= "" and (getAsset(tonumber(Config.decalId:match("%d+") or "") or 0)) or LogoID
 
 	local PTL = Instance.new("TextLabel", PTagFrame)
 	PTL.Size = UDim2.new(1,-42,0.5,0); PTL.Position = UDim2.new(0,38,0,5)
@@ -585,7 +603,7 @@ local function BuildGUI(UI)
 		PTL.TextColor3 = tc
 		PTL.FontFace = Font.fromEnum(Config.font)
 		PTL.Text = Config.text ~= "" and Config.text or "LUNAR USER"
-		PImg.Image = ((Config.decalId or ""):match("%d+") or "") ~= "" and ("rbxassetid://"..(Config.decalId:match("%d+") or "")) or LogoID
+		PImg.Image = ((Config.decalId or ""):match("%d+") or "") ~= "" and (getAsset(tonumber(Config.decalId:match("%d+") or "") or 0)) or LogoID
 	end
 
 	task.spawn(function()
