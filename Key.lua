@@ -228,12 +228,37 @@ local function grantAccess(key)
 	statusLbl.Text = "Welcome, " .. (Player and Player.Name or "User") .. "!"
 	tw(statusLbl, {TextColor3 = Color3.fromRGB(0, 220, 130)}, 0.4)
 	sounds.success:Play()
-	tw(progressBar, {Size = UDim2.new(1, 0, 1, 0)}, 0.7)
+	tw(progressBar, {Size = UDim2.new(0.6, 0, 1, 0)}, 0.5)
 	getgenv().SCRIPT_KEY = key
 	if writefile then writefile("LunarKey.txt", key) end
-	task.wait(1.8)
+
+	task.wait(0.5)
+	statusLbl.Text = "Loading Lunar Admin..."
+
+	task.spawn(function()
+		pcall(function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/Main.lua"))()
+		end)
+	end)
+
+	local RunService = game:GetService("RunService")
+	local creep = 0.6
+	local conn = RunService.Heartbeat:Connect(function(dt)
+		creep = math.min(creep + dt * 0.035, 0.97)
+		progressBar.Size = UDim2.new(creep, 0, 1, 0)
+	end)
+
+	local elapsed = 0
+	while not game.CoreGui:FindFirstChild("LunarDynamicIsland") and elapsed < 20 do
+		task.wait(0.1)
+		elapsed += 0.1
+	end
+
+	conn:Disconnect()
+	tw(progressBar, {Size = UDim2.new(1, 0, 1, 0)}, 0.25)
+	statusLbl.Text = "Ready!"
+	task.wait(0.5)
 	closeUI()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/Main.lua"))()
 end
 
 local function showKeyUI()
