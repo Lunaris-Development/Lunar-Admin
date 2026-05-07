@@ -23,7 +23,7 @@ local UserSpoofer = Load("UserSpoofer.lua")
 local ServerInfo = Load("ServerInfo.lua")
 local ServerList = Load("ServerList.lua")
 local LoopSpeed = Load("LoopSpeed.lua")
-local TouchFling = Load("TouchFling.lua")
+
 local ShLow = Load("ShLow.lua")
 local ShMost = Load("ShMost.lua")
 local Noclip = Load("Noclip.lua")
@@ -43,7 +43,7 @@ local NametageGUI = Load("NametageGUI.lua")
 
 local allModules = {
 	Freecam, AntiAFK, ClickTP, LagSpoof, UserSpoofer,
-	ServerInfo, ServerList, LoopSpeed, TouchFling,
+	ServerInfo, ServerList, LoopSpeed,
 	ShLow, ShMost, Noclip, InfJump, GodMode, PlayerTP,
 	WalkOnAir, Invisible, Reach, AimLock, Hug, Flip,
 	Rizzlines, ProperFling, Animations, NametageGUI

@@ -312,7 +312,6 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		antiafk    = {t="ANTI AFK",     d="Prevent the server from kicking you for inactivity."},
 		lag        = {t="LAG SPOOF",    d="Simulate high ping to confuse detection systems."},
 		ftpmobile  = {t="CLICK TP",     d="Click anywhere on screen to teleport there instantly."},
-		touchfling = {t="TOUCH FLING",  d="Fling any player you make contact with."},
 		hug        = {t="HUG",          d="Perform a hug animation on the nearest player."},
 		flip       = {t="FRONTFLIP",    d="Execute a frontflip animation on your character."},
 		bflip      = {t="BACKFLIP",     d="Execute a backflip animation on your character."},
@@ -417,7 +416,6 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	addBtn("Frontflip", "flip")
 	addBtn("Backflip", "bflip")
 	addBtn("Anti AFK", "antiafk")
-	addBtn("Touch Fling", "touchfling")
 	addBtn("Lag Spoof", "lag")
 	addBtn("Click TP", "ftpmobile")
 	addBtn("Loop Speed", "loopspeed 50")
