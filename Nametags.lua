@@ -149,9 +149,10 @@ function Nametags.Create(player)
 	TagLogo.Size = UDim2.new(0, 30, 0, 30)
 	TagLogo.Position = UDim2.new(0, 11, 0.5, -15)
 	TagLogo.BackgroundTransparency = 1
-	TagLogo.Image = LogoID
+	TagLogo.Image = "rbxthumb://type=AvatarHeadShot&id=" .. player.UserId .. "&w=48&h=48"
 	TagLogo.ScaleType = Enum.ScaleType.Fit
 	TagLogo.ZIndex = 3
+	Instance.new("UICorner", TagLogo).CornerRadius = UDim.new(1, 0)
 
 	local TagText = Instance.new("TextLabel", TagFrame)
 	TagText.Size = UDim2.new(1, -50, 0, 22)
