@@ -4,7 +4,7 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 
 local Player = Players.LocalPlayer
-local LogoID = "rbxassetid://85404031245554"
+local LogoID = "rbxthumb://type=Asset&id=85404031245554&w=420&h=420"
 local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 
 local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
@@ -123,12 +123,31 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 				Size = UDim2.new(0, w, 0, minimized and 40 or contentH + 40)
 			}):Play()
 		end)
-		CloseBtn.MouseButton1Click:Connect(function()
-			Win.Visible = false
-			minimized = false
-			Content.Visible = true
-			Win.Size = UDim2.new(0, w, 0, contentH + 40)
-		end)
+		local function closeWin()
+			TweenService:Create(Win, TweenInfo.new(0.18, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
+				Size = UDim2.new(0, w * 0.94, 0, (contentH + 40) * 0.94),
+				BackgroundTransparency = 0.5,
+			}):Play()
+			task.delay(0.18, function()
+				Win.Visible = false
+				minimized = false
+				Content.Visible = true
+				Win.Size = UDim2.new(0, w, 0, contentH + 40)
+				Win.BackgroundTransparency = 0.04
+			end)
+		end
+
+		local function openWin()
+			Win.Size = UDim2.new(0, w * 0.88, 0, (contentH + 40) * 0.88)
+			Win.BackgroundTransparency = 0.5
+			Win.Visible = true
+			TweenService:Create(Win, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, w, 0, contentH + 40),
+				BackgroundTransparency = 0.04,
+			}):Play()
+		end
+
+		CloseBtn.MouseButton1Click:Connect(closeWin)
 
 		local dragging, dragInput, dragStart, startPos = false, nil, nil, nil
 		TBar.InputBegan:Connect(function(input)
@@ -153,7 +172,9 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 			end
 		end)
 
-		return Win, Content, function() Win.Visible = not Win.Visible end
+		return Win, Content, function()
+			if Win.Visible then closeWin() else openWin() end
+		end
 	end
 
 	local Bar = Instance.new("Frame", ScreenGui)
