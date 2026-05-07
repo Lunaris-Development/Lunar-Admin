@@ -682,7 +682,6 @@ function UI.Init(Nametags, Commands, ESP)
 		end
 	end
 
-	TPWin.MouseButton1Click = nil
 	local origToggleTP = ToggleTPWin
 	ToggleTPWin = function()
 		BuildPlayerList(TPSearchBox.Text)
