@@ -4,7 +4,7 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 
 local Player = Players.LocalPlayer
-local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
+local LogoID = "http://www.roblox.com/asset/?id=73819038719454"
 local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 
 local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
@@ -1253,7 +1253,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		Img.AnchorPoint = Vector2.new(0.5, 0.5)
 		Img.Position = UDim2.new(0.5, 0, 0.5, 0)
 		Img.BackgroundTransparency = 1
-		Img.Image = "rbxassetid://" .. tostring(imgId)
+		Img.Image = "http://www.roblox.com/asset/?id=" .. tostring(imgId)
 		Img.ImageColor3 = accent
 		Img.ScaleType = Enum.ScaleType.Fit
 		Btn.MouseEnter:Connect(function()

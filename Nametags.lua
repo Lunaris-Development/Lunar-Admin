@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
-local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
+local LogoID = "http://www.roblox.com/asset/?id=73819038719454"
 
 local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
 local function GetFontSub() return Font.fromEnum(Enum.Font.Gotham) end
