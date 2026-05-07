@@ -7,7 +7,7 @@ local Player = Players.LocalPlayer
 local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
 local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 
-local function GetFont() return Font.fromEnum(Enum.Font.GothamMedium) end
+local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
 local function GetFontBold() return Font.fromEnum(Enum.Font.GothamBold) end
 
 local UI = {}
@@ -155,106 +155,101 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		return Win, Content, function() Win.Visible = not Win.Visible end
 	end
 
-	local Island = Instance.new("Frame")
-	Island.Name = "Island"
-	Island.Size = UDim2.new(0, 50, 0, 50)
-	Island.Position = UDim2.new(0.5, -25, 0, 15)
-	Island.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	Island.BackgroundTransparency = 0.35
-	Island.BorderSizePixel = 0
-	Island.ClipsDescendants = true
-	Island.Parent = ScreenGui
-	local IslandCorner = Instance.new("UICorner", Island)
-	IslandCorner.CornerRadius = UDim.new(0, 25)
-	local IslandStroke = Instance.new("UIStroke", Island)
-	IslandStroke.Color = Color3.fromRGB(255, 255, 255)
-	IslandStroke.Transparency = 0.82
-	IslandStroke.Thickness = 1.5
+	local Bar = Instance.new("Frame", ScreenGui)
+	Bar.Name = "LunarBar"
+	Bar.Size = UDim2.new(0, 480, 0, 50)
+	Bar.AnchorPoint = Vector2.new(1, 0)
+	Bar.Position = UDim2.new(1, -10, 0, 10)
+	Bar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	Bar.BackgroundTransparency = 0.3
+	Bar.BorderSizePixel = 0
+	Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 14)
+	local BarStroke = Instance.new("UIStroke", Bar)
+	BarStroke.Color = Color3.fromRGB(255, 255, 255)
+	BarStroke.Transparency = 0.82
+	BarStroke.Thickness = 1.5
 
-	local LogoImg = Instance.new("ImageLabel", Island)
-	LogoImg.Size = UDim2.new(0, 36, 0, 36)
-	LogoImg.Position = UDim2.new(0, 7, 0, 7)
-	LogoImg.BackgroundTransparency = 1
-	LogoImg.Image = LogoID
-	LogoImg.ScaleType = Enum.ScaleType.Fit
-	local LogoGlow = Instance.new("ImageLabel", LogoImg)
-	LogoGlow.Size = UDim2.new(1.5, 0, 1.5, 0)
-	LogoGlow.Position = UDim2.new(-0.25, 0, -0.25, 0)
-	LogoGlow.BackgroundTransparency = 1
-	LogoGlow.Image = "rbxassetid://6015538162"
-	LogoGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
-	LogoGlow.ImageTransparency = 0.85
+	local BarLogo = Instance.new("ImageLabel", Bar)
+	BarLogo.Size = UDim2.new(0, 34, 0, 34)
+	BarLogo.Position = UDim2.new(0, 8, 0.5, -17)
+	BarLogo.BackgroundTransparency = 1
+	BarLogo.Image = LogoID
+	BarLogo.ScaleType = Enum.ScaleType.Fit
+	local BarGlow = Instance.new("ImageLabel", BarLogo)
+	BarGlow.Size = UDim2.new(1.5, 0, 1.5, 0)
+	BarGlow.Position = UDim2.new(-0.25, 0, -0.25, 0)
+	BarGlow.BackgroundTransparency = 1
+	BarGlow.Image = "rbxassetid://6015538162"
+	BarGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
+	BarGlow.ImageTransparency = 0.85
 	task.spawn(function()
 		while ScreenGui.Parent do
-			TweenService:Create(LogoGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.6}):Play()
+			TweenService:Create(BarGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.6}):Play()
 			task.wait(1.5)
-			TweenService:Create(LogoGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.85}):Play()
+			TweenService:Create(BarGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.85}):Play()
 			task.wait(1.5)
 		end
 	end)
 
-	local Content = Instance.new("Frame", Island)
-	Content.Size = UDim2.new(1, -55, 1, 0)
-	Content.Position = UDim2.new(0, 55, 0, 0)
-	Content.BackgroundTransparency = 1
-	Content.Visible = false
+	local BarTitle = Instance.new("TextLabel", Bar)
+	BarTitle.Size = UDim2.new(0, 96, 0, 22)
+	BarTitle.Position = UDim2.new(0, 50, 0, 5)
+	BarTitle.BackgroundTransparency = 1
+	BarTitle.Text = "LUNAR ADMIN"
+	BarTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	BarTitle.FontFace = GetFontBold()
+	BarTitle.TextSize = 12
+	BarTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-	local Info = Instance.new("Frame", Content)
-	Info.Size = UDim2.new(0, 105, 1, 0)
-	Info.BackgroundTransparency = 1
-	local TitleIsland = Instance.new("TextLabel", Info)
-	TitleIsland.Size = UDim2.new(1, 0, 0, 28)
-	TitleIsland.Position = UDim2.new(0, 0, 0, 7)
-	TitleIsland.BackgroundTransparency = 1
-	TitleIsland.Text = "Lunar Admin"
-	TitleIsland.TextColor3 = Color3.fromRGB(255, 255, 255)
-	TitleIsland.FontFace = GetFontBold()
-	TitleIsland.TextSize = 14
-	TitleIsland.TextXAlignment = Enum.TextXAlignment.Left
-	local ExecLbl = Instance.new("TextLabel", Info)
-	ExecLbl.Size = UDim2.new(1, 0, 0, 14)
-	ExecLbl.Position = UDim2.new(0, 0, 0, 27)
-	ExecLbl.BackgroundTransparency = 1
-	ExecLbl.Text = Executor
-	ExecLbl.TextColor3 = Color3.fromRGB(130, 130, 130)
-	ExecLbl.FontFace = GetFont()
-	ExecLbl.TextSize = 10
-	ExecLbl.TextXAlignment = Enum.TextXAlignment.Left
+	local BarExec = Instance.new("TextLabel", Bar)
+	BarExec.Size = UDim2.new(0, 96, 0, 14)
+	BarExec.Position = UDim2.new(0, 50, 0, 28)
+	BarExec.BackgroundTransparency = 1
+	BarExec.Text = Executor
+	BarExec.TextColor3 = Color3.fromRGB(110, 110, 110)
+	BarExec.FontFace = GetFontBold()
+	BarExec.TextSize = 9
+	BarExec.TextXAlignment = Enum.TextXAlignment.Left
 
-	local Stats = Instance.new("Frame", Content)
-	Stats.Size = UDim2.new(0, 90, 1, 0)
-	Stats.Position = UDim2.new(0, 112, 0, 0)
-	Stats.BackgroundTransparency = 1
-	local FPSLabel = Instance.new("TextLabel", Stats)
-	FPSLabel.Size = UDim2.new(1, 0, 0.5, 0)
-	FPSLabel.Position = UDim2.new(0, 0, 0, 6)
+	local Sep1 = Instance.new("Frame", Bar)
+	Sep1.Size = UDim2.new(0, 1, 1, -16); Sep1.Position = UDim2.new(0, 152, 0, 8)
+	Sep1.BackgroundColor3 = Color3.fromRGB(255, 255, 255); Sep1.BackgroundTransparency = 0.88; Sep1.BorderSizePixel = 0
+
+	local FPSLabel = Instance.new("TextLabel", Bar)
+	FPSLabel.Size = UDim2.new(0, 88, 0.5, 0)
+	FPSLabel.Position = UDim2.new(0, 162, 0, 4)
 	FPSLabel.BackgroundTransparency = 1
-	FPSLabel.Text = "FPS: 0"
+	FPSLabel.Text = "● FPS: 0"
 	FPSLabel.TextColor3 = Color3.fromRGB(120, 255, 140)
-	FPSLabel.FontFace = GetFont()
+	FPSLabel.FontFace = GetFontBold()
 	FPSLabel.TextSize = 10
 	FPSLabel.TextXAlignment = Enum.TextXAlignment.Left
-	local PingLabel = Instance.new("TextLabel", Stats)
-	PingLabel.Size = UDim2.new(1, 0, 0.5, 0)
-	PingLabel.Position = UDim2.new(0, 0, 0.5, -2)
+
+	local PingLabel = Instance.new("TextLabel", Bar)
+	PingLabel.Size = UDim2.new(0, 88, 0.5, 0)
+	PingLabel.Position = UDim2.new(0, 162, 0.5, -1)
 	PingLabel.BackgroundTransparency = 1
-	PingLabel.Text = "PING: 0ms"
+	PingLabel.Text = "● PING: 0ms"
 	PingLabel.TextColor3 = Color3.fromRGB(100, 180, 255)
-	PingLabel.FontFace = GetFont()
+	PingLabel.FontFace = GetFontBold()
 	PingLabel.TextSize = 10
 	PingLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-	local Icons = Instance.new("Frame", Content)
-	Icons.Size = UDim2.new(1, -210, 1, 0)
-	Icons.Position = UDim2.new(0, 210, 0, 0)
+	local Sep2 = Instance.new("Frame", Bar)
+	Sep2.Size = UDim2.new(0, 1, 1, -16); Sep2.Position = UDim2.new(0, 256, 0, 8)
+	Sep2.BackgroundColor3 = Color3.fromRGB(255, 255, 255); Sep2.BackgroundTransparency = 0.88; Sep2.BorderSizePixel = 0
+
+	local Icons = Instance.new("Frame", Bar)
+	Icons.Size = UDim2.new(1, -266, 1, 0)
+	Icons.Position = UDim2.new(0, 266, 0, 0)
 	Icons.BackgroundTransparency = 1
 	local UIList = Instance.new("UIListLayout", Icons)
 	UIList.FillDirection = Enum.FillDirection.Horizontal
 	UIList.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	UIList.VerticalAlignment = Enum.VerticalAlignment.Center
-	UIList.Padding = UDim.new(0, 10)
+	UIList.Padding = UDim.new(0, 8)
 	local IconsPad = Instance.new("UIPadding", Icons)
-	IconsPad.PaddingRight = UDim.new(0, 16)
+	IconsPad.PaddingRight = UDim.new(0, 10)
 
 	local Console = Instance.new("Frame", ScreenGui)
 	Console.Size = UDim2.new(0, 500, 0, 40)
@@ -1264,80 +1259,125 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	NetScroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 100)
 	Instance.new("UIListLayout", NetScroll).Padding = UDim.new(0, 5)
 
+	local HttpService = game:GetService("HttpService")
 	local netBtns = {}
+
+	local function MakeUserRow(userId, displayName, username, inServer, canTP)
+		local Row = Instance.new("Frame", NetScroll)
+		Row.Size = UDim2.new(1, 0, 0, 48)
+		Row.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Row.BackgroundTransparency = 0.94
+		Row.BorderSizePixel = 0
+		Row.Name = username
+		Instance.new("UICorner", Row).CornerRadius = UDim.new(0, 8)
+		local Avatar = Instance.new("ImageLabel", Row)
+		Avatar.Size = UDim2.new(0, 34, 0, 34)
+		Avatar.Position = UDim2.new(0, 7, 0.5, -17)
+		Avatar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		Avatar.BorderSizePixel = 0
+		Avatar.Image = "rbxthumb://type=AvatarHeadShot&id=" .. userId .. "&w=48&h=48"
+		Avatar.ScaleType = Enum.ScaleType.Fit
+		Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1, 0)
+		local Dot = Instance.new("Frame", Avatar)
+		Dot.Size = UDim2.new(0, 9, 0, 9)
+		Dot.Position = UDim2.new(1, -9, 1, -9)
+		Dot.BackgroundColor3 = inServer and Color3.fromRGB(0, 220, 130) or Color3.fromRGB(255, 170, 50)
+		Dot.BorderSizePixel = 0
+		Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
+		local NameLbl = Instance.new("TextLabel", Row)
+		NameLbl.Size = UDim2.new(1, -110, 0, 18)
+		NameLbl.Position = UDim2.new(0, 48, 0, 8)
+		NameLbl.BackgroundTransparency = 1
+		NameLbl.Text = displayName
+		NameLbl.TextColor3 = Color3.fromRGB(225, 225, 225)
+		NameLbl.FontFace = GetFontBold()
+		NameLbl.TextSize = 11
+		NameLbl.TextXAlignment = Enum.TextXAlignment.Left
+		NameLbl.TextTruncate = Enum.TextTruncate.AtEnd
+		local UserLbl = Instance.new("TextLabel", Row)
+		UserLbl.Size = UDim2.new(1, -110, 0, 14)
+		UserLbl.Position = UDim2.new(0, 48, 0, 27)
+		UserLbl.BackgroundTransparency = 1
+		UserLbl.Text = "@" .. username .. (inServer and "  ●" or "")
+		UserLbl.TextColor3 = inServer and Color3.fromRGB(0, 200, 110) or Color3.fromRGB(80, 80, 80)
+		UserLbl.FontFace = GetFontBold()
+		UserLbl.TextSize = 9
+		UserLbl.TextXAlignment = Enum.TextXAlignment.Left
+		if canTP then
+			local TPBtn = Instance.new("TextButton", Row)
+			TPBtn.Size = UDim2.new(0, 48, 0, 26)
+			TPBtn.Position = UDim2.new(1, -56, 0.5, -13)
+			TPBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
+			TPBtn.BackgroundTransparency = 0.3
+			TPBtn.Text = "TP"
+			TPBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+			TPBtn.FontFace = GetFontBold()
+			TPBtn.TextSize = 10
+			TPBtn.AutoButtonColor = false
+			Instance.new("UICorner", TPBtn).CornerRadius = UDim.new(0, 6)
+			TPBtn.MouseEnter:Connect(function() TweenService:Create(TPBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0}):Play() end)
+			TPBtn.MouseLeave:Connect(function() TweenService:Create(TPBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.3}):Play() end)
+			TPBtn.MouseButton1Click:Connect(function()
+				if Commands then Commands.HandleChat("tp " .. username, UI, nil, true) end
+				UI.Notify("Teleporting to " .. username, "Success")
+			end)
+		end
+		table.insert(netBtns, Row)
+	end
+
 	local function RefreshNet()
 		for _, c in pairs(NetScroll:GetChildren()) do
 			if c:IsA("Frame") then c:Destroy() end
 		end
 		netBtns = {}
-		local found = 0
-		for _, p in pairs(Players:GetPlayers()) do
-			local isUser = p.Name == "lnrs_dev"
-				or (p.Character and p.Character:FindFirstChild("__LunarUser"))
-				or p:GetAttribute("LunarUser")
-			if isUser then
-				found += 1
-				local Row = Instance.new("Frame", NetScroll)
-				Row.Size = UDim2.new(1, 0, 0, 48)
-				Row.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				Row.BackgroundTransparency = 0.94
-				Row.BorderSizePixel = 0
-				Row.Name = p.Name
-				Instance.new("UICorner", Row).CornerRadius = UDim.new(0, 8)
-				local Avatar = Instance.new("ImageLabel", Row)
-				Avatar.Size = UDim2.new(0, 34, 0, 34)
-				Avatar.Position = UDim2.new(0, 7, 0.5, -17)
-				Avatar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-				Avatar.BorderSizePixel = 0
-				Avatar.Image = "rbxthumb://type=AvatarHeadShot&id=" .. p.UserId .. "&w=48&h=48"
-				Avatar.ScaleType = Enum.ScaleType.Fit
-				Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1, 0)
-				local OnlineDot = Instance.new("Frame", Avatar)
-				OnlineDot.Size = UDim2.new(0, 9, 0, 9)
-				OnlineDot.Position = UDim2.new(1, -9, 1, -9)
-				OnlineDot.BackgroundColor3 = Color3.fromRGB(0, 220, 130)
-				OnlineDot.BorderSizePixel = 0
-				Instance.new("UICorner", OnlineDot).CornerRadius = UDim.new(1, 0)
-				local NameLbl = Instance.new("TextLabel", Row)
-				NameLbl.Size = UDim2.new(1, -110, 0, 18)
-				NameLbl.Position = UDim2.new(0, 48, 0, 8)
-				NameLbl.BackgroundTransparency = 1
-				NameLbl.Text = p.DisplayName
-				NameLbl.TextColor3 = Color3.fromRGB(225, 225, 225)
-				NameLbl.FontFace = GetFontBold()
-				NameLbl.TextSize = 11
-				NameLbl.TextXAlignment = Enum.TextXAlignment.Left
-				NameLbl.TextTruncate = Enum.TextTruncate.AtEnd
-				local UserLbl = Instance.new("TextLabel", Row)
-				UserLbl.Size = UDim2.new(1, -110, 0, 14)
-				UserLbl.Position = UDim2.new(0, 48, 0, 27)
-				UserLbl.BackgroundTransparency = 1
-				UserLbl.Text = "@" .. p.Name
-				UserLbl.TextColor3 = Color3.fromRGB(80, 80, 80)
-				UserLbl.FontFace = GetFont()
-				UserLbl.TextSize = 9
-				UserLbl.TextXAlignment = Enum.TextXAlignment.Left
-				local TPBtn = Instance.new("TextButton", Row)
-				TPBtn.Size = UDim2.new(0, 48, 0, 26)
-				TPBtn.Position = UDim2.new(1, -56, 0.5, -13)
-				TPBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
-				TPBtn.BackgroundTransparency = 0.3
-				TPBtn.Text = "TP"
-				TPBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-				TPBtn.FontFace = GetFontBold()
-				TPBtn.TextSize = 10
-				TPBtn.AutoButtonColor = false
-				Instance.new("UICorner", TPBtn).CornerRadius = UDim.new(0, 6)
-				TPBtn.MouseEnter:Connect(function() TweenService:Create(TPBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0}):Play() end)
-				TPBtn.MouseLeave:Connect(function() TweenService:Create(TPBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.3}):Play() end)
-				TPBtn.MouseButton1Click:Connect(function()
-					if Commands then Commands.HandleChat("tp " .. p.Name, UI, nil, true) end
-					UI.Notify("Teleporting to " .. p.Name, "Success")
-				end)
-				table.insert(netBtns, Row)
+		NetStatusLbl.Text = "Fetching Lunar Network..."
+		NetDot.BackgroundColor3 = Color3.fromRGB(255, 170, 50)
+
+		task.spawn(function()
+			local seen = {}
+			local inServerIds = {}
+
+			for _, p in pairs(Players:GetPlayers()) do
+				local isUser = p.Name == "lnrs_dev"
+					or (p.Character and p.Character:FindFirstChild("__LunarUser"))
+					or p:GetAttribute("LunarUser")
+				if isUser then
+					inServerIds[p.UserId] = true
+					seen[p.UserId] = true
+					MakeUserRow(p.UserId, p.DisplayName, p.Name, true, true)
+				end
 			end
-		end
-		NetStatusLbl.Text = "Connected — " .. found .. " Lunar user" .. (found ~= 1 and "s" or "") .. " in server"
+
+			local globalIds = {}
+			pcall(function()
+				local raw = game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/network.json")
+				local data = HttpService:JSONDecode(raw)
+				if data and data.users then
+					globalIds = data.users
+				end
+			end)
+
+			for _, uid in ipairs(globalIds) do
+				if not seen[uid] then
+					seen[uid] = true
+					local ok, name = pcall(function() return Players:GetNameFromUserIdAsync(uid) end)
+					if ok and name then
+						local ok2, display = pcall(function()
+							local info = Players:GetUserInfosByUserIdsAsync({uid})
+							return info and info[1] and info[1].DisplayName or name
+						end)
+						MakeUserRow(uid, ok2 and display or name, name, false, false)
+					end
+				end
+			end
+
+			local total = 0
+			for _ in pairs(seen) do total += 1 end
+			local serverCount = 0
+			for _ in pairs(inServerIds) do serverCount += 1 end
+			NetStatusLbl.Text = total .. " Lunar user" .. (total ~= 1 and "s" or "") .. " — " .. serverCount .. " here"
+			NetDot.BackgroundColor3 = Color3.fromRGB(0, 220, 130)
+		end)
 	end
 
 	NetSearchBox:GetPropertyChangedSignal("Text"):Connect(function()
@@ -1356,37 +1396,6 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	end)
 	CreateIconBtn(109654827173212, Color3.fromRGB(100, 200, 255), function() ToggleNetWin() end)
 	CreatePill("⚙", Color3.fromRGB(190, 190, 190), function() ToggleSettingsWin() end)
-
-	local Expanded = false
-	local function ToggleIsland(state)
-		Expanded = state
-		if state then
-			Content.Visible = true
-			TweenService:Create(Island, TweenInfo.new(0.55, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				Size = UDim2.new(0, 555, 0, 50),
-				Position = UDim2.new(0.5, -277, 0, 15)
-			}):Play()
-			TweenService:Create(IslandCorner, TweenInfo.new(0.55), {CornerRadius = UDim.new(0, 15)}):Play()
-		else
-			TweenService:Create(Island, TweenInfo.new(0.55, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				Size = UDim2.new(0, 50, 0, 50),
-				Position = UDim2.new(0.5, -25, 0, 15)
-			}):Play()
-			TweenService:Create(IslandCorner, TweenInfo.new(0.55), {CornerRadius = UDim.new(0, 25)}):Play()
-			task.wait(0.55)
-			if not Expanded then Content.Visible = false end
-		end
-	end
-
-	if isMobile then
-		local MTap = Instance.new("TextButton", Island)
-		MTap.Size = UDim2.new(0, 50, 0, 50)
-		MTap.BackgroundTransparency = 1; MTap.Text = ""; MTap.ZIndex = 10
-		MTap.MouseButton1Click:Connect(function() ToggleIsland(not Expanded) end)
-	else
-		Island.MouseEnter:Connect(function() ToggleIsland(true) end)
-		Island.MouseLeave:Connect(function() ToggleIsland(false) end)
-	end
 
 	local _fa, _ff = 0, 0
 	RunService.RenderStepped:Connect(function(dt)

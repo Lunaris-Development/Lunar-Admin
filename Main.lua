@@ -77,3 +77,5 @@ game:GetService("Players").LocalPlayer.Chatted:Connect(function(msg)
 		Commands.HandleChat(msg, UI, ESP)
 	end)
 end)
+
+getgenv().LunarReady = true

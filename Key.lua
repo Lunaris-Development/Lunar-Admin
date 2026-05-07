@@ -227,13 +227,13 @@ end
 local function grantAccess(key)
 	statusLbl.Text = "Welcome, " .. (Player and Player.Name or "User") .. "!"
 	tw(statusLbl, {TextColor3 = Color3.fromRGB(0, 220, 130)}, 0.4)
-	sounds.success:Play()
 	tw(progressBar, {Size = UDim2.new(0.6, 0, 1, 0)}, 0.5)
 	getgenv().SCRIPT_KEY = key
 	if writefile then writefile("LunarKey.txt", key) end
 
 	task.wait(0.5)
 	statusLbl.Text = "Loading Lunar Admin..."
+	getgenv().LunarReady = false
 
 	task.spawn(function()
 		pcall(function()
@@ -249,15 +249,16 @@ local function grantAccess(key)
 	end)
 
 	local elapsed = 0
-	while not game.CoreGui:FindFirstChild("LunarDynamicIsland") and elapsed < 20 do
+	while not getgenv().LunarReady and elapsed < 20 do
 		task.wait(0.1)
 		elapsed += 0.1
 	end
 
 	conn:Disconnect()
+	sounds.success:Play()
 	tw(progressBar, {Size = UDim2.new(1, 0, 1, 0)}, 0.25)
 	statusLbl.Text = "Ready!"
-	task.wait(0.5)
+	task.wait(0.6)
 	closeUI()
 end
 
