@@ -719,13 +719,17 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines)
 		local myHrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
 		local tHrp = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
 		if not myHrp or not tHrp then return end
-		myHrp.CFrame = tHrp.CFrame * CFrame.new(0, 0, -2)
-		task.wait(0.05)
-		local bav = Instance.new("BodyAngularVelocity")
-		bav.AngularVelocity = Vector3.new(0, 9999, 0)
-		bav.MaxTorque = Vector3.new(0, math.huge, 0)
-		bav.Parent = myHrp
-		game:GetService("Debris"):AddItem(bav, 0.6)
+		myHrp.CFrame = tHrp.CFrame * CFrame.new(0, 0, 2)
+		myHrp.CanCollide = false
+		task.delay(1.5, function()
+			if myHrp and myHrp.Parent then myHrp.CanCollide = true end
+		end)
+		local bv = Instance.new("BodyVelocity")
+		local dir = (tHrp.Position - myHrp.Position + Vector3.new(0, 0.5, 0)).Unit
+		bv.Velocity = dir * 480 + Vector3.new(0, 360, 0)
+		bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+		bv.Parent = tHrp
+		game:GetService("Debris"):AddItem(bv, 0.18)
 		UI.Notify("Flinging " .. p.Name, "Success")
 	end}) end
 	local origFling = ToggleFlingWin
