@@ -39,13 +39,14 @@ local Flip = Load("Flip.lua")
 local Rizzlines = Load("Rizzlines.lua")
 local ProperFling = Load("ProperFling.lua")
 local Animations = Load("Animations.lua")
+local NametageGUI = Load("NametageGUI.lua")
 
 local allModules = {
 	Freecam, AntiAFK, ClickTP, LagSpoof, UserSpoofer,
 	ServerInfo, ServerList, LoopSpeed, TouchFling,
 	ShLow, ShMost, Noclip, InfJump, GodMode, PlayerTP,
 	WalkOnAir, Invisible, Reach, AimLock, Hug, Flip,
-	Rizzlines, ProperFling, Animations
+	Rizzlines, ProperFling, Animations, NametageGUI
 }
 
 local Commands = {}

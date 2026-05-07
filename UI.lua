@@ -300,9 +300,37 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	UserInputService.InputBegan:Connect(function(input, gpe)
 		if not gpe and input.KeyCode == Enum.KeyCode.F2 then ToggleConsole() end
 	end)
+	local CmdCards = {
+		fly        = {t="FLY",          d="Toggle free flight. Jump to rise, crouch to descend."},
+		fc         = {t="FREECAM",      d="Detach your camera for cinematic free-look."},
+		noclip     = {t="NOCLIP",       d="Phase through any wall or solid surface."},
+		infjump    = {t="INF JUMP",     d="Jump infinitely — no ground required."},
+		god        = {t="GOD MODE",     d="Take zero damage from any source."},
+		walkair    = {t="WALK ON AIR",  d="Walk on air as if it were solid ground."},
+		invis      = {t="INVISIBLE",    d="Your character becomes hidden to other players."},
+		aimlock    = {t="AIM LOCK",     d="Lock your camera onto the nearest player."},
+		antiafk    = {t="ANTI AFK",     d="Prevent the server from kicking you for inactivity."},
+		lag        = {t="LAG SPOOF",    d="Simulate high ping to confuse detection systems."},
+		ftpmobile  = {t="CLICK TP",     d="Click anywhere on screen to teleport there instantly."},
+		touchfling = {t="TOUCH FLING",  d="Fling any player you make contact with."},
+		hug        = {t="HUG",          d="Perform a hug animation on the nearest player."},
+		flip       = {t="FRONTFLIP",    d="Execute a frontflip animation on your character."},
+		bflip      = {t="BACKFLIP",     d="Execute a backflip animation on your character."},
+		nametag    = {t="NAMETAG",      d="Open the nametag customizer — requires gamepass."},
+		rizz       = {t="RIZZLINES",    d="Send a random rizzline in the game chat."},
+		serverinfo = {t="SERVER INFO",  d="Display server details: players, ping, and job ID."},
+		loopspeed  = {t="LOOP SPEED",   d="Continuously apply a custom walk speed value."},
+		reach      = {t="REACH",        d="Extend your hitbox to tag distant players."},
+		userspoofer= {t="USER SPOOFER", d="Spoof your username visually to confuse others."},
+		shlow      = {t="SHOW LOW HP",  d="Highlight players with low health in the world."},
+		shmost     = {t="SHOW MOST HP", d="Highlight the player with the highest health."},
+	}
 	ConsoleInput.FocusLost:Connect(function(enter)
 		if enter then
 			local msg = ConsoleInput.Text; ConsoleInput.Text = ""
+			local cmd = msg:lower():split(" ")[1]
+			local info = CmdCards[cmd]
+			if info and UI.ShowCommandCard then task.spawn(UI.ShowCommandCard, info.t, info.d) end
 			if Commands then Commands.HandleChat(msg, UI, ESP) end
 		end
 		ToggleConsole()
@@ -365,7 +393,11 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	local function addBtn(label, action)
 		local b = CreateBtn(CmdScroll, label, function()
 			if type(action) == "function" then action()
-			elseif type(action) == "string" and Commands then Commands.HandleChat(action, UI, ESP)
+			elseif type(action) == "string" then
+				local cmd = action:lower():split(" ")[1]
+				local info = CmdCards[cmd]
+				if info and UI.ShowCommandCard then task.spawn(UI.ShowCommandCard, info.t, info.d) end
+				if Commands then Commands.HandleChat(action, UI, ESP) end
 			end
 		end)
 		table.insert(btns, b)
@@ -875,49 +907,150 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		end
 	end)
 
+	local function MakeHeaderBadge(parent, z)
+		local Badge = Instance.new("Frame", parent)
+		Badge.Size = UDim2.new(0, 88, 0, 17)
+		Badge.Position = UDim2.new(0, 12, 0, 11)
+		Badge.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
+		Badge.BackgroundTransparency = 0
+		Badge.BorderSizePixel = 0
+		Badge.ZIndex = z
+		Instance.new("UICorner", Badge).CornerRadius = UDim.new(0, 5)
+		local Dot = Instance.new("Frame", Badge)
+		Dot.Size = UDim2.new(0, 6, 0, 6)
+		Dot.Position = UDim2.new(0, 7, 0.5, -3)
+		Dot.BackgroundColor3 = Color3.fromRGB(0, 220, 130)
+		Dot.BorderSizePixel = 0
+		Dot.ZIndex = z + 1
+		Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
+		local Lbl = Instance.new("TextLabel", Badge)
+		Lbl.Size = UDim2.new(1, -18, 1, 0)
+		Lbl.Position = UDim2.new(0, 18, 0, 0)
+		Lbl.BackgroundTransparency = 1
+		Lbl.Text = "LUNAR ADMIN"
+		Lbl.TextColor3 = Color3.fromRGB(150, 150, 150)
+		Lbl.FontFace = GetFontBold()
+		Lbl.TextSize = 9
+		Lbl.TextXAlignment = Enum.TextXAlignment.Left
+		Lbl.ZIndex = z + 1
+	end
+
 	local NotifyFrame = Instance.new("Frame", ScreenGui)
-	NotifyFrame.Size = UDim2.new(0, 295, 0, 58)
-	NotifyFrame.Position = UDim2.new(1, 320, 1, -80)
-	NotifyFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
-	NotifyFrame.BackgroundTransparency = 0.06
+	NotifyFrame.Size = UDim2.new(0, 262, 0, 84)
+	NotifyFrame.Position = UDim2.new(1, 285, 0, 20)
+	NotifyFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	NotifyFrame.BackgroundTransparency = 0.05
 	NotifyFrame.BorderSizePixel = 0
 	NotifyFrame.ZIndex = 100
-	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 9)
+	Instance.new("UICorner", NotifyFrame).CornerRadius = UDim.new(0, 12)
 	local NStroke = Instance.new("UIStroke", NotifyFrame)
 	NStroke.Color = Color3.fromRGB(255, 255, 255)
-	NStroke.Transparency = 0.84
+	NStroke.Transparency = 0.86
 	NStroke.Thickness = 1
-	local NAccent = Instance.new("Frame", NotifyFrame)
-	NAccent.Size = UDim2.new(0, 3, 1, -20)
-	NAccent.Position = UDim2.new(0, 10, 0.5, 0)
-	NAccent.AnchorPoint = Vector2.new(0, 0.5)
-	NAccent.BackgroundColor3 = Color3.fromRGB(0, 220, 130)
-	NAccent.BorderSizePixel = 0
-	NAccent.ZIndex = 101
-	Instance.new("UICorner", NAccent).CornerRadius = UDim.new(1, 0)
-	local NLabel = Instance.new("TextLabel", NotifyFrame)
-	NLabel.Size = UDim2.new(1, -26, 1, 0)
-	NLabel.Position = UDim2.new(0, 22, 0, 0)
-	NLabel.BackgroundTransparency = 1
-	NLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
-	NLabel.FontFace = GetFont()
-	NLabel.TextSize = 13
-	NLabel.TextXAlignment = Enum.TextXAlignment.Left
-	NLabel.TextYAlignment = Enum.TextYAlignment.Center
-	NLabel.ZIndex = 102
+	MakeHeaderBadge(NotifyFrame, 101)
+
+	local NTypeLabel = Instance.new("TextLabel", NotifyFrame)
+	NTypeLabel.Size = UDim2.new(1, -24, 0, 22)
+	NTypeLabel.Position = UDim2.new(0, 12, 0, 32)
+	NTypeLabel.BackgroundTransparency = 1
+	NTypeLabel.Text = "Success"
+	NTypeLabel.TextColor3 = Color3.fromRGB(0, 220, 130)
+	NTypeLabel.FontFace = GetFontBold()
+	NTypeLabel.TextSize = 16
+	NTypeLabel.TextXAlignment = Enum.TextXAlignment.Left
+	NTypeLabel.ZIndex = 101
+
+	local NDetailLabel = Instance.new("TextLabel", NotifyFrame)
+	NDetailLabel.Size = UDim2.new(1, -24, 0, 14)
+	NDetailLabel.Position = UDim2.new(0, 12, 0, 58)
+	NDetailLabel.BackgroundTransparency = 1
+	NDetailLabel.Text = ""
+	NDetailLabel.TextColor3 = Color3.fromRGB(105, 105, 105)
+	NDetailLabel.FontFace = GetFont()
+	NDetailLabel.TextSize = 10
+	NDetailLabel.TextXAlignment = Enum.TextXAlignment.Left
+	NDetailLabel.ZIndex = 101
+
+	local TutorialCard = Instance.new("Frame", ScreenGui)
+	TutorialCard.Size = UDim2.new(0, 290, 0, 96)
+	TutorialCard.Position = UDim2.new(1, 315, 0, 118)
+	TutorialCard.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	TutorialCard.BackgroundTransparency = 0.05
+	TutorialCard.BorderSizePixel = 0
+	TutorialCard.ZIndex = 100
+	Instance.new("UICorner", TutorialCard).CornerRadius = UDim.new(0, 12)
+	local TCStroke = Instance.new("UIStroke", TutorialCard)
+	TCStroke.Color = Color3.fromRGB(255, 255, 255)
+	TCStroke.Transparency = 0.86
+	TCStroke.Thickness = 1
+	MakeHeaderBadge(TutorialCard, 101)
+
+	local TCIconWrap = Instance.new("Frame", TutorialCard)
+	TCIconWrap.Size = UDim2.new(0, 46, 0, 46)
+	TCIconWrap.Position = UDim2.new(0, 12, 0, 36)
+	TCIconWrap.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	TCIconWrap.BackgroundTransparency = 0
+	TCIconWrap.BorderSizePixel = 0
+	TCIconWrap.ZIndex = 101
+	Instance.new("UICorner", TCIconWrap).CornerRadius = UDim.new(0, 10)
+	local TCIcon = Instance.new("ImageLabel", TCIconWrap)
+	TCIcon.Size = UDim2.new(0, 30, 0, 30)
+	TCIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+	TCIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+	TCIcon.BackgroundTransparency = 1
+	TCIcon.ScaleType = Enum.ScaleType.Fit
+	TCIcon.Image = LogoID
+	TCIcon.ZIndex = 102
+
+	local TCTitleLbl = Instance.new("TextLabel", TutorialCard)
+	TCTitleLbl.Size = UDim2.new(1, -74, 0, 22)
+	TCTitleLbl.Position = UDim2.new(0, 68, 0, 36)
+	TCTitleLbl.BackgroundTransparency = 1
+	TCTitleLbl.Text = "COMMAND"
+	TCTitleLbl.TextColor3 = Color3.fromRGB(240, 240, 240)
+	TCTitleLbl.FontFace = GetFontBold()
+	TCTitleLbl.TextSize = 16
+	TCTitleLbl.TextXAlignment = Enum.TextXAlignment.Left
+	TCTitleLbl.ZIndex = 101
+
+	local TCDescLbl = Instance.new("TextLabel", TutorialCard)
+	TCDescLbl.Size = UDim2.new(1, -74, 0, 32)
+	TCDescLbl.Position = UDim2.new(0, 68, 0, 58)
+	TCDescLbl.BackgroundTransparency = 1
+	TCDescLbl.Text = ""
+	TCDescLbl.TextColor3 = Color3.fromRGB(105, 105, 105)
+	TCDescLbl.FontFace = GetFont()
+	TCDescLbl.TextSize = 10
+	TCDescLbl.TextXAlignment = Enum.TextXAlignment.Left
+	TCDescLbl.TextWrapped = true
+	TCDescLbl.ZIndex = 101
 
 	UI.Notify = function(text, nType)
-		local color = Color3.fromRGB(190, 190, 190)
-		if nType == "Success" then color = Color3.fromRGB(0, 220, 130)
-		elseif nType == "Warn" then color = Color3.fromRGB(255, 170, 50)
-		elseif nType == "Error" then color = Color3.fromRGB(255, 65, 65)
+		local typeText, typeColor = "Info", Color3.fromRGB(190, 190, 190)
+		if nType == "Success" then typeText = "Success"; typeColor = Color3.fromRGB(0, 220, 130)
+		elseif nType == "Warn" then typeText = "Warning"; typeColor = Color3.fromRGB(255, 170, 50)
+		elseif nType == "Error" then typeText = "Error"; typeColor = Color3.fromRGB(255, 65, 65)
 		end
-		NLabel.Text = text
-		NAccent.BackgroundColor3 = color; NStroke.Color = color; NStroke.Transparency = 0.62
-		TweenService:Create(NotifyFrame, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -315, 1, -80)}):Play()
-		task.delay(2.8, function()
-			TweenService:Create(NStroke, TweenInfo.new(0.3), {Transparency = 0.84}):Play()
-			TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 320, 1, -80)}):Play()
+		NTypeLabel.Text = typeText
+		NTypeLabel.TextColor3 = typeColor
+		NDetailLabel.Text = text
+		NStroke.Color = typeColor
+		NStroke.Transparency = 0.58
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -275, 0, 20)}):Play()
+		task.delay(3.2, function()
+			TweenService:Create(NStroke, TweenInfo.new(0.35), {Transparency = 0.86}):Play()
+			TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 285, 0, 20)}):Play()
+		end)
+	end
+
+	UI.ShowCommandCard = function(title, desc)
+		TCTitleLbl.Text = title:upper()
+		TCDescLbl.Text = desc or ""
+		TCStroke.Transparency = 0.58
+		TweenService:Create(TutorialCard, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -303, 0, 118)}):Play()
+		task.delay(4.5, function()
+			TweenService:Create(TCStroke, TweenInfo.new(0.35), {Transparency = 0.86}):Play()
+			TweenService:Create(TutorialCard, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 315, 0, 118)}):Play()
 		end)
 	end
 
@@ -1059,8 +1192,171 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		return Btn
 	end
 
-	CreatePill("CMDS", Color3.fromRGB(215, 215, 215), function() ToggleCmdWin() end)
-	CreatePill(">_", Color3.fromRGB(100, 230, 130), ToggleConsole)
+	local function CreateIconBtn(imgId, accent, callback)
+		local Btn = Instance.new("TextButton", Icons)
+		Btn.Size = UDim2.new(0, 32, 0, 32)
+		Btn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+		Btn.BackgroundTransparency = 0.25
+		Btn.Text = ""
+		Btn.AutoButtonColor = false
+		Instance.new("UICorner", Btn).CornerRadius = UDim.new(1, 0)
+		local s = Instance.new("UIStroke", Btn)
+		s.Color = accent; s.Transparency = 0.65; s.Thickness = 1
+		local Img = Instance.new("ImageLabel", Btn)
+		Img.Size = UDim2.new(0, 18, 0, 18)
+		Img.AnchorPoint = Vector2.new(0.5, 0.5)
+		Img.Position = UDim2.new(0.5, 0, 0.5, 0)
+		Img.BackgroundTransparency = 1
+		Img.Image = "rbxassetid://" .. tostring(imgId)
+		Img.ImageColor3 = accent
+		Img.ScaleType = Enum.ScaleType.Fit
+		Btn.MouseEnter:Connect(function()
+			TweenService:Create(Btn, TweenInfo.new(0.12), {BackgroundTransparency = 0.02}):Play()
+			TweenService:Create(s, TweenInfo.new(0.12), {Transparency = 0.1}):Play()
+		end)
+		Btn.MouseLeave:Connect(function()
+			TweenService:Create(Btn, TweenInfo.new(0.12), {BackgroundTransparency = 0.25}):Play()
+			TweenService:Create(s, TweenInfo.new(0.12), {Transparency = 0.65}):Play()
+		end)
+		if callback then Btn.MouseButton1Click:Connect(callback) end
+		return Btn
+	end
+
+	local NetWin, NetContent, ToggleNetWin = CreateWindow("Lunar Network", 280, 310)
+
+	local NetSearchBox = Instance.new("TextBox", NetContent)
+	NetSearchBox.Size = UDim2.new(1, 0, 0, 34)
+	NetSearchBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	NetSearchBox.BackgroundTransparency = 0.3
+	NetSearchBox.PlaceholderText = "  Search users..."
+	NetSearchBox.Text = ""
+	NetSearchBox.TextColor3 = Color3.fromRGB(220, 220, 220)
+	NetSearchBox.PlaceholderColor3 = Color3.fromRGB(90, 90, 90)
+	NetSearchBox.FontFace = GetFont()
+	NetSearchBox.TextSize = 12
+	Instance.new("UICorner", NetSearchBox).CornerRadius = UDim.new(0, 7)
+	Instance.new("UIPadding", NetSearchBox).PaddingLeft = UDim.new(0, 8)
+
+	local NetStatusRow = Instance.new("Frame", NetContent)
+	NetStatusRow.Size = UDim2.new(1, 0, 0, 22)
+	NetStatusRow.BackgroundTransparency = 1
+	local NetDot = Instance.new("Frame", NetStatusRow)
+	NetDot.Size = UDim2.new(0, 7, 0, 7)
+	NetDot.Position = UDim2.new(0, 0, 0.5, -3)
+	NetDot.BackgroundColor3 = Color3.fromRGB(0, 220, 130)
+	NetDot.BorderSizePixel = 0
+	Instance.new("UICorner", NetDot).CornerRadius = UDim.new(1, 0)
+	local NetStatusLbl = Instance.new("TextLabel", NetStatusRow)
+	NetStatusLbl.Size = UDim2.new(1, -14, 1, 0)
+	NetStatusLbl.Position = UDim2.new(0, 14, 0, 0)
+	NetStatusLbl.BackgroundTransparency = 1
+	NetStatusLbl.Text = "Scanning server..."
+	NetStatusLbl.TextColor3 = Color3.fromRGB(100, 100, 100)
+	NetStatusLbl.FontFace = GetFont()
+	NetStatusLbl.TextSize = 10
+	NetStatusLbl.TextXAlignment = Enum.TextXAlignment.Left
+
+	local NetScroll = Instance.new("ScrollingFrame", NetContent)
+	NetScroll.Size = UDim2.new(1, 0, 0, 230)
+	NetScroll.BackgroundTransparency = 1
+	NetScroll.BorderSizePixel = 0
+	NetScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+	NetScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	NetScroll.ScrollBarThickness = 2
+	NetScroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 100)
+	Instance.new("UIListLayout", NetScroll).Padding = UDim.new(0, 5)
+
+	local netBtns = {}
+	local function RefreshNet()
+		for _, c in pairs(NetScroll:GetChildren()) do
+			if c:IsA("Frame") then c:Destroy() end
+		end
+		netBtns = {}
+		local found = 0
+		for _, p in pairs(Players:GetPlayers()) do
+			local isUser = p.Name == "lnrs_dev"
+				or (p.Character and p.Character:FindFirstChild("__LunarUser"))
+				or p:GetAttribute("LunarUser")
+			if isUser then
+				found += 1
+				local Row = Instance.new("Frame", NetScroll)
+				Row.Size = UDim2.new(1, 0, 0, 48)
+				Row.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Row.BackgroundTransparency = 0.94
+				Row.BorderSizePixel = 0
+				Row.Name = p.Name
+				Instance.new("UICorner", Row).CornerRadius = UDim.new(0, 8)
+				local Avatar = Instance.new("ImageLabel", Row)
+				Avatar.Size = UDim2.new(0, 34, 0, 34)
+				Avatar.Position = UDim2.new(0, 7, 0.5, -17)
+				Avatar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+				Avatar.BorderSizePixel = 0
+				Avatar.Image = "rbxthumb://type=AvatarHeadShot&id=" .. p.UserId .. "&w=48&h=48"
+				Avatar.ScaleType = Enum.ScaleType.Fit
+				Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1, 0)
+				local OnlineDot = Instance.new("Frame", Avatar)
+				OnlineDot.Size = UDim2.new(0, 9, 0, 9)
+				OnlineDot.Position = UDim2.new(1, -9, 1, -9)
+				OnlineDot.BackgroundColor3 = Color3.fromRGB(0, 220, 130)
+				OnlineDot.BorderSizePixel = 0
+				Instance.new("UICorner", OnlineDot).CornerRadius = UDim.new(1, 0)
+				local NameLbl = Instance.new("TextLabel", Row)
+				NameLbl.Size = UDim2.new(1, -110, 0, 18)
+				NameLbl.Position = UDim2.new(0, 48, 0, 8)
+				NameLbl.BackgroundTransparency = 1
+				NameLbl.Text = p.DisplayName
+				NameLbl.TextColor3 = Color3.fromRGB(225, 225, 225)
+				NameLbl.FontFace = GetFontBold()
+				NameLbl.TextSize = 11
+				NameLbl.TextXAlignment = Enum.TextXAlignment.Left
+				NameLbl.TextTruncate = Enum.TextTruncate.AtEnd
+				local UserLbl = Instance.new("TextLabel", Row)
+				UserLbl.Size = UDim2.new(1, -110, 0, 14)
+				UserLbl.Position = UDim2.new(0, 48, 0, 27)
+				UserLbl.BackgroundTransparency = 1
+				UserLbl.Text = "@" .. p.Name
+				UserLbl.TextColor3 = Color3.fromRGB(80, 80, 80)
+				UserLbl.FontFace = GetFont()
+				UserLbl.TextSize = 9
+				UserLbl.TextXAlignment = Enum.TextXAlignment.Left
+				local TPBtn = Instance.new("TextButton", Row)
+				TPBtn.Size = UDim2.new(0, 48, 0, 26)
+				TPBtn.Position = UDim2.new(1, -56, 0.5, -13)
+				TPBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
+				TPBtn.BackgroundTransparency = 0.3
+				TPBtn.Text = "TP"
+				TPBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+				TPBtn.FontFace = GetFontBold()
+				TPBtn.TextSize = 10
+				TPBtn.AutoButtonColor = false
+				Instance.new("UICorner", TPBtn).CornerRadius = UDim.new(0, 6)
+				TPBtn.MouseEnter:Connect(function() TweenService:Create(TPBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0}):Play() end)
+				TPBtn.MouseLeave:Connect(function() TweenService:Create(TPBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.3}):Play() end)
+				TPBtn.MouseButton1Click:Connect(function()
+					if Commands then Commands.HandleChat("tp " .. p.Name, UI, nil, true) end
+					UI.Notify("Teleporting to " .. p.Name, "Success")
+				end)
+				table.insert(netBtns, Row)
+			end
+		end
+		NetStatusLbl.Text = "Connected — " .. found .. " Lunar user" .. (found ~= 1 and "s" or "") .. " in server"
+	end
+
+	NetSearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+		local q = NetSearchBox.Text:lower()
+		for _, r in pairs(netBtns) do r.Visible = q == "" or r.Name:lower():find(q) ~= nil end
+	end)
+	local origNetToggle = ToggleNetWin
+	ToggleNetWin = function() RefreshNet() origNetToggle() end
+	Players.PlayerAdded:Connect(function() if NetWin.Visible then RefreshNet() end end)
+	Players.PlayerRemoving:Connect(function() task.wait(0.1) if NetWin.Visible then RefreshNet() end end)
+
+	CreateIconBtn(134751195905316, Color3.fromRGB(215, 215, 215), function() ToggleCmdWin() end)
+	CreateIconBtn(70849156584970,  Color3.fromRGB(100, 230, 130), ToggleConsole)
+	CreateIconBtn(87094224829882,  Color3.fromRGB(200, 150, 255), function()
+		if Commands then Commands.HandleChat("nametag", UI, ESP) end
+	end)
+	CreateIconBtn(109654827173212, Color3.fromRGB(100, 200, 255), function() ToggleNetWin() end)
 	CreatePill("⚙", Color3.fromRGB(190, 190, 190), function() ToggleSettingsWin() end)
 
 	local Expanded = false
@@ -1069,8 +1365,8 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		if state then
 			Content.Visible = true
 			TweenService:Create(Island, TweenInfo.new(0.55, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				Size = UDim2.new(0, 470, 0, 50),
-				Position = UDim2.new(0.5, -235, 0, 15)
+				Size = UDim2.new(0, 555, 0, 50),
+				Position = UDim2.new(0.5, -277, 0, 15)
 			}):Play()
 			TweenService:Create(IslandCorner, TweenInfo.new(0.55), {CornerRadius = UDim.new(0, 15)}):Play()
 		else
