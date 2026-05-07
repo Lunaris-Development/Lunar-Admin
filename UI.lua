@@ -159,7 +159,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	Bar.Name = "LunarBar"
 	Bar.Size = UDim2.new(0, 480, 0, 50)
 	Bar.AnchorPoint = Vector2.new(1, 0)
-	Bar.Position = UDim2.new(1, -10, 0, 5)
+	Bar.Position = UDim2.new(1, -10, 0, 0)
 	Bar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 	Bar.BackgroundTransparency = 0.3
 	Bar.BorderSizePixel = 0

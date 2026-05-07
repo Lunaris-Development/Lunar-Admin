@@ -6,6 +6,7 @@ local HttpService = game:GetService("HttpService")
 
 local GAMEPASS_ID = 9339207514
 local lp = Players.LocalPlayer
+local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
 
 local NametageGUI = {}
 
@@ -143,11 +144,15 @@ local function ApplyTag(UI)
 		local Head = char.Head
 		if Head:FindFirstChild("LunarTag") then Head.LunarTag:Destroy() end
 
-		local ts = Config.textSize or 14
+		local ts = Config.textSize or 12
+		local rawId = (Config.decalId or ""):match("^%s*(.-)%s*$")
+		rawId = rawId:match("%d+") or rawId
+		local imgUrl = rawId ~= "" and ("rbxassetid://" .. rawId) or LogoID
+
 		local Tag = Instance.new("BillboardGui")
 		Tag.Name = "LunarTag"
-		Tag.Size = UDim2.new(0, 230, 0, 66)
-		Tag.StudsOffset = Vector3.new(0, 4, 0)
+		Tag.Size = UDim2.new(0, 188, 0, 46)
+		Tag.StudsOffset = Vector3.new(0, 3.5, 0)
 		Tag.AlwaysOnTop = false
 		Tag.MaxDistance = 150
 		Tag.Parent = Head
@@ -157,7 +162,7 @@ local function ApplyTag(UI)
 		BorderFrame.BackgroundColor3 = Config.textColor
 		BorderFrame.BorderSizePixel = 0
 		BorderFrame.ZIndex = 1
-		Instance.new("UICorner", BorderFrame).CornerRadius = UDim.new(0, 16)
+		Instance.new("UICorner", BorderFrame).CornerRadius = UDim.new(0, 12)
 
 		local TagFrame = Instance.new("Frame", Tag)
 		TagFrame.Size = UDim2.new(1, -2, 1, -2)
@@ -166,21 +171,19 @@ local function ApplyTag(UI)
 		TagFrame.BackgroundTransparency = Config.bgTransparency
 		TagFrame.BorderSizePixel = 0
 		TagFrame.ZIndex = 2
-		Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 15)
+		Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 11)
 
 		local Img = Instance.new("ImageLabel", TagFrame)
-		Img.Size = UDim2.new(0, 36, 0, 36)
-		Img.Position = UDim2.new(0, 12, 0.5, -18)
+		Img.Size = UDim2.new(0, 28, 0, 28)
+		Img.Position = UDim2.new(0, 9, 0.5, -14)
 		Img.BackgroundTransparency = 1
 		Img.ScaleType = Enum.ScaleType.Fit
 		Img.ZIndex = 3
-		Instance.new("UICorner", Img).CornerRadius = UDim.new(1, 0)
-		Img.Image = Config.decalId ~= "" and ("rbxthumb://type=Asset&id=" .. Config.decalId .. "&w=420&h=420")
-			or ("rbxthumb://type=AvatarHeadShot&id=" .. lp.UserId .. "&w=48&h=48")
+		Img.Image = imgUrl
 
 		local TL = Instance.new("TextLabel", TagFrame)
-		TL.Size = UDim2.new(1, -58, 0, ts + 4)
-		TL.Position = UDim2.new(0, 54, 0, 10)
+		TL.Size = UDim2.new(1, -46, 0, ts + 4)
+		TL.Position = UDim2.new(0, 42, 0, 6)
 		TL.BackgroundTransparency = 1
 		TL.Text = Config.text
 		TL.TextColor3 = Config.textColor
@@ -191,13 +194,13 @@ local function ApplyTag(UI)
 		TL.ZIndex = 3
 
 		local SL = Instance.new("TextLabel", TagFrame)
-		SL.Size = UDim2.new(1, -58, 0, 16)
-		SL.Position = UDim2.new(0, 54, 1, -20)
+		SL.Size = UDim2.new(1, -46, 0, 14)
+		SL.Position = UDim2.new(0, 42, 1, -18)
 		SL.BackgroundTransparency = 1
 		SL.Text = "@" .. lp.Name
 		SL.TextColor3 = Color3.fromRGB(170, 170, 170)
 		SL.FontFace = Font.fromEnum(Config.font)
-		SL.TextSize = math.max(9, ts - 4)
+		SL.TextSize = math.max(9, ts - 2)
 		SL.TextXAlignment = Enum.TextXAlignment.Left
 		SL.ZIndex = 3
 
@@ -530,7 +533,7 @@ local function BuildGUI(UI)
 	local PImg = Instance.new("ImageLabel", PTagFrame)
 	PImg.Size = UDim2.new(0,26,0,26); PImg.Position = UDim2.new(0,8,0.5,-13)
 	PImg.BackgroundTransparency = 1; PImg.ScaleType = Enum.ScaleType.Fit; PImg.ZIndex = 35
-	PImg.Image = Config.decalId ~= "" and ("rbxthumb://type=Asset&id="..Config.decalId.."&w=420&h=420") or ("rbxthumb://type=AvatarHeadShot&id="..lp.UserId.."&w=48&h=48")
+	PImg.Image = ((Config.decalId or ""):match("%d+") or "") ~= "" and ("rbxassetid://"..(Config.decalId:match("%d+") or "")) or LogoID
 
 	local PTL = Instance.new("TextLabel", PTagFrame)
 	PTL.Size = UDim2.new(1,-42,0.5,0); PTL.Position = UDim2.new(0,38,0,5)
@@ -554,7 +557,7 @@ local function BuildGUI(UI)
 		PTL.TextColor3 = tc
 		PTL.FontFace = Font.fromEnum(Config.font)
 		PTL.Text = Config.text ~= "" and Config.text or "LUNAR USER"
-		PImg.Image = Config.decalId ~= "" and ("rbxthumb://type=Asset&id="..Config.decalId.."&w=420&h=420") or ("rbxthumb://type=AvatarHeadShot&id="..lp.UserId.."&w=48&h=48")
+		PImg.Image = ((Config.decalId or ""):match("%d+") or "") ~= "" and ("rbxassetid://"..(Config.decalId:match("%d+") or "")) or LogoID
 	end
 
 	task.spawn(function()
