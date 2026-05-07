@@ -6,225 +6,315 @@ if qot then
 	qot('loadstring(game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/Key.lua"))()')
 end
 
-if game.CoreGui:FindFirstChild("LunarAdmin") then
-	game.CoreGui:FindFirstChild("LunarAdmin"):Destroy()
-end
-
-local Junkie = loadstring(game:HttpGet("https://jnkie.com/sdk/library.lua"))()
-Junkie.service = "Lunar"
-Junkie.identifier = "1093800"
-Junkie.provider = "Lunar"
-
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
 local Player = Players.LocalPlayer
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "LunarAdmin"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ScreenGui.Parent = game.CoreGui
+local setclipboard = setclipboard or function() end
 
-local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 320, 0, 180)
-MainFrame.Position = UDim2.new(0.5, -160, 0.5, -90)
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrame.BackgroundTransparency = 0.2
-MainFrame.BorderSizePixel = 0
-MainFrame.ClipsDescendants = true
-MainFrame.Parent = ScreenGui
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 12)
-UICorner.Parent = MainFrame
-
-local UIStroke = Instance.new("UIStroke")
-UIStroke.Color = Color3.fromRGB(255, 255, 255)
-UIStroke.Transparency = 0.85
-UIStroke.Thickness = 1.2
-UIStroke.Parent = MainFrame
-
-local Glow = Instance.new("ImageLabel")
-Glow.Name = "Glow"
-Glow.Size = UDim2.new(1.15, 0, 1.3, 0)
-Glow.Position = UDim2.new(-0.075, 0, -0.15, 0)
-Glow.BackgroundTransparency = 1
-Glow.Image = "rbxassetid://6015667101"
-Glow.ImageColor3 = Color3.fromRGB(255, 255, 255)
-Glow.ImageTransparency = 0.9
-Glow.ZIndex = 0
-Glow.Parent = MainFrame
-
-local Title = Instance.new("TextLabel")
-Title.Name = "Title"
-Title.Size = UDim2.new(0.8, 0, 0, 35)
-Title.Position = UDim2.new(0.1, 0, 0, 10)
-Title.BackgroundTransparency = 1
-Title.Text = "Lunar Admin"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 18
-Title.TextScaled = true
-Title.Parent = MainFrame
-
-local TitleConstraint = Instance.new("UITextSizeConstraint")
-TitleConstraint.MaxTextSize = 18
-TitleConstraint.MinTextSize = 10
-TitleConstraint.Parent = Title
-
-local Status = Instance.new("TextLabel")
-Status.Name = "Status"
-Status.Size = UDim2.new(0.9, 0, 0, 20)
-Status.Position = UDim2.new(0.05, 0, 0, 32)
-Status.BackgroundTransparency = 1
-Status.Text = "AUTHENTICATION REQUIRED"
-Status.TextColor3 = Color3.fromRGB(120, 120, 120)
-Status.Font = Enum.Font.Gotham
-Status.TextSize = 10
-Status.TextScaled = true
-Status.Parent = MainFrame
-
-local StatusConstraint = Instance.new("UITextSizeConstraint")
-StatusConstraint.MaxTextSize = 10
-StatusConstraint.MinTextSize = 8
-StatusConstraint.Parent = Status
-
-local KeyInput = Instance.new("TextBox")
-KeyInput.Name = "KeyInput"
-KeyInput.Size = UDim2.new(0.85, 0, 0, 40)
-KeyInput.Position = UDim2.new(0.075, 0, 0.38, 0)
-KeyInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-KeyInput.BackgroundTransparency = 0.4
-KeyInput.Text = ""
-KeyInput.PlaceholderText = "Enter License Key..."
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.Font = Enum.Font.Gotham
-KeyInput.TextSize = 13
-KeyInput.Parent = MainFrame
-
-local InputCorner = Instance.new("UICorner")
-InputCorner.CornerRadius = UDim.new(0, 6)
-InputCorner.Parent = KeyInput
-
-local InputStroke = Instance.new("UIStroke")
-InputStroke.Color = Color3.fromRGB(255, 255, 255)
-InputStroke.Transparency = 0.92
-InputStroke.Parent = KeyInput
-
-local CheckBtn = Instance.new("TextButton")
-CheckBtn.Name = "CheckBtn"
-CheckBtn.Size = UDim2.new(0.41, 0, 0, 35)
-CheckBtn.Position = UDim2.new(0.075, 0, 0.7, 0)
-CheckBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-CheckBtn.BackgroundTransparency = 0.2
-CheckBtn.Text = "CHECK KEY"
-CheckBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CheckBtn.Font = Enum.Font.GothamBold
-CheckBtn.TextSize = 11
-CheckBtn.AutoButtonColor = false
-CheckBtn.Parent = MainFrame
-
-local GetBtn = Instance.new("TextButton")
-GetBtn.Name = "GetBtn"
-GetBtn.Size = UDim2.new(0.41, 0, 0, 35)
-GetBtn.Position = UDim2.new(0.515, 0, 0.7, 0)
-GetBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-GetBtn.BackgroundTransparency = 0.5
-GetBtn.Text = "GET KEY"
-GetBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-GetBtn.Font = Enum.Font.GothamBold
-GetBtn.TextSize = 11
-GetBtn.AutoButtonColor = false
-GetBtn.Parent = MainFrame
-
-local function StyleButton(btn)
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 6)
-	corner.Parent = btn
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = Color3.fromRGB(255, 255, 255)
-	stroke.Transparency = 0.9
-	stroke.Parent = btn
-	btn.MouseEnter:Connect(function()
-		TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
-		TweenService:Create(stroke, TweenInfo.new(0.2), {Transparency = 0.7}):Play()
-	end)
-	btn.MouseLeave:Connect(function()
-		TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = btn == CheckBtn and 0.2 or 0.5}):Play()
-		TweenService:Create(stroke, TweenInfo.new(0.2), {Transparency = 0.9}):Play()
-	end)
+local function tw(inst, props, t)
+	TweenService:Create(inst, TweenInfo.new(t or 0.5, Enum.EasingStyle.Quart), props):Play()
 end
 
-StyleButton(CheckBtn)
-StyleButton(GetBtn)
-
-local function CloseUI()
-	TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -160, 1.2, 0)}):Play()
-	task.wait(0.4)
-	ScreenGui:Destroy()
+local function new(class, props, parent)
+	local inst = Instance.new(class)
+	for k, v in pairs(props) do inst[k] = v end
+	if parent then inst.Parent = parent end
+	return inst
 end
 
-local dragging, dragInput, dragStart, startPos
-local function update(input)
-	local delta = input.Position - dragStart
-	MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+local function makeSound(id, vol)
+	return new("Sound", {SoundId = "rbxassetid://" .. id, Volume = vol or 0.5}, CoreGui)
 end
-MainFrame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = true
-		dragStart = input.Position
-		startPos = MainFrame.Position
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then dragging = false end
-		end)
-	end
-end)
-MainFrame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
-end)
-UserInputService.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then update(input) end
-end)
 
-MainFrame.Position = UDim2.new(0.5, -160, 1.2, 0)
-TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -160, 0.5, -90)}):Play()
+local sounds = {
+	slideDown  = makeSound("12222200",   0.15),
+	success    = makeSound("2027986581", 0.25),
+	failure    = makeSound("7356986865", 0.25),
+	slideUp    = makeSound("12222200",   0.15),
+	click      = makeSound("7545317681", 0.2),
+}
+
+local Junkie = loadstring(game:HttpGet("https://jnkie.com/sdk/library.lua"))()
+Junkie.service    = "Lunar"
+Junkie.identifier = "1093800"
+Junkie.provider   = "Lunar"
+
+for _, v in pairs(CoreGui:GetChildren()) do
+	if v.Name == "LunarKeyGui" then v:Destroy() end
+end
+
+local gui = new("ScreenGui", {
+	Name             = "LunarKeyGui",
+	IgnoreGuiInset   = true,
+	DisplayOrder     = 999,
+	ResetOnSpawn     = false,
+}, CoreGui)
+
+local main = new("Frame", {
+	Size             = UDim2.new(0, 420, 0, 100),
+	Position         = UDim2.new(0.5, 0, -0.25, 0),
+	AnchorPoint      = Vector2.new(0.5, 0),
+	BackgroundColor3 = Color3.fromRGB(15, 15, 20),
+	BorderSizePixel  = 0,
+}, gui)
+new("UICorner", {CornerRadius = UDim.new(0, 14)}, main)
+
+local shadow = new("Frame", {
+	Size             = UDim2.new(1, 10, 1, 10),
+	Position         = UDim2.new(0.5, 0, 0.5, 0),
+	AnchorPoint      = Vector2.new(0.5, 0.5),
+	BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+	BackgroundTransparency = 0.65,
+	ZIndex           = -1,
+}, main)
+new("UICorner", {CornerRadius = UDim.new(0, 18)}, shadow)
+
+local border = new("Frame", {
+	Size        = UDim2.new(1, 2, 1, 2),
+	Position    = UDim2.new(0.5, 0, 0.5, 0),
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	ZIndex      = -1,
+}, main)
+new("UICorner", {CornerRadius = UDim.new(0, 15)}, border)
+new("UIGradient", {
+	Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0,   Color3.fromRGB(138, 43, 226)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(30, 144, 255)),
+		ColorSequenceKeypoint.new(1,   Color3.fromRGB(0, 191, 255)),
+	},
+	Rotation = 45,
+}, border)
+
+local userId = Player and Player.UserId or 1
+
+local pic = new("ImageLabel", {
+	Size                 = UDim2.new(0, 40, 0, 40),
+	Position             = UDim2.new(0, 18, 0, 18),
+	AnchorPoint          = Vector2.new(0, 0),
+	BackgroundTransparency = 1,
+	Image                = ("rbxthumb://type=AvatarHeadShot&id=%d&w=48&h=48"):format(userId),
+}, main)
+new("UICorner", {CornerRadius = UDim.new(1, 0)}, pic)
+
+local picBorder = new("Frame", {
+	Size        = UDim2.new(1, 3, 1, 3),
+	Position    = UDim2.new(0.5, 0, 0.5, 0),
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	ZIndex      = -1,
+}, pic)
+new("UICorner", {CornerRadius = UDim.new(1, 0)}, picBorder)
+new("UIGradient", {
+	Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(138, 43, 226)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 144, 255)),
+	},
+	Rotation = 90,
+}, picBorder)
+
+local titleLbl = new("TextLabel", {
+	Size                 = UDim2.new(1, -80, 0, 22),
+	Position             = UDim2.new(0, 68, 0, 14),
+	AnchorPoint          = Vector2.new(0, 0),
+	BackgroundTransparency = 1,
+	TextColor3           = Color3.fromRGB(255, 255, 255),
+	TextSize             = 18,
+	Font                 = Enum.Font.GothamBold,
+	Text                 = "LUNAR ADMIN",
+	TextTransparency     = 1,
+	TextXAlignment       = Enum.TextXAlignment.Left,
+}, main)
+
+local statusLbl = new("TextLabel", {
+	Size                 = UDim2.new(1, -80, 0, 16),
+	Position             = UDim2.new(0, 68, 0, 40),
+	AnchorPoint          = Vector2.new(0, 0),
+	BackgroundTransparency = 1,
+	TextColor3           = Color3.fromRGB(160, 160, 170),
+	TextSize             = 13,
+	Font                 = Enum.Font.Gotham,
+	Text                 = "Initializing...",
+	TextTransparency     = 1,
+	TextXAlignment       = Enum.TextXAlignment.Left,
+}, main)
+
+local progressBg = new("Frame", {
+	Size             = UDim2.new(1, -32, 0, 4),
+	Position         = UDim2.new(0, 16, 1, -12),
+	AnchorPoint      = Vector2.new(0, 1),
+	BackgroundColor3 = Color3.fromRGB(32, 32, 42),
+}, main)
+new("UICorner", {CornerRadius = UDim.new(1, 0)}, progressBg)
+
+local progressBar = new("Frame", {
+	Size = UDim2.new(0, 0, 1, 0),
+}, progressBg)
+new("UICorner", {CornerRadius = UDim.new(1, 0)}, progressBar)
+new("UIGradient", {
+	Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(186, 85, 211)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 130, 255)),
+	},
+}, progressBar)
+
+local keyContainer = new("Frame", {
+	Size                 = UDim2.new(1, -32, 0, 120),
+	Position             = UDim2.new(0.5, 0, 0, 108),
+	AnchorPoint          = Vector2.new(0.5, 0),
+	BackgroundTransparency = 1,
+	Visible              = false,
+}, main)
+
+local keyInput = new("TextBox", {
+	Size                = UDim2.new(1, 0, 0, 36),
+	Position            = UDim2.new(0.5, 0, 0, 14),
+	AnchorPoint         = Vector2.new(0.5, 0),
+	BackgroundColor3    = Color3.fromRGB(26, 26, 34),
+	PlaceholderText     = "Enter license key...",
+	PlaceholderColor3   = Color3.fromRGB(100, 100, 115),
+	Text                = "",
+	TextColor3          = Color3.fromRGB(255, 255, 255),
+	TextSize            = 13,
+	Font                = Enum.Font.Gotham,
+	ClearTextOnFocus    = false,
+}, keyContainer)
+new("UICorner", {CornerRadius = UDim.new(0, 10)}, keyInput)
+new("UIPadding", {PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12)}, keyInput)
+new("UIStroke", {Color = Color3.fromRGB(50, 50, 65), Thickness = 1}, keyInput)
+
+local submitBtn = new("TextButton", {
+	Size            = UDim2.new(0.48, 0, 0, 34),
+	Position        = UDim2.new(0.25, 0, 0, 64),
+	AnchorPoint     = Vector2.new(0.5, 0),
+	Text            = "Authenticate",
+	TextColor3      = Color3.fromRGB(255, 255, 255),
+	TextSize        = 13,
+	Font            = Enum.Font.GothamBold,
+	AutoButtonColor = false,
+}, keyContainer)
+new("UICorner", {CornerRadius = UDim.new(0, 10)}, submitBtn)
+new("UIGradient", {
+	Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(138, 43, 226)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 144, 255)),
+	},
+	Rotation = 45,
+}, submitBtn)
+
+local getBtn = new("TextButton", {
+	Size             = UDim2.new(0.48, 0, 0, 34),
+	Position         = UDim2.new(0.75, 0, 0, 64),
+	AnchorPoint      = Vector2.new(0.5, 0),
+	BackgroundColor3 = Color3.fromRGB(42, 42, 54),
+	Text             = "Get Key",
+	TextColor3       = Color3.fromRGB(200, 200, 210),
+	TextSize         = 13,
+	Font             = Enum.Font.GothamBold,
+	AutoButtonColor  = false,
+}, keyContainer)
+new("UICorner", {CornerRadius = UDim.new(0, 10)}, getBtn)
+new("UIStroke", {Color = Color3.fromRGB(60, 60, 75), Thickness = 1}, getBtn)
+
+local function closeUI()
+	sounds.slideUp:Play()
+	tw(main, {Position = UDim2.new(0.5, 0, -0.25, 0)}, 0.9)
+	task.wait(1)
+	gui:Destroy()
+end
 
 local function grantAccess(key)
-	Status.Text = "ACCESS GRANTED"
+	local data = Junkie.get_key_data(key)
+	statusLbl.Text = "Welcome, " .. (data and data.data and data.data.username or Player.Name) .. "!"
+	tw(statusLbl, {TextColor3 = Color3.fromRGB(0, 220, 130)}, 0.4)
+	sounds.success:Play()
+	tw(progressBar, {Size = UDim2.new(1, 0, 1, 0)}, 0.7)
 	getgenv().SCRIPT_KEY = key
 	if writefile then writefile("LunarKey.txt", key) end
-	task.wait(1)
-	getgenv().LunarKeyLoaded = false
-	CloseUI()
+	task.wait(1.8)
+	closeUI()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/Lunaris-Development/Lunar-Admin/main/Main.lua"))()
 end
 
-CheckBtn.MouseButton1Click:Connect(function()
-	local input = KeyInput.Text
-	Status.Text = "VALIDATING..."
-	local result = Junkie.check_key(input)
-	if result and result.valid then
-		grantAccess(input)
-	else
-		Status.Text = "INVALID LICENSE KEY"
-		task.wait(2)
-		Status.Text = "AUTHENTICATION REQUIRED"
-	end
-end)
-
-GetBtn.MouseButton1Click:Connect(function()
-	setclipboard(Junkie.get_key_link())
-	Status.Text = "LINK COPIED TO CLIPBOARD"
-	task.wait(2)
-	Status.Text = "AUTHENTICATION REQUIRED"
-end)
-
-if isfile and isfile("LunarKey.txt") then
-	local saved = readfile("LunarKey.txt")
-	local result = Junkie.check_key(saved)
-	if result and result.valid then
-		grantAccess(saved)
-	end
+local function showKeyUI()
+	sounds.slideDown:Play()
+	tw(main, {Size = UDim2.new(0, 420, 0, 245)}, 0.7)
+	task.wait(0.7)
+	keyContainer.Visible = true
 end
+
+sounds.slideDown:Play()
+tw(main, {Position = UDim2.new(0.5, 0, 0, 18)}, 1.1)
+task.wait(0.35)
+tw(titleLbl, {TextTransparency = 0}, 0.4)
+task.wait(0.15)
+tw(statusLbl, {TextTransparency = 0}, 0.4)
+tw(progressBar, {Size = UDim2.new(0.45, 0, 1, 0)}, 0.8)
+
+local savedKey = isfile and isfile("LunarKey.txt") and readfile("LunarKey.txt")
+if savedKey then
+	statusLbl.Text = "Validating saved key..."
+	local result = Junkie.check_key(savedKey)
+	if result and result.valid then
+		tw(progressBar, {Size = UDim2.new(0.85, 0, 1, 0)}, 0.5)
+		statusLbl.Text = "Loading Lunar Admin..."
+		tw(statusLbl, {TextColor3 = Color3.fromRGB(0, 220, 130)}, 0.4)
+		task.wait(0.6)
+		grantAccess(savedKey)
+	else
+		statusLbl.Text = "Saved key expired"
+		tw(statusLbl, {TextColor3 = Color3.fromRGB(255, 100, 100)}, 0.3)
+		task.wait(1)
+		statusLbl.Text = "Authentication required"
+		tw(statusLbl, {TextColor3 = Color3.fromRGB(160, 160, 170)}, 0.3)
+		showKeyUI()
+	end
+else
+	statusLbl.Text = "Authentication required"
+	task.wait(0.5)
+	showKeyUI()
+end
+
+getBtn.MouseButton1Click:Connect(function()
+	sounds.click:Play()
+	setclipboard(Junkie.get_key_link())
+	getBtn.Text = "Copied!"
+	tw(getBtn, {BackgroundColor3 = Color3.fromRGB(0, 130, 80)}, 0.2)
+	task.wait(2)
+	getBtn.Text = "Get Key"
+	tw(getBtn, {BackgroundColor3 = Color3.fromRGB(42, 42, 54)}, 0.2)
+end)
+
+submitBtn.MouseButton1Click:Connect(function()
+	sounds.click:Play()
+	local key = keyInput.Text
+	if key == "" then
+		statusLbl.Text = "Enter your license key"
+		tw(statusLbl, {TextColor3 = Color3.fromRGB(255, 170, 50)}, 0.2)
+		task.wait(1.5)
+		statusLbl.Text = "Authentication required"
+		tw(statusLbl, {TextColor3 = Color3.fromRGB(160, 160, 170)}, 0.2)
+		return
+	end
+	statusLbl.Text = "Validating..."
+	tw(statusLbl, {TextColor3 = Color3.fromRGB(160, 160, 170)}, 0.2)
+	tw(progressBar, {Size = UDim2.new(0.7, 0, 1, 0)}, 0.5)
+	task.wait(0.8)
+	local result = Junkie.check_key(key)
+	if result and result.valid then
+		tw(progressBar, {Size = UDim2.new(0.9, 0, 1, 0)}, 0.4)
+		keyContainer.Visible = false
+		tw(main, {Size = UDim2.new(0, 420, 0, 100)}, 0.6)
+		task.wait(0.3)
+		grantAccess(key)
+	else
+		sounds.failure:Play()
+		statusLbl.Text = "Invalid key"
+		tw(statusLbl, {TextColor3 = Color3.fromRGB(255, 80, 80)}, 0.2)
+		tw(progressBar, {Size = UDim2.new(0.45, 0, 1, 0)}, 0.4)
+		task.wait(2)
+		statusLbl.Text = "Authentication required"
+		tw(statusLbl, {TextColor3 = Color3.fromRGB(160, 160, 170)}, 0.2)
+	end
+end)
