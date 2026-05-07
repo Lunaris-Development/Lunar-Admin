@@ -50,7 +50,7 @@ local sounds = {
 
 local Junkie = loadstring(game:HttpGet("https://jnkie.com/sdk/library.lua"))()
 Junkie.service    = "Lunar"
-Junkie.identifier = "1093800"
+Junkie.identifier = "3ff14663-19b5-4310-b0ff-52d30499c545"
 Junkie.provider   = "Lunar"
 
 for _, v in pairs(CoreGui:GetChildren()) do

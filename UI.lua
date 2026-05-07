@@ -160,16 +160,12 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	Bar.Name = "LunarBar"
 	Bar.Size = UDim2.new(0, 480, 0, 50)
 	Bar.AnchorPoint = Vector2.new(1, 0)
-	Bar.Position = UDim2.new(1, -10, 0, 0)
+	Bar.Position = UDim2.new(1, -10, 0, 8)
 	Bar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 	Bar.BackgroundTransparency = 0.3
 	Bar.BorderSizePixel = 0
 	Bar.ClipsDescendants = true
 	Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 8)
-	local BarStroke = Instance.new("UIStroke", Bar)
-	BarStroke.Color = Color3.fromRGB(255, 255, 255)
-	BarStroke.Transparency = 0.82
-	BarStroke.Thickness = 1.5
 
 	local BarLogo = Instance.new("ImageLabel", Bar)
 	BarLogo.Size = UDim2.new(0, 34, 0, 34)
