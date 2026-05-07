@@ -251,6 +251,12 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	local IconsPad = Instance.new("UIPadding", Icons)
 	IconsPad.PaddingRight = UDim.new(0, 10)
 
+	local UISnd = Instance.new("Sound")
+	UISnd.SoundId = "rbxassetid://7545317681"
+	UISnd.Volume = 0.18
+	UISnd.Parent = ScreenGui
+	local function UIClick() pcall(function() UISnd:Play() end) end
+
 	local Console = Instance.new("Frame", ScreenGui)
 	Console.Size = UDim2.new(0, 500, 0, 40)
 	Console.Position = UDim2.new(0.5, -250, 1, 50)
@@ -318,6 +324,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		userspoofer= {t="USER SPOOFER", d="Spoof your username visually to confuse others."},
 		shlow      = {t="SHOW LOW HP",  d="Highlight players with low health in the world."},
 		shmost     = {t="SHOW MOST HP", d="Highlight the player with the highest health."},
+		chat       = {t="LUNAR CHAT",   d="Open the unfiltered Lunar Chat window."},
 	}
 	ConsoleInput.FocusLost:Connect(function(enter)
 		if enter then
@@ -345,7 +352,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 7)
 		Btn.MouseEnter:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.15), {BackgroundTransparency = 0.84, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play() end)
 		Btn.MouseLeave:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.15), {BackgroundTransparency = 0.94, TextColor3 = Color3.fromRGB(195, 195, 195)}):Play() end)
-		if callback then Btn.MouseButton1Click:Connect(callback) end
+		Btn.MouseButton1Click:Connect(function() UIClick(); if callback then callback() end end)
 		return Btn
 	end
 
@@ -417,6 +424,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	addBtn("User Spoofer", "userspoofer player")
 	addBtn("Show Low HP", "shlow")
 	addBtn("Show Most HP", "shmost")
+	addBtn("Lunar Chat", "chat")
 	addBtn("Server List", "serverh")
 	addBtn("Server Info", "serverinfo")
 	addBtn("Animations", function() ToggleAnimWin() end)

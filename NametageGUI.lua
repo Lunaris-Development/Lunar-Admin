@@ -17,6 +17,7 @@ local Config = {
 	bgColor       = Color3.fromRGB(10, 10, 10),
 	bgTransparency = 0.2,
 	textColor     = Color3.fromRGB(150, 255, 150),
+	textSize      = 14,
 }
 
 local function safeEnum(name)
@@ -95,6 +96,7 @@ local function SaveConfig()
 			bgG = math.floor(Config.bgColor.G * 255),
 			bgB = math.floor(Config.bgColor.B * 255),
 			bgT = Config.bgTransparency,
+			ts  = Config.textSize,
 			tcR = math.floor(Config.textColor.R * 255),
 			tcG = math.floor(Config.textColor.G * 255),
 			tcB = math.floor(Config.textColor.B * 255),
@@ -114,6 +116,7 @@ local function LoadConfig()
 		if d.bgR    then Config.bgColor = Color3.fromRGB(d.bgR, d.bgG, d.bgB) end
 		if d.bgT    then Config.bgTransparency = d.bgT end
 		if d.tcR    then Config.textColor = Color3.fromRGB(d.tcR, d.tcG, d.tcB) end
+		if d.ts     then Config.textSize = d.ts end
 		if d.font   then
 			local name = d.font:match("Font%.(.+)")
 			if name then
@@ -602,8 +605,43 @@ local function BuildGUI(UI)
 	Instance.new("UICorner", TextInput).CornerRadius = UDim.new(0,8)
 	Instance.new("UIPadding", TextInput).PaddingLeft = UDim.new(0,10)
 
+	SLabel(CenterP, "TEXT SIZE", 162)
+	local sizeVal = Config.textSize or 14
+	local SzValLbl = Instance.new("TextLabel", CenterP)
+	SzValLbl.Size = UDim2.new(0,28,0,14); SzValLbl.Position = UDim2.new(1,-36,0,162)
+	SzValLbl.BackgroundTransparency = 1; SzValLbl.Text = tostring(sizeVal)
+	SzValLbl.TextColor3 = Color3.fromRGB(100,180,255); SzValLbl.FontFace = Font.fromEnum(Enum.Font.GothamBold)
+	SzValLbl.TextSize = 9; SzValLbl.TextXAlignment = Enum.TextXAlignment.Right; SzValLbl.ZIndex = 32
+	local SzTrack = Instance.new("Frame", CenterP)
+	SzTrack.Size = UDim2.new(1,-20,0,6); SzTrack.Position = UDim2.new(0,10,0,178)
+	SzTrack.BackgroundColor3 = Color3.fromRGB(35,35,35); SzTrack.BorderSizePixel = 0; SzTrack.ZIndex = 32
+	Instance.new("UICorner", SzTrack).CornerRadius = UDim.new(0,3)
+	local SzFill = Instance.new("Frame", SzTrack)
+	SzFill.Size = UDim2.new((sizeVal-8)/24, 0, 1, 0); SzFill.BackgroundColor3 = Color3.fromRGB(100,180,255)
+	SzFill.BorderSizePixel = 0; SzFill.ZIndex = 33
+	Instance.new("UICorner", SzFill).CornerRadius = UDim.new(0,3)
+	local SzKnob = Instance.new("TextButton", SzTrack)
+	SzKnob.Size = UDim2.new(0,14,0,14); SzKnob.Position = UDim2.new((sizeVal-8)/24,-7,0.5,-7)
+	SzKnob.BackgroundColor3 = Color3.fromRGB(240,240,240); SzKnob.Text = ""
+	SzKnob.AutoButtonColor = false; SzKnob.ZIndex = 34; SzKnob.BorderSizePixel = 0
+	Instance.new("UICorner", SzKnob).CornerRadius = UDim.new(1,0)
+	local szDrag = false
+	SzKnob.MouseButton1Down:Connect(function() szDrag = true end)
+	SzKnob.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.Touch then szDrag = true end end)
+	UserInputService.InputEnded:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then szDrag = false end
+	end)
+	UserInputService.InputChanged:Connect(function(i)
+		if szDrag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+			local r = math.clamp((i.Position.X - SzTrack.AbsolutePosition.X) / SzTrack.AbsoluteSize.X, 0, 1)
+			sizeVal = math.floor(r * 24 + 8)
+			SzFill.Size = UDim2.new(r,0,1,0); SzKnob.Position = UDim2.new(r,-7,0.5,-7)
+			SzValLbl.Text = tostring(sizeVal); Config.textSize = sizeVal
+		end
+	end)
+
 	local EffectBadge = Instance.new("TextLabel", CenterP)
-	EffectBadge.Size = UDim2.new(1,-20,0,18); EffectBadge.Position = UDim2.new(0,10,0,164)
+	EffectBadge.Size = UDim2.new(1,-20,0,18); EffectBadge.Position = UDim2.new(0,10,0,196)
 	EffectBadge.BackgroundTransparency = 1; EffectBadge.Text = "Effect: "..Config.effect
 	EffectBadge.TextColor3 = Color3.fromRGB(100,180,255); EffectBadge.FontFace = Font.fromEnum(Enum.Font.Gotham)
 	EffectBadge.TextSize = 10; EffectBadge.TextXAlignment = Enum.TextXAlignment.Center; EffectBadge.ZIndex = 32

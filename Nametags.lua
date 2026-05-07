@@ -31,35 +31,41 @@ local Roles = {
 	},
 }
 
-local function spawnParticles(tagFrame, rank)
-	task.spawn(function()
-		while tagFrame and tagFrame.Parent do
-			local p = Instance.new("Frame")
-			p.Size = UDim2.new(0, math.random(2, 4), 0, math.random(2, 4))
-			p.Position = UDim2.new(math.random() * 0.7 + 0.15, 0, 1, 0)
-			p.BackgroundColor3 = rank.accent.Keypoints[1].Value
-			p.BackgroundTransparency = 0.2
-			p.BorderSizePixel = 0
-			p.ZIndex = 6
-			Instance.new("UICorner", p).CornerRadius = UDim.new(1, 0)
-			local g = Instance.new("UIGradient", p)
-			g.Color = rank.accent
-			g.Rotation = math.random(0, 360)
-			p.Parent = tagFrame
+local function spawnParticles(Tag, tagFrame, rank)
+	local c1 = rank.accent.Keypoints[1].Value
+	local c2 = rank.accent.Keypoints[#rank.accent.Keypoints].Value
+	for _ = 1, 6 do
+		task.spawn(function()
+			task.wait(math.random() * 1.2)
+			while Tag and Tag.Parent do
+				local sz = math.random(4, 9)
+				local p = Instance.new("Frame")
+				p.Size = UDim2.new(0, sz, 0, sz)
+				p.Position = UDim2.new(math.random() * 0.75 + 0.1, 0, math.random() * 0.3 + 0.65, 0)
+				p.BackgroundColor3 = math.random() > 0.5 and c1 or c2
+				p.BackgroundTransparency = 0
+				p.BorderSizePixel = 0
+				p.ZIndex = 10
+				p.Parent = Tag
+				Instance.new("UICorner", p).CornerRadius = UDim.new(1, 0)
+				local g = Instance.new("UIGradient", p)
+				g.Color = rank.accent
+				g.Rotation = math.random(0, 360)
 
-			local dur = math.random(12, 25) / 10
-			local drift = (math.random() - 0.5) * 0.25
-			TweenService:Create(p, TweenInfo.new(dur, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-				Position = UDim2.new(p.Position.X.Scale + drift, 0, -0.4, 0),
-				BackgroundTransparency = 1,
-				Size = UDim2.new(0, 0, 0, 0),
-			}):Play()
+				local dur = math.random(9, 18) / 10
+				local drift = (math.random() - 0.5) * 0.35
+				TweenService:Create(p, TweenInfo.new(dur, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+					Position = UDim2.new(p.Position.X.Scale + drift, 0, -0.55, 0),
+					BackgroundTransparency = 1,
+					Size = UDim2.new(0, 0, 0, 0),
+				}):Play()
 
-			task.wait(dur)
-			if p and p.Parent then p:Destroy() end
-			task.wait(math.random(1, 4) / 10)
-		end
-	end)
+				task.wait(dur)
+				if p and p.Parent then p:Destroy() end
+				task.wait(math.random(5, 18) / 100)
+			end
+		end)
+	end
 end
 
 local function runGlitch(label, text)
@@ -161,7 +167,7 @@ function Nametags.Create(player)
 	TagText.Text = rank.label
 	TagText.TextColor3 = rank.color
 	TagText.FontFace = GetFont()
-	TagText.TextSize = 12
+	TagText.TextSize = 14
 	TagText.TextXAlignment = Enum.TextXAlignment.Left
 	TagText.ZIndex = 4
 
@@ -172,11 +178,11 @@ function Nametags.Create(player)
 	SubText.Text = "@" .. player.Name
 	SubText.TextColor3 = Color3.fromRGB(140, 140, 140)
 	SubText.FontFace = GetFontSub()
-	SubText.TextSize = 9
+	SubText.TextSize = 11
 	SubText.TextXAlignment = Enum.TextXAlignment.Left
 	SubText.ZIndex = 4
 
-	spawnParticles(TagFrame, rank)
+	spawnParticles(Tag, TagFrame, rank)
 
 	if rank.glitch then
 		runGlitch(TagText, rank.label)
