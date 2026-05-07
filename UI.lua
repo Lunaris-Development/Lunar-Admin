@@ -4,7 +4,7 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 
 local Player = Players.LocalPlayer
-local LogoID = "rbxthumb://type=Asset&id=85404031245554&w=420&h=420"
+local LogoID = "rbxassetid://85404031245554"
 local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 
 local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
