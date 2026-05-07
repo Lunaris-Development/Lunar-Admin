@@ -19,6 +19,7 @@ local UI = {}
 
 function UI.Init(Nametags, Commands, ESP)
 	local isMobile = UserInputService.TouchEnabled
+
 	if game.CoreGui:FindFirstChild("LunarDynamicIsland") then
 		game.CoreGui:FindFirstChild("LunarDynamicIsland"):Destroy()
 	end
@@ -85,7 +86,7 @@ function UI.Init(Nametags, Commands, ESP)
 	Content.Parent = Island
 
 	local Info = Instance.new("Frame")
-	Info.Size = UDim2.new(0, 130, 1, 0)
+	Info.Size = UDim2.new(0, 110, 1, 0)
 	Info.BackgroundTransparency = 1
 	Info.Parent = Content
 
@@ -112,8 +113,8 @@ function UI.Init(Nametags, Commands, ESP)
 	ExecLabel.Parent = Info
 
 	local Stats = Instance.new("Frame")
-	Stats.Size = UDim2.new(0, 110, 1, 0)
-	Stats.Position = UDim2.new(0, 140, 0, 0)
+	Stats.Size = UDim2.new(0, 95, 1, 0)
+	Stats.Position = UDim2.new(0, 118, 0, 0)
 	Stats.BackgroundTransparency = 1
 	Stats.Parent = Content
 
@@ -140,8 +141,8 @@ function UI.Init(Nametags, Commands, ESP)
 	PingLabel.Parent = Stats
 
 	local Icons = Instance.new("Frame")
-	Icons.Size = UDim2.new(1, -260, 1, 0)
-	Icons.Position = UDim2.new(0, 260, 0, 0)
+	Icons.Size = UDim2.new(1, -220, 1, 0)
+	Icons.Position = UDim2.new(0, 220, 0, 0)
 	Icons.BackgroundTransparency = 1
 	Icons.Parent = Content
 
@@ -149,11 +150,11 @@ function UI.Init(Nametags, Commands, ESP)
 	UIList.FillDirection = Enum.FillDirection.Horizontal
 	UIList.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	UIList.VerticalAlignment = Enum.VerticalAlignment.Center
-	UIList.Padding = UDim.new(0, 15)
+	UIList.Padding = UDim.new(0, 6)
 	UIList.Parent = Icons
 
 	local UIPadding = Instance.new("UIPadding")
-	UIPadding.PaddingRight = UDim.new(0, 15)
+	UIPadding.PaddingRight = UDim.new(0, 12)
 	UIPadding.Parent = Icons
 
 	local function CreateMenu(name, size)
@@ -183,8 +184,9 @@ function UI.Init(Nametags, Commands, ESP)
 	end
 
 	local CmdMenu = CreateMenu("CmdMenu", Vector2.new(280, 0))
-	local SettingsMenu = CreateMenu("SettingsMenu", Vector2.new(250, 0))
+	local SettingsMenu = CreateMenu("SettingsMenu", Vector2.new(220, 0))
 	local EspMenu = CreateMenu("EspMenu", Vector2.new(230, 0))
+	local SpeedMenu = CreateMenu("SpeedMenu", Vector2.new(260, 0))
 
 	local Console = Instance.new("Frame")
 	Console.Name = "Console"
@@ -267,7 +269,7 @@ function UI.Init(Nametags, Commands, ESP)
 	SearchBox.Size = UDim2.new(1, 0, 0, 35)
 	SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	SearchBox.BackgroundTransparency = 0.5
-	SearchBox.PlaceholderText = "Search for commands..."
+	SearchBox.PlaceholderText = "Search commands..."
 	SearchBox.Text = ""
 	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 	SearchBox.FontFace = GetFont()
@@ -425,7 +427,6 @@ function UI.Init(Nametags, Commands, ESP)
 	Instance.new("UICorner", SliderBack).CornerRadius = UDim.new(0, 3)
 
 	local SliderFill = Instance.new("Frame")
-	SliderFill.Name = "SliderFill"
 	SliderFill.Size = UDim2.new(0.5, 0, 1, 0)
 	SliderFill.BackgroundColor3 = Color3.fromRGB(0, 255, 150)
 	SliderFill.BorderSizePixel = 0
@@ -433,7 +434,6 @@ function UI.Init(Nametags, Commands, ESP)
 	Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(0, 3)
 
 	local SliderBtn = Instance.new("TextButton")
-	SliderBtn.Name = "SliderBtn"
 	SliderBtn.Size = UDim2.new(0, 12, 0, 12)
 	SliderBtn.Position = UDim2.new(0.5, -6, 0.5, -6)
 	SliderBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -454,7 +454,7 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local flightDragging = false
 	SliderBtn.MouseButton1Down:Connect(function() flightDragging = true end)
-	SliderBtn.InputBegan:Connect(function(input) if input.UserInputType == Enum.UserInputType.Touch then flightDragging = true end end)
+	SliderBtn.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.Touch then flightDragging = true end end)
 	UserInputService.InputEnded:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then flightDragging = false end
 	end)
@@ -466,9 +466,7 @@ function UI.Init(Nametags, Commands, ESP)
 			SliderFill.Size = UDim2.new(relPos, 0, 1, 0)
 			SliderBtn.Position = UDim2.new(relPos, -6, 0.5, -6)
 			local val = math.floor(relPos * 200)
-			if Commands and Commands.HandleChat then
-				Commands.HandleChat("ws " .. val, nil, nil, true)
-			end
+			if Commands and Commands.HandleChat then Commands.HandleChat("ws " .. val, nil, nil, true) end
 		end
 	end)
 
@@ -481,92 +479,6 @@ function UI.Init(Nametags, Commands, ESP)
 			SliderFill.Size = UDim2.new(rel, 0, 1, 0)
 			SliderBtn.Position = UDim2.new(rel, -6, 0.5, -6)
 		end
-	end
-
-	local SpeedPanel = Instance.new("Frame")
-	SpeedPanel.Name = "SpeedPanel"
-	SpeedPanel.Size = UDim2.new(0, 180, 0, 65)
-	SpeedPanel.Position = UDim2.new(0, 15, 1, 100)
-	SpeedPanel.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	SpeedPanel.BackgroundTransparency = 0.3
-	SpeedPanel.BorderSizePixel = 0
-	SpeedPanel.Parent = ScreenGui
-	Instance.new("UICorner", SpeedPanel).CornerRadius = UDim.new(0, 8)
-	local SpeedPanelStroke = Instance.new("UIStroke", SpeedPanel)
-	SpeedPanelStroke.Color = Color3.fromRGB(100, 180, 255)
-	SpeedPanelStroke.Transparency = 0.5
-
-	local SpeedPanelLabel = Instance.new("TextLabel")
-	SpeedPanelLabel.Size = UDim2.new(1, 0, 0, 22)
-	SpeedPanelLabel.Position = UDim2.new(0, 12, 0, 4)
-	SpeedPanelLabel.BackgroundTransparency = 1
-	SpeedPanelLabel.Text = "WALK SPEED"
-	SpeedPanelLabel.TextColor3 = Color3.fromRGB(100, 180, 255)
-	SpeedPanelLabel.FontFace = GetFont()
-	SpeedPanelLabel.TextSize = 11
-	SpeedPanelLabel.TextXAlignment = Enum.TextXAlignment.Left
-	SpeedPanelLabel.Parent = SpeedPanel
-
-	local SpeedValueLabel = Instance.new("TextLabel")
-	SpeedValueLabel.Size = UDim2.new(0, 50, 0, 22)
-	SpeedValueLabel.Position = UDim2.new(1, -62, 0, 4)
-	SpeedValueLabel.BackgroundTransparency = 1
-	SpeedValueLabel.Text = "16"
-	SpeedValueLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-	SpeedValueLabel.FontFace = GetFont()
-	SpeedValueLabel.TextSize = 11
-	SpeedValueLabel.TextXAlignment = Enum.TextXAlignment.Right
-	SpeedValueLabel.Parent = SpeedPanel
-
-	local SpeedSliderBack = Instance.new("Frame")
-	SpeedSliderBack.Size = UDim2.new(1, -24, 0, 6)
-	SpeedSliderBack.Position = UDim2.new(0, 12, 0, 34)
-	SpeedSliderBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	SpeedSliderBack.BorderSizePixel = 0
-	SpeedSliderBack.Parent = SpeedPanel
-	Instance.new("UICorner", SpeedSliderBack).CornerRadius = UDim.new(0, 3)
-
-	local SpeedSliderFill = Instance.new("Frame")
-	SpeedSliderFill.Size = UDim2.new(0.08, 0, 1, 0)
-	SpeedSliderFill.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
-	SpeedSliderFill.BorderSizePixel = 0
-	SpeedSliderFill.Parent = SpeedSliderBack
-	Instance.new("UICorner", SpeedSliderFill).CornerRadius = UDim.new(0, 3)
-
-	local SpeedSliderBtn = Instance.new("TextButton")
-	SpeedSliderBtn.Size = UDim2.new(0, 12, 0, 12)
-	SpeedSliderBtn.Position = UDim2.new(0.08, -6, 0.5, -6)
-	SpeedSliderBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	SpeedSliderBtn.Text = ""
-	SpeedSliderBtn.Parent = SpeedSliderBack
-	Instance.new("UICorner", SpeedSliderBtn).CornerRadius = UDim.new(1, 0)
-
-	local speedDragging = false
-	SpeedSliderBtn.MouseButton1Down:Connect(function() speedDragging = true end)
-	SpeedSliderBtn.InputBegan:Connect(function(input) if input.UserInputType == Enum.UserInputType.Touch then speedDragging = true end end)
-	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then speedDragging = false end
-	end)
-
-	RunService.RenderStepped:Connect(function()
-		if speedDragging then
-			local mousePos = UserInputService:GetMouseLocation().X
-			local relPos = math.clamp((mousePos - SpeedSliderBack.AbsolutePosition.X) / SpeedSliderBack.AbsoluteSize.X, 0, 1)
-			SpeedSliderFill.Size = UDim2.new(relPos, 0, 1, 0)
-			SpeedSliderBtn.Position = UDim2.new(relPos, -6, 0.5, -6)
-			local val = math.max(1, math.floor(relPos * 200))
-			SpeedValueLabel.Text = tostring(val)
-			if Commands and Commands.HandleChat then
-				Commands.HandleChat("ws " .. val, nil, nil, true)
-			end
-		end
-	end)
-
-	local speedPanelVisible = false
-	UI.ToggleSpeedPanel = function()
-		speedPanelVisible = not speedPanelVisible
-		local target = speedPanelVisible and -80 or 100
-		TweenService:Create(SpeedPanel, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 15, 1, target)}):Play()
 	end
 
 	local ServerInfoPanel = Instance.new("Frame")
@@ -610,7 +522,6 @@ function UI.Init(Nametags, Commands, ESP)
 		row.Position = UDim2.new(0, 14, 0, 38 + i * 20)
 		row.BackgroundTransparency = 1
 		row.Parent = ServerInfoPanel
-
 		local lbl = Instance.new("TextLabel", row)
 		lbl.Size = UDim2.new(0.5, 0, 1, 0)
 		lbl.BackgroundTransparency = 1
@@ -619,7 +530,6 @@ function UI.Init(Nametags, Commands, ESP)
 		lbl.FontFace = GetFont()
 		lbl.TextSize = 11
 		lbl.TextXAlignment = Enum.TextXAlignment.Left
-
 		local val = Instance.new("TextLabel", row)
 		val.Size = UDim2.new(0.5, 0, 1, 0)
 		val.Position = UDim2.new(0.5, 0, 0, 0)
@@ -641,21 +551,18 @@ function UI.Init(Nametags, Commands, ESP)
 			TweenService:Create(ServerInfoPanel, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -235, 0.5, -77)}):Play()
 			local _fpsAcc, _fpsF = 0, 0
 			siUpdateConn = RunService.RenderStepped:Connect(function(dt)
-				_fpsAcc += dt
-				_fpsF += 1
+				_fpsAcc += dt; _fpsF += 1
 				if _fpsAcc >= 0.5 then
 					local fps = math.floor(_fpsF / _fpsAcc)
 					local ping = math.floor(Player:GetNetworkPing() * 1000)
 					local count = #Players:GetPlayers()
 					local age = math.floor(workspace.DistributedGameTime / 60)
-					local jobId = game.JobId:sub(1, 12) .. "..."
 					siRows["Players"].Text = count .. "/" .. game.Players.MaxPlayers
 					siRows["Ping"].Text = ping .. "ms"
 					siRows["FPS"].Text = tostring(fps)
 					siRows["Server Age"].Text = age .. "m"
-					siRows["Job ID"].Text = jobId
-					_fpsAcc = 0
-					_fpsF = 0
+					siRows["Job ID"].Text = game.JobId:sub(1, 12) .. "..."
+					_fpsAcc = 0; _fpsF = 0
 				end
 			end)
 		else
@@ -672,7 +579,6 @@ function UI.Init(Nametags, Commands, ESP)
 		Row.AutoButtonColor = false
 		Row.Parent = parent
 		Instance.new("UICorner", Row).CornerRadius = UDim.new(0, 6)
-
 		local Dot = Instance.new("Frame")
 		Dot.Size = UDim2.new(0, 8, 0, 8)
 		Dot.Position = UDim2.new(0, 12, 0.5, -4)
@@ -680,7 +586,6 @@ function UI.Init(Nametags, Commands, ESP)
 		Dot.BorderSizePixel = 0
 		Dot.Parent = Row
 		Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
-
 		local Lbl = Instance.new("TextLabel", Row)
 		Lbl.Size = UDim2.new(1, -30, 1, 0)
 		Lbl.Position = UDim2.new(0, 28, 0, 0)
@@ -690,9 +595,6 @@ function UI.Init(Nametags, Commands, ESP)
 		Lbl.FontFace = GetFont()
 		Lbl.TextSize = 12
 		Lbl.TextXAlignment = Enum.TextXAlignment.Left
-
-		local isOn = ESP and ESP.Settings and ESP.Settings[feature] or false
-
 		local function refresh(state)
 			if state then
 				Dot.BackgroundColor3 = Color3.fromRGB(0, 255, 150)
@@ -704,46 +606,211 @@ function UI.Init(Nametags, Commands, ESP)
 				TweenService:Create(Row, TweenInfo.new(0.2), {BackgroundTransparency = 0.95}):Play()
 			end
 		end
-
-		refresh(isOn)
-
+		refresh(ESP and ESP.Settings and ESP.Settings[feature] or false)
 		Row.MouseButton1Click:Connect(function()
 			if not ESP then return end
 			local newState = not (ESP.Settings and ESP.Settings[feature])
 			ESP.ToggleFeature(feature, newState)
 			refresh(newState)
 		end)
-
-		Row.MouseEnter:Connect(function()
-			TweenService:Create(Row, TweenInfo.new(0.15), {BackgroundTransparency = 0.88}):Play()
-		end)
+		Row.MouseEnter:Connect(function() TweenService:Create(Row, TweenInfo.new(0.15), {BackgroundTransparency = 0.88}):Play() end)
 		Row.MouseLeave:Connect(function()
-			local state = ESP and ESP.Settings and ESP.Settings[feature]
-			TweenService:Create(Row, TweenInfo.new(0.15), {BackgroundTransparency = state and 0.88 or 0.95}):Play()
+			local s = ESP and ESP.Settings and ESP.Settings[feature]
+			TweenService:Create(Row, TweenInfo.new(0.15), {BackgroundTransparency = s and 0.88 or 0.95}):Play()
 		end)
 	end
 
-	local espMasterBtn = CreateBtn(EspMenu, "Enable / Disable ESP", function()
+	CreateBtn(EspMenu, "Enable / Disable ESP", function()
 		if ESP then
 			ESP.Toggle(not ESP.Enabled)
 			if UI then UI.Notify("ESP " .. (ESP.Enabled and "ON" or "OFF"), ESP.Enabled and "Success" or "Warn") end
 		end
 	end)
-
-	local espDivider = Instance.new("Frame")
-	espDivider.Size = UDim2.new(1, 0, 0, 1)
-	espDivider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	espDivider.BackgroundTransparency = 0.88
-	espDivider.BorderSizePixel = 0
-	espDivider.Parent = EspMenu
-
+	local espDiv = Instance.new("Frame")
+	espDiv.Size = UDim2.new(1, 0, 0, 1)
+	espDiv.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	espDiv.BackgroundTransparency = 0.88
+	espDiv.BorderSizePixel = 0
+	espDiv.Parent = EspMenu
 	CreateToggleRow(EspMenu, "Highlights", "Highlights")
 	CreateToggleRow(EspMenu, "Box ESP", "Box")
 	CreateToggleRow(EspMenu, "HP Bars", "HP")
 	CreateToggleRow(EspMenu, "Skeleton", "Skeleton")
 	CreateToggleRow(EspMenu, "Names", "Names")
 
-	CreateBtn(SettingsMenu, "Speed Panel", function() UI.ToggleSpeedPanel() end)
+	local speedBoostActive = false
+	local speedBoostValue = 50
+
+	local SPToggleBtn = Instance.new("TextButton")
+	SPToggleBtn.Size = UDim2.new(1, 0, 0, 38)
+	SPToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SPToggleBtn.BackgroundTransparency = 0.95
+	SPToggleBtn.Text = "  ○  Speed Boost — OFF"
+	SPToggleBtn.TextColor3 = Color3.fromRGB(160, 160, 160)
+	SPToggleBtn.FontFace = GetFont()
+	SPToggleBtn.TextSize = 12
+	SPToggleBtn.TextXAlignment = Enum.TextXAlignment.Left
+	SPToggleBtn.AutoButtonColor = false
+	SPToggleBtn.Parent = SpeedMenu
+	Instance.new("UICorner", SPToggleBtn).CornerRadius = UDim.new(0, 6)
+
+	local spDiv = Instance.new("Frame")
+	spDiv.Size = UDim2.new(1, 0, 0, 1)
+	spDiv.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	spDiv.BackgroundTransparency = 0.88
+	spDiv.BorderSizePixel = 0
+	spDiv.Parent = SpeedMenu
+
+	local SPValueRow = Instance.new("Frame")
+	SPValueRow.Size = UDim2.new(1, 0, 0, 22)
+	SPValueRow.BackgroundTransparency = 1
+	SPValueRow.Parent = SpeedMenu
+	local SPValueLbl = Instance.new("TextLabel", SPValueRow)
+	SPValueLbl.Size = UDim2.new(0.5, 0, 1, 0)
+	SPValueLbl.BackgroundTransparency = 1
+	SPValueLbl.Text = "Walk Speed"
+	SPValueLbl.TextColor3 = Color3.fromRGB(120, 120, 120)
+	SPValueLbl.FontFace = GetFont()
+	SPValueLbl.TextSize = 11
+	SPValueLbl.TextXAlignment = Enum.TextXAlignment.Left
+	local SPCurrentLbl = Instance.new("TextLabel", SPValueRow)
+	SPCurrentLbl.Size = UDim2.new(0.5, 0, 1, 0)
+	SPCurrentLbl.Position = UDim2.new(0.5, 0, 0, 0)
+	SPCurrentLbl.BackgroundTransparency = 1
+	SPCurrentLbl.Text = "50"
+	SPCurrentLbl.TextColor3 = Color3.fromRGB(100, 180, 255)
+	SPCurrentLbl.FontFace = GetFont()
+	SPCurrentLbl.TextSize = 11
+	SPCurrentLbl.TextXAlignment = Enum.TextXAlignment.Right
+
+	local SPSliderBack = Instance.new("Frame")
+	SPSliderBack.Size = UDim2.new(1, 0, 0, 8)
+	SPSliderBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	SPSliderBack.BorderSizePixel = 0
+	SPSliderBack.Parent = SpeedMenu
+	Instance.new("UICorner", SPSliderBack).CornerRadius = UDim.new(0, 4)
+	local SPSliderFill = Instance.new("Frame", SPSliderBack)
+	SPSliderFill.Size = UDim2.new(speedBoostValue / 300, 0, 1, 0)
+	SPSliderFill.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
+	SPSliderFill.BorderSizePixel = 0
+	Instance.new("UICorner", SPSliderFill).CornerRadius = UDim.new(0, 4)
+	local SPSliderBtn = Instance.new("TextButton", SPSliderBack)
+	SPSliderBtn.Size = UDim2.new(0, 16, 0, 16)
+	SPSliderBtn.Position = UDim2.new(speedBoostValue / 300, -8, 0.5, -8)
+	SPSliderBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SPSliderBtn.Text = ""
+	SPSliderBtn.AutoButtonColor = false
+	Instance.new("UICorner", SPSliderBtn).CornerRadius = UDim.new(1, 0)
+
+	local SPPresetsRow = Instance.new("Frame")
+	SPPresetsRow.Size = UDim2.new(1, 0, 0, 30)
+	SPPresetsRow.BackgroundTransparency = 1
+	SPPresetsRow.Parent = SpeedMenu
+	local SPPresetList = Instance.new("UIListLayout", SPPresetsRow)
+	SPPresetList.FillDirection = Enum.FillDirection.Horizontal
+	SPPresetList.Padding = UDim.new(0, 5)
+
+	local function CreatePreset(val)
+		local b = Instance.new("TextButton")
+		b.Size = UDim2.new(0, 42, 1, 0)
+		b.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+		b.BackgroundTransparency = 0.4
+		b.Text = tostring(val)
+		b.TextColor3 = Color3.fromRGB(180, 180, 180)
+		b.FontFace = GetFont()
+		b.TextSize = 11
+		b.AutoButtonColor = false
+		b.Parent = SPPresetsRow
+		Instance.new("UICorner", b).CornerRadius = UDim.new(0, 5)
+		b.MouseEnter:Connect(function() TweenService:Create(b, TweenInfo.new(0.15), {TextColor3 = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.1}):Play() end)
+		b.MouseLeave:Connect(function() TweenService:Create(b, TweenInfo.new(0.15), {TextColor3 = Color3.fromRGB(180, 180, 180), BackgroundTransparency = 0.4}):Play() end)
+		b.MouseButton1Click:Connect(function()
+			speedBoostValue = val
+			SPCurrentLbl.Text = tostring(val)
+			local rel = val / 300
+			SPSliderFill.Size = UDim2.new(rel, 0, 1, 0)
+			SPSliderBtn.Position = UDim2.new(rel, -8, 0.5, -8)
+			if speedBoostActive and Commands then Commands.HandleChat("ws " .. val, UI, nil, true) end
+		end)
+	end
+	for _, v in ipairs({16, 50, 100, 200, 300}) do CreatePreset(v) end
+
+	local SPCustomRow = Instance.new("Frame")
+	SPCustomRow.Size = UDim2.new(1, 0, 0, 34)
+	SPCustomRow.BackgroundTransparency = 1
+	SPCustomRow.Parent = SpeedMenu
+	local SPCustomInput = Instance.new("TextBox", SPCustomRow)
+	SPCustomInput.Size = UDim2.new(1, -50, 1, 0)
+	SPCustomInput.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	SPCustomInput.BackgroundTransparency = 0.4
+	SPCustomInput.PlaceholderText = "Custom value..."
+	SPCustomInput.Text = ""
+	SPCustomInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SPCustomInput.PlaceholderColor3 = Color3.fromRGB(80, 80, 80)
+	SPCustomInput.FontFace = GetFont()
+	SPCustomInput.TextSize = 11
+	Instance.new("UICorner", SPCustomInput).CornerRadius = UDim.new(0, 6)
+	local SPCustomPad = Instance.new("UIPadding", SPCustomInput)
+	SPCustomPad.PaddingLeft = UDim.new(0, 8)
+	local SPSetBtn = Instance.new("TextButton", SPCustomRow)
+	SPSetBtn.Size = UDim2.new(0, 42, 1, 0)
+	SPSetBtn.Position = UDim2.new(1, -42, 0, 0)
+	SPSetBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
+	SPSetBtn.BackgroundTransparency = 0.3
+	SPSetBtn.Text = "SET"
+	SPSetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SPSetBtn.FontFace = GetFont()
+	SPSetBtn.TextSize = 11
+	SPSetBtn.AutoButtonColor = false
+	Instance.new("UICorner", SPSetBtn).CornerRadius = UDim.new(0, 6)
+	SPSetBtn.MouseButton1Click:Connect(function()
+		local num = tonumber(SPCustomInput.Text)
+		if num then
+			speedBoostValue = math.clamp(math.floor(num), 1, 1000)
+			SPCurrentLbl.Text = tostring(speedBoostValue)
+			local rel = math.min(speedBoostValue / 300, 1)
+			SPSliderFill.Size = UDim2.new(rel, 0, 1, 0)
+			SPSliderBtn.Position = UDim2.new(rel, -8, 0.5, -8)
+			if speedBoostActive and Commands then Commands.HandleChat("ws " .. speedBoostValue, UI, nil, true) end
+			SPCustomInput.Text = ""
+		end
+	end)
+
+	local function refreshSpeedToggle()
+		if speedBoostActive then
+			SPToggleBtn.Text = "  ●  Speed Boost — ON"
+			SPToggleBtn.TextColor3 = Color3.fromRGB(100, 180, 255)
+			TweenService:Create(SPToggleBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0.82}):Play()
+			if Commands then Commands.HandleChat("ws " .. speedBoostValue, UI, nil, true) end
+		else
+			SPToggleBtn.Text = "  ○  Speed Boost — OFF"
+			SPToggleBtn.TextColor3 = Color3.fromRGB(160, 160, 160)
+			TweenService:Create(SPToggleBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0.95}):Play()
+			if Commands then Commands.HandleChat("ws 16", UI, nil, true) end
+		end
+	end
+	SPToggleBtn.MouseButton1Click:Connect(function() speedBoostActive = not speedBoostActive refreshSpeedToggle() end)
+	SPToggleBtn.MouseEnter:Connect(function() TweenService:Create(SPToggleBtn, TweenInfo.new(0.15), {BackgroundTransparency = speedBoostActive and 0.75 or 0.85}):Play() end)
+	SPToggleBtn.MouseLeave:Connect(function() TweenService:Create(SPToggleBtn, TweenInfo.new(0.15), {BackgroundTransparency = speedBoostActive and 0.82 or 0.95}):Play() end)
+
+	local spDragging = false
+	SPSliderBtn.MouseButton1Down:Connect(function() spDragging = true end)
+	SPSliderBtn.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.Touch then spDragging = true end end)
+	UserInputService.InputEnded:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then spDragging = false end
+	end)
+	RunService.RenderStepped:Connect(function()
+		if spDragging then
+			local pos = UserInputService:GetMouseLocation().X
+			local rel = math.clamp((pos - SPSliderBack.AbsolutePosition.X) / SPSliderBack.AbsoluteSize.X, 0, 1)
+			SPSliderFill.Size = UDim2.new(rel, 0, 1, 0)
+			SPSliderBtn.Position = UDim2.new(rel, -8, 0.5, -8)
+			speedBoostValue = math.max(1, math.floor(rel * 300))
+			SPCurrentLbl.Text = tostring(speedBoostValue)
+			if speedBoostActive and Commands then Commands.HandleChat("ws " .. speedBoostValue, UI, nil, true) end
+		end
+	end)
+
 	CreateBtn(SettingsMenu, "Toggle Tags", function() print("Tags toggled") end)
 	CreateBtn(SettingsMenu, "Unload Script", function()
 		if Nametags then Nametags.Unload() end
@@ -764,24 +831,42 @@ function UI.Init(Nametags, Commands, ESP)
 	end
 
 	UI.ToggleMenu = function() AnimateMenu(CmdMenu, 380) end
+	UI.ToggleSpeedPanel = function() AnimateMenu(SpeedMenu, 210) end
 
-	local function CreateIcon(id, callback)
-		local Icon = Instance.new("ImageButton")
-		Icon.Size = UDim2.new(0, 24, 0, 24)
-		Icon.BackgroundTransparency = 1
-		Icon.Image = id
-		Icon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-		Icon.Parent = Icons
-		Icon.MouseEnter:Connect(function() TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play() end)
-		Icon.MouseLeave:Connect(function() TweenService:Create(Icon, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(200, 200, 200)}):Play() end)
-		if callback then Icon.MouseButton1Click:Connect(callback) end
-		return Icon
+	local function CreatePill(label, accent, callback)
+		local Btn = Instance.new("TextButton")
+		Btn.Size = UDim2.new(0, 0, 0, 28)
+		Btn.AutomaticSize = Enum.AutomaticSize.X
+		Btn.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+		Btn.BackgroundTransparency = 0.35
+		Btn.Text = "  " .. label .. "  "
+		Btn.TextColor3 = accent
+		Btn.FontFace = GetFont()
+		Btn.TextSize = 10
+		Btn.AutoButtonColor = false
+		Btn.Parent = Icons
+		Instance.new("UICorner", Btn).CornerRadius = UDim.new(1, 0)
+		local s = Instance.new("UIStroke", Btn)
+		s.Color = accent
+		s.Transparency = 0.65
+		s.Thickness = 1
+		Btn.MouseEnter:Connect(function()
+			TweenService:Create(Btn, TweenInfo.new(0.15), {BackgroundTransparency = 0.05, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+			TweenService:Create(s, TweenInfo.new(0.15), {Transparency = 0.2}):Play()
+		end)
+		Btn.MouseLeave:Connect(function()
+			TweenService:Create(Btn, TweenInfo.new(0.15), {BackgroundTransparency = 0.35, TextColor3 = accent}):Play()
+			TweenService:Create(s, TweenInfo.new(0.15), {Transparency = 0.65}):Play()
+		end)
+		if callback then Btn.MouseButton1Click:Connect(callback) end
+		return Btn
 	end
 
-	CreateIcon("rbxassetid://85860329666484", UI.ToggleMenu)
-	CreateIcon("rbxassetid://10734913301", ToggleConsole)
-	CreateIcon("rbxassetid://10734950309", function() AnimateMenu(SettingsMenu, 160) end)
-	CreateIcon("rbxassetid://10734952017", function() AnimateMenu(EspMenu, 280) end)
+	CreatePill("CMDS", Color3.fromRGB(220, 220, 220), UI.ToggleMenu)
+	CreatePill(">_", Color3.fromRGB(150, 255, 150), ToggleConsole)
+	CreatePill("ESP", Color3.fromRGB(180, 130, 255), function() AnimateMenu(EspMenu, 290) end)
+	CreatePill("SPEED", Color3.fromRGB(100, 180, 255), UI.ToggleSpeedPanel)
+	CreatePill("⚙", Color3.fromRGB(200, 200, 200), function() AnimateMenu(SettingsMenu, 100) end)
 
 	if Commands then Commands._UI = UI end
 
@@ -791,8 +876,8 @@ function UI.Init(Nametags, Commands, ESP)
 		if state then
 			Content.Visible = true
 			TweenService:Create(Island, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				Size = UDim2.new(0, 560, 0, 50),
-				Position = UDim2.new(0.5, -280, 0, 15)
+				Size = UDim2.new(0, 640, 0, 50),
+				Position = UDim2.new(0.5, -320, 0, 15)
 			}):Play()
 			TweenService:Create(IslandCorner, TweenInfo.new(0.6), {CornerRadius = UDim.new(0, 15)}):Play()
 		else
