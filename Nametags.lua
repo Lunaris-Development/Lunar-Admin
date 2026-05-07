@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
+local RunService = game:GetService("RunService")
+local LogoID = "rbxthumb://type=Asset&id=85404031245554&w=420&h=420"
 
 local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
 local function GetFontSub() return Font.fromEnum(Enum.Font.Gotham) end
@@ -116,8 +117,8 @@ function Nametags.Create(player)
 
 	local Tag = Instance.new("BillboardGui")
 	Tag.Name = "LunarTag"
-	Tag.Size = UDim2.new(0, 188, 0, 46)
-	Tag.StudsOffset = Vector3.new(0, 3.5, 0)
+	Tag.Size = UDim2.new(0, 170, 0, 38)
+	Tag.StudsOffset = Vector3.new(0, 3.2, 0)
 	Tag.AlwaysOnTop = false
 	Tag.MaxDistance = 150
 	Tag.Parent = Head
@@ -127,7 +128,7 @@ function Nametags.Create(player)
 	BorderFrame.BackgroundColor3 = Color3.new(1, 1, 1)
 	BorderFrame.BorderSizePixel = 0
 	BorderFrame.ZIndex = 1
-	Instance.new("UICorner", BorderFrame).CornerRadius = UDim.new(0, 12)
+	Instance.new("UICorner", BorderFrame).CornerRadius = UDim.new(0, 10)
 	local BorderGrad = Instance.new("UIGradient", BorderFrame)
 	BorderGrad.Color = rank.accent
 	BorderGrad.Rotation = 45
@@ -140,7 +141,7 @@ function Nametags.Create(player)
 	TagFrame.BackgroundTransparency = 0.08
 	TagFrame.BorderSizePixel = 0
 	TagFrame.ZIndex = 2
-	Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 11)
+	Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 9)
 
 	local Glow = Instance.new("ImageLabel", TagFrame)
 	Glow.Size = UDim2.new(1.2, 0, 1.6, 0)
@@ -151,34 +152,26 @@ function Nametags.Create(player)
 	Glow.ImageTransparency = 0.88
 	Glow.ZIndex = 2
 
-	local TagLogo = Instance.new("ImageLabel", TagFrame)
-	TagLogo.Size = UDim2.new(0, 28, 0, 28)
-	TagLogo.Position = UDim2.new(0, 9, 0.5, -14)
-	TagLogo.BackgroundTransparency = 1
-	TagLogo.Image = LogoID
-	TagLogo.ScaleType = Enum.ScaleType.Fit
-	TagLogo.ZIndex = 3
-
 	local TagText = Instance.new("TextLabel", TagFrame)
-	TagText.Size = UDim2.new(1, -46, 0, 20)
-	TagText.Position = UDim2.new(0, 42, 0, 6)
+	TagText.Size = UDim2.new(1, -14, 0, 18)
+	TagText.Position = UDim2.new(0, 8, 0, 4)
 	TagText.BackgroundTransparency = 1
 	TagText.Text = rank.label
 	TagText.TextColor3 = rank.color
 	TagText.FontFace = GetFont()
-	TagText.TextSize = 12
+	TagText.TextSize = 10
 	TagText.TextXAlignment = Enum.TextXAlignment.Left
 	TagText.TextTruncate = Enum.TextTruncate.AtEnd
 	TagText.ZIndex = 4
 
 	local SubText = Instance.new("TextLabel", TagFrame)
-	SubText.Size = UDim2.new(1, -46, 0, 14)
-	SubText.Position = UDim2.new(0, 42, 1, -18)
+	SubText.Size = UDim2.new(1, -14, 0, 13)
+	SubText.Position = UDim2.new(0, 8, 1, -16)
 	SubText.BackgroundTransparency = 1
 	SubText.Text = "@" .. player.Name
-	SubText.TextColor3 = Color3.fromRGB(140, 140, 140)
+	SubText.TextColor3 = Color3.fromRGB(130, 130, 130)
 	SubText.FontFace = GetFontSub()
-	SubText.TextSize = 10
+	SubText.TextSize = 9
 	SubText.TextXAlignment = Enum.TextXAlignment.Left
 	SubText.TextTruncate = Enum.TextTruncate.AtEnd
 	SubText.ZIndex = 4
@@ -199,6 +192,58 @@ function Nametags.Create(player)
 			task.wait(1.8)
 		end
 	end)
+
+	if player ~= Players.LocalPlayer then
+		local Ind = Instance.new("BillboardGui")
+		Ind.Name = "LunarIndicator"
+		Ind.StudsOffset = Vector3.new(0, 7, 0)
+		Ind.AlwaysOnTop = true
+		Ind.MaxDistance = math.huge
+		Ind.LightInfluence = 0
+		Ind.ResetOnSpawn = false
+		Ind.Active = true
+		Ind.Enabled = false
+		Ind.Parent = Head
+
+		local IndBtn = Instance.new("ImageButton", Ind)
+		IndBtn.Size = UDim2.new(1, 0, 1, 0)
+		IndBtn.BackgroundColor3 = rank.accent.Keypoints[1].Value
+		IndBtn.BackgroundTransparency = 0.1
+		IndBtn.Image = LogoID
+		IndBtn.ImageTransparency = 0.15
+		IndBtn.ScaleType = Enum.ScaleType.Fit
+		IndBtn.AutoButtonColor = false
+		Instance.new("UICorner", IndBtn).CornerRadius = UDim.new(1, 0)
+		local IndGrad = Instance.new("UIGradient", IndBtn)
+		IndGrad.Color = rank.accent
+		IndGrad.Rotation = 135
+
+		IndBtn.MouseButton1Click:Connect(function()
+			local myHrp = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+			local theirHrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if myHrp and theirHrp then
+				myHrp.CFrame = theirHrp.CFrame + Vector3.new(3, 0, 3)
+			end
+		end)
+
+		local cam = workspace.CurrentCamera
+		local rConn = RunService.RenderStepped:Connect(function()
+			if not Head.Parent then rConn:Disconnect() return end
+			local dist = (cam.CFrame.Position - Head.Position).Magnitude
+			local show = dist > 300
+			if Ind.Enabled ~= show then Ind.Enabled = show end
+			if show then
+				local fov = math.rad(cam.FieldOfView)
+				local studsPerPixel = 2 * dist * math.tan(fov * 0.5) / cam.ViewportSize.Y
+				local sz = math.clamp(46 * studsPerPixel, 0.3, 8)
+				Ind.Size = UDim2.new(sz, 0, sz, 0)
+			end
+		end)
+
+		Tag.AncestryChanged:Connect(function()
+			if not Tag.Parent then rConn:Disconnect() end
+		end)
+	end
 end
 
 function Nametags.Unload()

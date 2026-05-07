@@ -105,23 +105,6 @@ local function AddMessage(username, text, r, g, b)
 	end
 end
 
-local function SendUnfiltered(text)
-	local sent = false
-	pcall(function()
-		lp:Chat(text)
-		sent = true
-	end)
-	if not sent then
-		pcall(function()
-			local tcs = game:GetService("TextChatService")
-			local ch = tcs:FindFirstChild("TextChannels")
-			if ch then
-				local gen = ch:FindFirstChild("RBXGeneral")
-				if gen then gen:SendAsync(text); sent = true end
-			end
-		end)
-	end
-end
 
 local function BuildGUI()
 	if guiBuilt and Win and Win.Parent then
@@ -248,7 +231,6 @@ local function BuildGUI()
 		ChatInput.Text = ""
 		local uc = UserColor(lp.Name)
 		AddMessage(lp.Name, txt, math.floor(uc.R*255), math.floor(uc.G*255), math.floor(uc.B*255))
-		SendUnfiltered(txt)
 	end
 
 	SendBtn.MouseButton1Click:Connect(DoSend)
