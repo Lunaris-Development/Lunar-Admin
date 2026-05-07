@@ -26,7 +26,7 @@ function UI.Init(Nametags, Commands, ESP)
 	ScreenGui.Parent = game.CoreGui
 
 	local function CreateWindow(title, w, contentH)
-		local Win = Instance.new("Frame")
+		local Win = Instance.new("TextButton")
 		Win.Size = UDim2.new(0, w, 0, contentH + 40)
 		Win.Position = UDim2.new(0.5, -w / 2, 0, 80)
 		Win.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
@@ -34,6 +34,9 @@ function UI.Init(Nametags, Commands, ESP)
 		Win.BorderSizePixel = 0
 		Win.Visible = false
 		Win.ZIndex = 20
+		Win.Text = ""
+		Win.AutoButtonColor = false
+		Win.SelectionImageObject = Instance.new("Frame")
 		Win.Parent = ScreenGui
 		Instance.new("UICorner", Win).CornerRadius = UDim.new(0, 12)
 		local WinStroke = Instance.new("UIStroke", Win)
