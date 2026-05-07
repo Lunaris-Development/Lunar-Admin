@@ -12,7 +12,7 @@ local function GetFontBold() return Font.fromEnum(Enum.Font.GothamBold) end
 
 local UI = {}
 
-function UI.Init(Nametags, Commands, ESP)
+function UI.Init(Nametags, Commands, ESP, Rizzlines)
 	local isMobile = UserInputService.TouchEnabled
 
 	if game.CoreGui:FindFirstChild("LunarDynamicIsland") then
@@ -81,10 +81,10 @@ function UI.Init(Nametags, Commands, ESP)
 		Lights.Position = UDim2.new(1, -50, 0.5, -7)
 		Lights.BackgroundTransparency = 1
 		Lights.ZIndex = 22
-		local LightsLayout = Instance.new("UIListLayout", Lights)
-		LightsLayout.FillDirection = Enum.FillDirection.Horizontal
-		LightsLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-		LightsLayout.Padding = UDim.new(0, 8)
+		local LL = Instance.new("UIListLayout", Lights)
+		LL.FillDirection = Enum.FillDirection.Horizontal
+		LL.VerticalAlignment = Enum.VerticalAlignment.Center
+		LL.Padding = UDim.new(0, 8)
 
 		local function MakeLight(color)
 			local L = Instance.new("TextButton", Lights)
@@ -152,11 +152,7 @@ function UI.Init(Nametags, Commands, ESP)
 			end
 		end)
 
-		local function Toggle()
-			Win.Visible = not Win.Visible
-		end
-
-		return Win, Content, Toggle
+		return Win, Content, function() Win.Visible = not Win.Visible end
 	end
 
 	local Island = Instance.new("Frame")
@@ -206,15 +202,15 @@ function UI.Init(Nametags, Commands, ESP)
 	local Info = Instance.new("Frame", Content)
 	Info.Size = UDim2.new(0, 105, 1, 0)
 	Info.BackgroundTransparency = 1
-	local TitleLbl = Instance.new("TextLabel", Info)
-	TitleLbl.Size = UDim2.new(1, 0, 0, 28)
-	TitleLbl.Position = UDim2.new(0, 0, 0, 7)
-	TitleLbl.BackgroundTransparency = 1
-	TitleLbl.Text = "Lunar Admin"
-	TitleLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
-	TitleLbl.FontFace = GetFontBold()
-	TitleLbl.TextSize = 14
-	TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
+	local TitleIsland = Instance.new("TextLabel", Info)
+	TitleIsland.Size = UDim2.new(1, 0, 0, 28)
+	TitleIsland.Position = UDim2.new(0, 0, 0, 7)
+	TitleIsland.BackgroundTransparency = 1
+	TitleIsland.Text = "Lunar Admin"
+	TitleIsland.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TitleIsland.FontFace = GetFontBold()
+	TitleIsland.TextSize = 14
+	TitleIsland.TextXAlignment = Enum.TextXAlignment.Left
 	local ExecLbl = Instance.new("TextLabel", Info)
 	ExecLbl.Size = UDim2.new(1, 0, 0, 14)
 	ExecLbl.Position = UDim2.new(0, 0, 0, 27)
@@ -256,9 +252,9 @@ function UI.Init(Nametags, Commands, ESP)
 	UIList.FillDirection = Enum.FillDirection.Horizontal
 	UIList.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	UIList.VerticalAlignment = Enum.VerticalAlignment.Center
-	UIList.Padding = UDim.new(0, 8)
+	UIList.Padding = UDim.new(0, 10)
 	local IconsPad = Instance.new("UIPadding", Icons)
-	IconsPad.PaddingRight = UDim.new(0, 14)
+	IconsPad.PaddingRight = UDim.new(0, 16)
 
 	local Console = Instance.new("Frame", ScreenGui)
 	Console.Size = UDim2.new(0, 500, 0, 40)
@@ -331,11 +327,13 @@ function UI.Init(Nametags, Commands, ESP)
 		return Btn
 	end
 
-	local CmdWin, CmdContent, ToggleCmdWin = CreateWindow("Commands", 290, 300)
+	local CmdWin, CmdContent, ToggleCmdWin = CreateWindow("Commands", 290, 320)
 	local EspWin, EspContent, ToggleEspWin = CreateWindow("ESP Settings", 240, 280)
 	local SpeedWin, SpeedContent, ToggleSpeedWin = CreateWindow("Speed Control", 268, 228)
 	local SettingsWin, SettingsContent, ToggleSettingsWin = CreateWindow("Settings", 230, 90)
 	local TPWin, TPContent, ToggleTPWin = CreateWindow("Teleport", 268, 320)
+	local FlingWin, FlingContent, ToggleFlingWin = CreateWindow("Fling Players", 268, 320)
+	local RizzWin, RizzContent, ToggleRizzWin = CreateWindow("Rizzlines", 300, 310)
 
 	local SearchBox = Instance.new("TextBox", CmdContent)
 	SearchBox.Size = UDim2.new(1, 0, 0, 34)
@@ -352,7 +350,7 @@ function UI.Init(Nametags, Commands, ESP)
 	SBPad.PaddingLeft = UDim.new(0, 8)
 
 	local CmdScroll = Instance.new("ScrollingFrame", CmdContent)
-	CmdScroll.Size = UDim2.new(1, 0, 0, 240)
+	CmdScroll.Size = UDim2.new(1, 0, 0, 260)
 	CmdScroll.BackgroundTransparency = 1
 	CmdScroll.BorderSizePixel = 0
 	CmdScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -363,25 +361,47 @@ function UI.Init(Nametags, Commands, ESP)
 	CmdList.Padding = UDim.new(0, 4)
 
 	local btns = {}
-	local cmdDefs = {
-		{"Fly Toggle", "fly"}, {"Freecam Toggle", "fc"}, {"ESP Toggle", "esp"},
-		{"Noclip", "noclip"}, {"Inf Jump", "infjump"}, {"God Mode", "god"},
-		{"Anti AFK", "antiafk"}, {"Touch Fling", "touchfling"}, {"Lag Spoof", "lag"},
-		{"Loop Speed", "loopspeed 50"}, {"Server Info", "serverinfo"}, {"Server List", "serverh"},
-		{"Show Low HP", "shlow"}, {"Show Most HP", "shmost"}, {"Click TP", "ftpmobile"},
-		{"User Spoofer", "userspoofer player"}, {"Speed (50)", "ws 50"}, {"Reset Speed", "ws 16"},
-	}
-	for _, def in ipairs(cmdDefs) do
-		local b = CreateBtn(CmdScroll, def[1], function()
-			if Commands then Commands.HandleChat(def[2], UI, ESP) end
+	local function addBtn(label, action)
+		local b = CreateBtn(CmdScroll, label, function()
+			if type(action) == "function" then action()
+			elseif type(action) == "string" and Commands then Commands.HandleChat(action, UI, ESP)
+			end
 		end)
 		table.insert(btns, b)
+		return b
 	end
-	CreateBtn(CmdScroll, "Teleport to Player", function() ToggleTPWin() end)
+
+	addBtn("Fly Toggle", "fly")
+	addBtn("Freecam Toggle", "fc")
+	addBtn("Noclip", "noclip")
+	addBtn("Inf Jump", "infjump")
+	addBtn("God Mode", "god")
+	addBtn("Walk on Air", "walkair")
+	addBtn("Invisible", "invis")
+	addBtn("Aim Lock", "aimlock")
+	addBtn("Reach (20)", "reach 20")
+	addBtn("Hug Nearest", "hug")
+	addBtn("Frontflip", "flip")
+	addBtn("Backflip", "bflip")
+	addBtn("Anti AFK", "antiafk")
+	addBtn("Touch Fling", "touchfling")
+	addBtn("Lag Spoof", "lag")
+	addBtn("Click TP", "ftpmobile")
+	addBtn("Loop Speed", "loopspeed 50")
+	addBtn("User Spoofer", "userspoofer player")
+	addBtn("Show Low HP", "shlow")
+	addBtn("Show Most HP", "shmost")
+	addBtn("Server List", "serverh")
+	addBtn("Server Info", "serverinfo")
+	addBtn("Send Rizz", function() ToggleRizzWin() end)
+	addBtn("Fling Players", function() ToggleFlingWin() end)
+	addBtn("Teleport to Player", function() ToggleTPWin() end)
+	addBtn("ESP Settings", function() ToggleEspWin() end)
+	addBtn("Speed Control", function() ToggleSpeedWin() end)
 
 	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
 		local q = SearchBox.Text:lower()
-		for _, b in pairs(btns) do b.Visible = b.Name:lower():find(q) ~= nil end
+		for _, b in pairs(btns) do b.Visible = q == "" or b.Name:lower():find(q) ~= nil end
 	end)
 
 	local function CreateToggleRow(parent, label, feature)
@@ -430,11 +450,11 @@ function UI.Init(Nametags, Commands, ESP)
 		ESP.Toggle(not ESP.Enabled)
 		UI.Notify("ESP " .. (ESP.Enabled and "ON" or "OFF"), ESP.Enabled and "Success" or "Warn")
 	end)
-	local espDivFrame = Instance.new("Frame", EspContent)
-	espDivFrame.Size = UDim2.new(1, 0, 0, 1)
-	espDivFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	espDivFrame.BackgroundTransparency = 0.88
-	espDivFrame.BorderSizePixel = 0
+	local espDiv = Instance.new("Frame", EspContent)
+	espDiv.Size = UDim2.new(1, 0, 0, 1)
+	espDiv.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	espDiv.BackgroundTransparency = 0.88
+	espDiv.BorderSizePixel = 0
 	CreateToggleRow(EspContent, "Highlights", "Highlights")
 	CreateToggleRow(EspContent, "Box ESP", "Box")
 	CreateToggleRow(EspContent, "HP Bars", "HP")
@@ -443,7 +463,6 @@ function UI.Init(Nametags, Commands, ESP)
 
 	local speedOn = false
 	local speedVal = 50
-
 	local SPToggle = Instance.new("TextButton", SpeedContent)
 	SPToggle.Size = UDim2.new(1, 0, 0, 38)
 	SPToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -455,13 +474,11 @@ function UI.Init(Nametags, Commands, ESP)
 	SPToggle.TextXAlignment = Enum.TextXAlignment.Left
 	SPToggle.AutoButtonColor = false
 	Instance.new("UICorner", SPToggle).CornerRadius = UDim.new(0, 7)
-
-	local spDivFrame = Instance.new("Frame", SpeedContent)
-	spDivFrame.Size = UDim2.new(1, 0, 0, 1)
-	spDivFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	spDivFrame.BackgroundTransparency = 0.88
-	spDivFrame.BorderSizePixel = 0
-
+	local spDiv = Instance.new("Frame", SpeedContent)
+	spDiv.Size = UDim2.new(1, 0, 0, 1)
+	spDiv.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	spDiv.BackgroundTransparency = 0.88
+	spDiv.BorderSizePixel = 0
 	local SPValRow = Instance.new("Frame", SpeedContent)
 	SPValRow.Size = UDim2.new(1, 0, 0, 22)
 	SPValRow.BackgroundTransparency = 1
@@ -482,7 +499,6 @@ function UI.Init(Nametags, Commands, ESP)
 	SPValLbl.FontFace = GetFontBold()
 	SPValLbl.TextSize = 11
 	SPValLbl.TextXAlignment = Enum.TextXAlignment.Right
-
 	local SPSliderBack = Instance.new("Frame", SpeedContent)
 	SPSliderBack.Size = UDim2.new(1, 0, 0, 10)
 	SPSliderBack.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
@@ -500,7 +516,6 @@ function UI.Init(Nametags, Commands, ESP)
 	SPKnob.Text = ""
 	SPKnob.AutoButtonColor = false
 	Instance.new("UICorner", SPKnob).CornerRadius = UDim.new(1, 0)
-
 	local SPPresetsFrame = Instance.new("Frame", SpeedContent)
 	SPPresetsFrame.Size = UDim2.new(1, 0, 0, 30)
 	SPPresetsFrame.BackgroundTransparency = 1
@@ -526,7 +541,6 @@ function UI.Init(Nametags, Commands, ESP)
 			if speedOn and Commands then Commands.HandleChat("ws " .. v, UI, nil, true) end
 		end)
 	end
-
 	local SPCustomRow = Instance.new("Frame", SpeedContent)
 	SPCustomRow.Size = UDim2.new(1, 0, 0, 34)
 	SPCustomRow.BackgroundTransparency = 1
@@ -562,7 +576,6 @@ function UI.Init(Nametags, Commands, ESP)
 		if speedOn and Commands then Commands.HandleChat("ws " .. speedVal, UI, nil, true) end
 		SPInput.Text = ""
 	end)
-
 	local function refreshSPToggle()
 		if speedOn then
 			SPToggle.Text = "  ●  Speed Boost — ON"
@@ -579,7 +592,6 @@ function UI.Init(Nametags, Commands, ESP)
 	SPToggle.MouseButton1Click:Connect(function() speedOn = not speedOn refreshSPToggle() end)
 	SPToggle.MouseEnter:Connect(function() TweenService:Create(SPToggle, TweenInfo.new(0.12), {BackgroundTransparency = speedOn and 0.76 or 0.86}):Play() end)
 	SPToggle.MouseLeave:Connect(function() TweenService:Create(SPToggle, TweenInfo.new(0.12), {BackgroundTransparency = speedOn and 0.84 or 0.94}):Play() end)
-
 	local spDrag = false
 	SPKnob.MouseButton1Down:Connect(function() spDrag = true end)
 	SPKnob.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.Touch then spDrag = true end end)
@@ -588,8 +600,7 @@ function UI.Init(Nametags, Commands, ESP)
 	end)
 	RunService.RenderStepped:Connect(function()
 		if spDrag then
-			local px = UserInputService:GetMouseLocation().X
-			local r = math.clamp((px - SPSliderBack.AbsolutePosition.X) / SPSliderBack.AbsoluteSize.X, 0, 1)
+			local r = math.clamp((UserInputService:GetMouseLocation().X - SPSliderBack.AbsolutePosition.X) / SPSliderBack.AbsoluteSize.X, 0, 1)
 			SPFill.Size = UDim2.new(r, 0, 1, 0); SPKnob.Position = UDim2.new(r, -9, 0.5, -9)
 			speedVal = math.max(1, math.floor(r * 300)); SPValLbl.Text = tostring(speedVal)
 			if speedOn and Commands then Commands.HandleChat("ws " .. speedVal, UI, nil, true) end
@@ -597,10 +608,58 @@ function UI.Init(Nametags, Commands, ESP)
 	end)
 
 	CreateBtn(SettingsContent, "Toggle Nametags", function() if Nametags then Nametags.Unload() end end)
-	CreateBtn(SettingsContent, "Unload Script", function()
-		getgenv().LunarLoaded = false
-		ScreenGui:Destroy()
-	end)
+	CreateBtn(SettingsContent, "Unload Script", function() getgenv().LunarLoaded = false ScreenGui:Destroy() end)
+
+	local function BuildPlayerListWindow(scroll, action)
+		for _, c in pairs(scroll:GetChildren()) do
+			if not c:IsA("UIListLayout") then c:Destroy() end
+		end
+		for _, p in ipairs(Players:GetPlayers()) do
+			if p ~= Player then
+				local Row = Instance.new("TextButton", scroll)
+				Row.Size = UDim2.new(1, 0, 0, 50)
+				Row.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Row.BackgroundTransparency = 0.94
+				Row.Text = ""
+				Row.AutoButtonColor = false
+				Instance.new("UICorner", Row).CornerRadius = UDim.new(0, 8)
+				local Avatar = Instance.new("ImageLabel", Row)
+				Avatar.Size = UDim2.new(0, 36, 0, 36)
+				Avatar.Position = UDim2.new(0, 7, 0.5, -18)
+				Avatar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+				Avatar.Image = "rbxthumb://type=AvatarHeadShot&id=" .. p.UserId .. "&w=150&h=150"
+				Avatar.ScaleType = Enum.ScaleType.Fit
+				Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1, 0)
+				local NameLbl = Instance.new("TextLabel", Row)
+				NameLbl.Size = UDim2.new(1, -110, 1, 0)
+				NameLbl.Position = UDim2.new(0, 50, 0, 0)
+				NameLbl.BackgroundTransparency = 1
+				NameLbl.Text = p.Name
+				NameLbl.TextColor3 = Color3.fromRGB(215, 215, 215)
+				NameLbl.FontFace = GetFont()
+				NameLbl.TextSize = 13
+				NameLbl.TextXAlignment = Enum.TextXAlignment.Left
+				local ActBtn = Instance.new("TextButton", Row)
+				ActBtn.Size = UDim2.new(0, 50, 0, 28)
+				ActBtn.Position = UDim2.new(1, -56, 0.5, -14)
+				ActBtn.BackgroundColor3 = Color3.fromRGB(100, 170, 255)
+				ActBtn.BackgroundTransparency = 0.25
+				ActBtn.Text = action.label
+				ActBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+				ActBtn.FontFace = GetFontBold()
+				ActBtn.TextSize = 11
+				ActBtn.AutoButtonColor = false
+				Instance.new("UICorner", ActBtn).CornerRadius = UDim.new(0, 6)
+				ActBtn.MouseEnter:Connect(function() TweenService:Create(ActBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0}):Play() end)
+				ActBtn.MouseLeave:Connect(function() TweenService:Create(ActBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.25}):Play() end)
+				local function doAction() action.fn(p) end
+				ActBtn.MouseButton1Click:Connect(doAction)
+				Row.MouseButton1Click:Connect(doAction)
+				Row.MouseEnter:Connect(function() TweenService:Create(Row, TweenInfo.new(0.12), {BackgroundTransparency = 0.86}):Play() end)
+				Row.MouseLeave:Connect(function() TweenService:Create(Row, TweenInfo.new(0.12), {BackgroundTransparency = 0.94}):Play() end)
+			end
+		end
+	end
 
 	local TPSearchBox = Instance.new("TextBox", TPContent)
 	TPSearchBox.Size = UDim2.new(1, 0, 0, 34)
@@ -614,7 +673,6 @@ function UI.Init(Nametags, Commands, ESP)
 	TPSearchBox.TextSize = 12
 	Instance.new("UICorner", TPSearchBox).CornerRadius = UDim.new(0, 7)
 	local TPSBPad = Instance.new("UIPadding", TPSearchBox); TPSBPad.PaddingLeft = UDim.new(0, 8)
-
 	local TPScroll = Instance.new("ScrollingFrame", TPContent)
 	TPScroll.Size = UDim2.new(1, 0, 0, 256)
 	TPScroll.BackgroundTransparency = 1
@@ -623,76 +681,112 @@ function UI.Init(Nametags, Commands, ESP)
 	TPScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 	TPScroll.ScrollBarThickness = 2
 	TPScroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 100)
-	local TPList = Instance.new("UIListLayout", TPScroll)
-	TPList.Padding = UDim.new(0, 5)
+	Instance.new("UIListLayout", TPScroll).Padding = UDim.new(0, 5)
 
-	local function BuildPlayerList(filter)
-		for _, c in pairs(TPScroll:GetChildren()) do
-			if not c:IsA("UIListLayout") then c:Destroy() end
-		end
-		for _, p in ipairs(Players:GetPlayers()) do
-			if p ~= Player and (not filter or filter == "" or p.Name:lower():find(filter:lower(), 1, true)) then
-				local Row = Instance.new("TextButton", TPScroll)
-				Row.Size = UDim2.new(1, 0, 0, 50)
-				Row.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				Row.BackgroundTransparency = 0.94
-				Row.Text = ""
-				Row.AutoButtonColor = false
-				Instance.new("UICorner", Row).CornerRadius = UDim.new(0, 8)
+	local function RefreshTP(f) BuildPlayerListWindow(TPScroll, {label="TP", fn=function(p)
+		if Commands then Commands.HandleChat("tp " .. p.Name, UI, nil, true) end
+		UI.Notify("TP → " .. p.Name, "Success")
+	end}) end
+	local origTP = ToggleTPWin
+	ToggleTPWin = function() RefreshTP() origTP() end
+	TPSearchBox:GetPropertyChangedSignal("Text"):Connect(function() RefreshTP(TPSearchBox.Text) end)
+	Players.PlayerAdded:Connect(function() if TPWin.Visible then RefreshTP() end end)
+	Players.PlayerRemoving:Connect(function() task.wait(0.1) if TPWin.Visible then RefreshTP() end end)
 
-				local Avatar = Instance.new("ImageLabel", Row)
-				Avatar.Size = UDim2.new(0, 36, 0, 36)
-				Avatar.Position = UDim2.new(0, 7, 0.5, -18)
-				Avatar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-				Avatar.BackgroundTransparency = 0
-				Avatar.Image = "rbxthumb://type=AvatarHeadShot&id=" .. p.UserId .. "&w=150&h=150"
-				Avatar.ScaleType = Enum.ScaleType.Fit
-				Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1, 0)
+	local FlingSearchBox = Instance.new("TextBox", FlingContent)
+	FlingSearchBox.Size = UDim2.new(1, 0, 0, 34)
+	FlingSearchBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	FlingSearchBox.BackgroundTransparency = 0.3
+	FlingSearchBox.PlaceholderText = "  Search players..."
+	FlingSearchBox.Text = ""
+	FlingSearchBox.TextColor3 = Color3.fromRGB(220, 220, 220)
+	FlingSearchBox.PlaceholderColor3 = Color3.fromRGB(90, 90, 90)
+	FlingSearchBox.FontFace = GetFont()
+	FlingSearchBox.TextSize = 12
+	Instance.new("UICorner", FlingSearchBox).CornerRadius = UDim.new(0, 7)
+	local FSBPad = Instance.new("UIPadding", FlingSearchBox); FSBPad.PaddingLeft = UDim.new(0, 8)
+	local FlingScroll = Instance.new("ScrollingFrame", FlingContent)
+	FlingScroll.Size = UDim2.new(1, 0, 0, 256)
+	FlingScroll.BackgroundTransparency = 1
+	FlingScroll.BorderSizePixel = 0
+	FlingScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+	FlingScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	FlingScroll.ScrollBarThickness = 2
+	FlingScroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 100)
+	Instance.new("UIListLayout", FlingScroll).Padding = UDim.new(0, 5)
 
-				local NameLbl = Instance.new("TextLabel", Row)
-				NameLbl.Size = UDim2.new(1, -110, 1, 0)
-				NameLbl.Position = UDim2.new(0, 50, 0, 0)
-				NameLbl.BackgroundTransparency = 1
-				NameLbl.Text = p.Name
-				NameLbl.TextColor3 = Color3.fromRGB(215, 215, 215)
-				NameLbl.FontFace = GetFont()
-				NameLbl.TextSize = 13
-				NameLbl.TextXAlignment = Enum.TextXAlignment.Left
+	local function RefreshFling() BuildPlayerListWindow(FlingScroll, {label="Fling", fn=function(p)
+		local myHrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
+		local tHrp = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+		if not myHrp or not tHrp then return end
+		myHrp.CFrame = tHrp.CFrame * CFrame.new(0, 0, -2)
+		task.wait(0.05)
+		local bav = Instance.new("BodyAngularVelocity")
+		bav.AngularVelocity = Vector3.new(0, 9999, 0)
+		bav.MaxTorque = Vector3.new(0, math.huge, 0)
+		bav.Parent = myHrp
+		game:GetService("Debris"):AddItem(bav, 0.6)
+		UI.Notify("Flinging " .. p.Name, "Success")
+	end}) end
+	local origFling = ToggleFlingWin
+	ToggleFlingWin = function() RefreshFling() origFling() end
+	FlingSearchBox:GetPropertyChangedSignal("Text"):Connect(RefreshFling)
+	Players.PlayerAdded:Connect(function() if FlingWin.Visible then RefreshFling() end end)
+	Players.PlayerRemoving:Connect(function() task.wait(0.1) if FlingWin.Visible then RefreshFling() end end)
 
-				local TPBtn = Instance.new("TextButton", Row)
-				TPBtn.Size = UDim2.new(0, 44, 0, 28)
-				TPBtn.Position = UDim2.new(1, -50, 0.5, -14)
-				TPBtn.BackgroundColor3 = Color3.fromRGB(100, 170, 255)
-				TPBtn.BackgroundTransparency = 0.25
-				TPBtn.Text = "TP"
-				TPBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-				TPBtn.FontFace = GetFontBold()
-				TPBtn.TextSize = 11
-				TPBtn.AutoButtonColor = false
-				Instance.new("UICorner", TPBtn).CornerRadius = UDim.new(0, 6)
-				TPBtn.MouseEnter:Connect(function() TweenService:Create(TPBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0}):Play() end)
-				TPBtn.MouseLeave:Connect(function() TweenService:Create(TPBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.25}):Play() end)
+	local RizzScroll = Instance.new("ScrollingFrame", RizzContent)
+	RizzScroll.Size = UDim2.new(1, 0, 0, 276)
+	RizzScroll.BackgroundTransparency = 1
+	RizzScroll.BorderSizePixel = 0
+	RizzScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+	RizzScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	RizzScroll.ScrollBarThickness = 2
+	RizzScroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 100)
+	Instance.new("UIListLayout", RizzScroll).Padding = UDim.new(0, 4)
 
-				local function doTP()
-					if Commands then Commands.HandleChat("tp " .. p.Name, UI, nil, true) end
-					UI.Notify("TP → " .. p.Name, "Success")
-				end
-				TPBtn.MouseButton1Click:Connect(doTP)
-				Row.MouseButton1Click:Connect(doTP)
-				Row.MouseEnter:Connect(function() TweenService:Create(Row, TweenInfo.new(0.12), {BackgroundTransparency = 0.86}):Play() end)
-				Row.MouseLeave:Connect(function() TweenService:Create(Row, TweenInfo.new(0.12), {BackgroundTransparency = 0.94}):Play() end)
-			end
+	if Rizzlines then
+		for _, line in ipairs(Rizzlines.Lines) do
+			local Row = Instance.new("TextButton", RizzScroll)
+			Row.Size = UDim2.new(1, 0, 0, 0)
+			Row.AutomaticSize = Enum.AutomaticSize.Y
+			Row.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Row.BackgroundTransparency = 0.94
+			Row.Text = ""
+			Row.AutoButtonColor = false
+			Instance.new("UICorner", Row).CornerRadius = UDim.new(0, 8)
+			local RowPad = Instance.new("UIPadding", Row)
+			RowPad.PaddingLeft = UDim.new(0, 10)
+			RowPad.PaddingRight = UDim.new(0, 60)
+			RowPad.PaddingTop = UDim.new(0, 8)
+			RowPad.PaddingBottom = UDim.new(0, 8)
+			local LineLbl = Instance.new("TextLabel", Row)
+			LineLbl.Size = UDim2.new(1, 0, 0, 0)
+			LineLbl.AutomaticSize = Enum.AutomaticSize.Y
+			LineLbl.BackgroundTransparency = 1
+			LineLbl.Text = line
+			LineLbl.TextColor3 = Color3.fromRGB(200, 200, 200)
+			LineLbl.FontFace = GetFont()
+			LineLbl.TextSize = 11
+			LineLbl.TextXAlignment = Enum.TextXAlignment.Left
+			LineLbl.TextWrapped = true
+			local SendBtn = Instance.new("TextButton", Row)
+			SendBtn.Size = UDim2.new(0, 48, 0, 28)
+			SendBtn.Position = UDim2.new(1, -54, 0.5, -14)
+			SendBtn.BackgroundColor3 = Color3.fromRGB(100, 170, 255)
+			SendBtn.BackgroundTransparency = 0.25
+			SendBtn.Text = "Send"
+			SendBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+			SendBtn.FontFace = GetFontBold()
+			SendBtn.TextSize = 11
+			SendBtn.AutoButtonColor = false
+			Instance.new("UICorner", SendBtn).CornerRadius = UDim.new(0, 6)
+			SendBtn.MouseEnter:Connect(function() TweenService:Create(SendBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0}):Play() end)
+			SendBtn.MouseLeave:Connect(function() TweenService:Create(SendBtn, TweenInfo.new(0.12), {BackgroundTransparency = 0.25}):Play() end)
+			SendBtn.MouseButton1Click:Connect(function() Rizzlines.SendLine(line, UI) end)
+			Row.MouseEnter:Connect(function() TweenService:Create(Row, TweenInfo.new(0.12), {BackgroundTransparency = 0.86}):Play() end)
+			Row.MouseLeave:Connect(function() TweenService:Create(Row, TweenInfo.new(0.12), {BackgroundTransparency = 0.94}):Play() end)
 		end
 	end
-
-	local origToggleTP = ToggleTPWin
-	ToggleTPWin = function()
-		BuildPlayerList(TPSearchBox.Text)
-		origToggleTP()
-	end
-	TPSearchBox:GetPropertyChangedSignal("Text"):Connect(function() BuildPlayerList(TPSearchBox.Text) end)
-	Players.PlayerAdded:Connect(function() if TPWin.Visible then BuildPlayerList(TPSearchBox.Text) end end)
-	Players.PlayerRemoving:Connect(function() task.wait(0.1) if TPWin.Visible then BuildPlayerList(TPSearchBox.Text) end end)
 
 	local NotifyFrame = Instance.new("Frame", ScreenGui)
 	NotifyFrame.Size = UDim2.new(0, 295, 0, 58)
@@ -732,9 +826,7 @@ function UI.Init(Nametags, Commands, ESP)
 		elseif nType == "Error" then color = Color3.fromRGB(255, 65, 65)
 		end
 		NLabel.Text = text
-		NAccent.BackgroundColor3 = color
-		NStroke.Color = color
-		NStroke.Transparency = 0.62
+		NAccent.BackgroundColor3 = color; NStroke.Color = color; NStroke.Transparency = 0.62
 		TweenService:Create(NotifyFrame, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -315, 1, -80)}):Play()
 		task.delay(2.8, function()
 			TweenService:Create(NStroke, TweenInfo.new(0.3), {Transparency = 0.84}):Play()
@@ -750,45 +842,33 @@ function UI.Init(Nametags, Commands, ESP)
 	FlightStatus.BorderSizePixel = 0
 	Instance.new("UICorner", FlightStatus).CornerRadius = UDim.new(0, 10)
 	local FStroke = Instance.new("UIStroke", FlightStatus)
-	FStroke.Color = Color3.fromRGB(0, 220, 130)
-	FStroke.Transparency = 0.45
+	FStroke.Color = Color3.fromRGB(0, 220, 130); FStroke.Transparency = 0.45
 	local FLabel = Instance.new("TextLabel", FlightStatus)
 	FLabel.Size = UDim2.new(1, -12, 0, 24)
 	FLabel.Position = UDim2.new(0, 12, 0, 6)
-	FLabel.BackgroundTransparency = 1
-	FLabel.Text = "FLIGHT ACTIVE"
-	FLabel.TextColor3 = Color3.fromRGB(0, 220, 130)
-	FLabel.FontFace = GetFontBold()
-	FLabel.TextSize = 12
+	FLabel.BackgroundTransparency = 1; FLabel.Text = "FLIGHT ACTIVE"
+	FLabel.TextColor3 = Color3.fromRGB(0, 220, 130); FLabel.FontFace = GetFontBold(); FLabel.TextSize = 12
 	FLabel.TextXAlignment = Enum.TextXAlignment.Left
 	local FSliderBack = Instance.new("Frame", FlightStatus)
 	FSliderBack.Size = UDim2.new(1, -24, 0, 7)
 	FSliderBack.Position = UDim2.new(0, 12, 0, 44)
-	FSliderBack.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
-	FSliderBack.BorderSizePixel = 0
+	FSliderBack.BackgroundColor3 = Color3.fromRGB(38, 38, 38); FSliderBack.BorderSizePixel = 0
 	Instance.new("UICorner", FSliderBack).CornerRadius = UDim.new(0, 4)
 	local FSliderFill = Instance.new("Frame", FSliderBack)
 	FSliderFill.Size = UDim2.new(0.5, 0, 1, 0)
-	FSliderFill.BackgroundColor3 = Color3.fromRGB(0, 220, 130)
-	FSliderFill.BorderSizePixel = 0
+	FSliderFill.BackgroundColor3 = Color3.fromRGB(0, 220, 130); FSliderFill.BorderSizePixel = 0
 	Instance.new("UICorner", FSliderFill).CornerRadius = UDim.new(0, 4)
 	local FSliderKnob = Instance.new("TextButton", FSliderBack)
 	FSliderKnob.Size = UDim2.new(0, 14, 0, 14)
 	FSliderKnob.Position = UDim2.new(0.5, -7, 0.5, -7)
-	FSliderKnob.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
-	FSliderKnob.Text = ""
+	FSliderKnob.BackgroundColor3 = Color3.fromRGB(240, 240, 240); FSliderKnob.Text = ""
 	FSliderKnob.AutoButtonColor = false
 	Instance.new("UICorner", FSliderKnob).CornerRadius = UDim.new(1, 0)
 	local FSpeedLbl = Instance.new("TextLabel", FlightStatus)
-	FSpeedLbl.Size = UDim2.new(1, -12, 0, 14)
-	FSpeedLbl.Position = UDim2.new(0, 12, 0, 56)
-	FSpeedLbl.BackgroundTransparency = 1
-	FSpeedLbl.Text = "SPEED: 32"
-	FSpeedLbl.TextColor3 = Color3.fromRGB(160, 160, 160)
-	FSpeedLbl.FontFace = GetFont()
-	FSpeedLbl.TextSize = 10
+	FSpeedLbl.Size = UDim2.new(1, -12, 0, 14); FSpeedLbl.Position = UDim2.new(0, 12, 0, 56)
+	FSpeedLbl.BackgroundTransparency = 1; FSpeedLbl.Text = "SPEED: 32"
+	FSpeedLbl.TextColor3 = Color3.fromRGB(160, 160, 160); FSpeedLbl.FontFace = GetFont(); FSpeedLbl.TextSize = 10
 	FSpeedLbl.TextXAlignment = Enum.TextXAlignment.Left
-
 	local fDrag = false
 	FSliderKnob.MouseButton1Down:Connect(function() fDrag = true end)
 	FSliderKnob.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.Touch then fDrag = true end end)
@@ -799,11 +879,9 @@ function UI.Init(Nametags, Commands, ESP)
 		if fDrag then
 			local r = math.clamp((UserInputService:GetMouseLocation().X - FSliderBack.AbsolutePosition.X) / FSliderBack.AbsoluteSize.X, 0, 1)
 			FSliderFill.Size = UDim2.new(r, 0, 1, 0); FSliderKnob.Position = UDim2.new(r, -7, 0.5, -7)
-			local v = math.floor(r * 200)
-			if Commands then Commands.HandleChat("ws " .. v, nil, nil, true) end
+			if Commands then Commands.HandleChat("ws " .. math.floor(r * 200), nil, nil, true) end
 		end
 	end)
-
 	UI.UpdateFlightStatus = function(active, speed)
 		TweenService:Create(FlightStatus, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 15, 1, active and -90 or 110)}):Play()
 		if speed then
@@ -821,39 +899,26 @@ function UI.Init(Nametags, Commands, ESP)
 	ServerInfoPanel.BorderSizePixel = 0
 	Instance.new("UICorner", ServerInfoPanel).CornerRadius = UDim.new(0, 11)
 	local SIPStroke = Instance.new("UIStroke", ServerInfoPanel)
-	SIPStroke.Color = Color3.fromRGB(100, 180, 255)
-	SIPStroke.Transparency = 0.55
-	SIPStroke.Thickness = 1
+	SIPStroke.Color = Color3.fromRGB(100, 180, 255); SIPStroke.Transparency = 0.55; SIPStroke.Thickness = 1
 	local SIPTitle = Instance.new("TextLabel", ServerInfoPanel)
-	SIPTitle.Size = UDim2.new(1, -20, 0, 30)
-	SIPTitle.Position = UDim2.new(0, 14, 0, 7)
-	SIPTitle.BackgroundTransparency = 1
-	SIPTitle.Text = "SERVER INFO"
-	SIPTitle.TextColor3 = Color3.fromRGB(100, 180, 255)
-	SIPTitle.FontFace = GetFontBold()
-	SIPTitle.TextSize = 12
+	SIPTitle.Size = UDim2.new(1, -20, 0, 30); SIPTitle.Position = UDim2.new(0, 14, 0, 7)
+	SIPTitle.BackgroundTransparency = 1; SIPTitle.Text = "SERVER INFO"
+	SIPTitle.TextColor3 = Color3.fromRGB(100, 180, 255); SIPTitle.FontFace = GetFontBold(); SIPTitle.TextSize = 12
 	SIPTitle.TextXAlignment = Enum.TextXAlignment.Left
 	local SIPDiv = Instance.new("Frame", ServerInfoPanel)
-	SIPDiv.Size = UDim2.new(1, -28, 0, 1)
-	SIPDiv.Position = UDim2.new(0, 14, 0, 37)
-	SIPDiv.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	SIPDiv.BackgroundTransparency = 0.88
-	SIPDiv.BorderSizePixel = 0
+	SIPDiv.Size = UDim2.new(1, -28, 0, 1); SIPDiv.Position = UDim2.new(0, 14, 0, 37)
+	SIPDiv.BackgroundColor3 = Color3.fromRGB(255, 255, 255); SIPDiv.BackgroundTransparency = 0.88; SIPDiv.BorderSizePixel = 0
 	local siRows = {}
 	for i, label in ipairs({"Players", "Ping", "FPS", "Server Age", "Job ID"}) do
 		local row = Instance.new("Frame", ServerInfoPanel)
-		row.Size = UDim2.new(1, -28, 0, 18)
-		row.Position = UDim2.new(0, 14, 0, 37 + i * 21)
+		row.Size = UDim2.new(1, -28, 0, 18); row.Position = UDim2.new(0, 14, 0, 37 + i * 21)
 		row.BackgroundTransparency = 1
 		local ll = Instance.new("TextLabel", row)
-		ll.Size = UDim2.new(0.5, 0, 1, 0); ll.BackgroundTransparency = 1
-		ll.Text = label; ll.TextColor3 = Color3.fromRGB(110, 110, 110)
-		ll.FontFace = GetFont(); ll.TextSize = 11; ll.TextXAlignment = Enum.TextXAlignment.Left
+		ll.Size = UDim2.new(0.5, 0, 1, 0); ll.BackgroundTransparency = 1; ll.Text = label
+		ll.TextColor3 = Color3.fromRGB(110, 110, 110); ll.FontFace = GetFont(); ll.TextSize = 11; ll.TextXAlignment = Enum.TextXAlignment.Left
 		local rv = Instance.new("TextLabel", row)
-		rv.Size = UDim2.new(0.5, 0, 1, 0); rv.Position = UDim2.new(0.5, 0, 0, 0)
-		rv.BackgroundTransparency = 1; rv.Text = "—"
-		rv.TextColor3 = Color3.fromRGB(220, 220, 220); rv.FontFace = GetFont()
-		rv.TextSize = 11; rv.TextXAlignment = Enum.TextXAlignment.Right
+		rv.Size = UDim2.new(0.5, 0, 1, 0); rv.Position = UDim2.new(0.5, 0, 0, 0); rv.BackgroundTransparency = 1; rv.Text = "—"
+		rv.TextColor3 = Color3.fromRGB(220, 220, 220); rv.FontFace = GetFont(); rv.TextSize = 11; rv.TextXAlignment = Enum.TextXAlignment.Right
 		siRows[label] = rv
 	end
 	local siOpen, siConn = false, nil
@@ -909,8 +974,6 @@ function UI.Init(Nametags, Commands, ESP)
 
 	CreatePill("CMDS", Color3.fromRGB(215, 215, 215), function() ToggleCmdWin() end)
 	CreatePill(">_", Color3.fromRGB(100, 230, 130), ToggleConsole)
-	CreatePill("ESP", Color3.fromRGB(170, 120, 255), function() ToggleEspWin() end)
-	CreatePill("SPEED", Color3.fromRGB(90, 165, 255), function() ToggleSpeedWin() end)
 	CreatePill("⚙", Color3.fromRGB(190, 190, 190), function() ToggleSettingsWin() end)
 
 	local Expanded = false
@@ -919,8 +982,8 @@ function UI.Init(Nametags, Commands, ESP)
 		if state then
 			Content.Visible = true
 			TweenService:Create(Island, TweenInfo.new(0.55, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				Size = UDim2.new(0, 660, 0, 50),
-				Position = UDim2.new(0.5, -330, 0, 15)
+				Size = UDim2.new(0, 470, 0, 50),
+				Position = UDim2.new(0.5, -235, 0, 15)
 			}):Play()
 			TweenService:Create(IslandCorner, TweenInfo.new(0.55), {CornerRadius = UDim.new(0, 15)}):Play()
 		else
@@ -937,9 +1000,7 @@ function UI.Init(Nametags, Commands, ESP)
 	if isMobile then
 		local MTap = Instance.new("TextButton", Island)
 		MTap.Size = UDim2.new(0, 50, 0, 50)
-		MTap.BackgroundTransparency = 1
-		MTap.Text = ""
-		MTap.ZIndex = 10
+		MTap.BackgroundTransparency = 1; MTap.Text = ""; MTap.ZIndex = 10
 		MTap.MouseButton1Click:Connect(function() ToggleIsland(not Expanded) end)
 	else
 		Island.MouseEnter:Connect(function() ToggleIsland(true) end)
