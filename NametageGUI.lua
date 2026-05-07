@@ -6,7 +6,7 @@ local HttpService = game:GetService("HttpService")
 
 local GAMEPASS_ID = 9339207514
 local lp = Players.LocalPlayer
-local LogoID = "rbxthumb://type=Asset&id=85404031245554&w=420&h=420"
+local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
 
 local NametageGUI = {}
 
