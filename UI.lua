@@ -223,7 +223,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 
 	local BarExec = Instance.new("TextLabel", Bar)
 	BarExec.Size = UDim2.new(0, 96, 0, 14)
-	BarExec.Position = UDim2.new(0, 50, 0, 28)
+	BarExec.Position = UDim2.new(0, 50, 0, 24)
 	BarExec.BackgroundTransparency = 1
 	BarExec.Text = Executor
 	BarExec.TextColor3 = Color3.fromRGB(110, 110, 110)

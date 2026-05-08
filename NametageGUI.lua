@@ -593,17 +593,21 @@ local function BuildGUI(UI)
 		while Win and Win.Parent do
 			local t = Config.text ~= "" and Config.text or "LUNAR USER"
 			if Config.effect == "Typewriter" then
-				PTL.Text = ""
+				PTL.Text = "|"; task.wait(0.3)
 				for i = 1, #t do
 					if not (Win and Win.Parent) then return end
-					PTL.Text = t:sub(1,i); task.wait(0.09)
+					PTL.Text = t:sub(1,i) .. "|"; task.wait(0.09)
 				end
-				task.wait(1.5)
+				for _ = 1, 3 do
+					if not (Win and Win.Parent) then return end
+					PTL.Text = t; task.wait(0.4)
+					PTL.Text = t .. "|"; task.wait(0.4)
+				end
 				for i = #t, 0, -1 do
 					if not (Win and Win.Parent) then return end
-					PTL.Text = t:sub(1,i); task.wait(0.055)
+					PTL.Text = t:sub(1,i) .. "|"; task.wait(0.055)
 				end
-				task.wait(0.3)
+				PTL.Text = ""; task.wait(0.3)
 			elseif Config.effect == "Glitch" then
 				local gc = "!@#$%^&*<>?{}~█"
 				for _ = 1, 5 do
@@ -667,12 +671,6 @@ local function BuildGUI(UI)
 		Config.decalId = DecalBox.Text; RefreshPreview()
 	end)
 
-	task.spawn(function()
-		while Win and Win.Parent do
-			task.wait(0.08)
-			RefreshPreview()
-		end
-	end)
 
 	SLabel(RightP, "FONT", 10)
 	local FontScroll = Instance.new("ScrollingFrame", RightP)

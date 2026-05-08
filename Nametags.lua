@@ -92,19 +92,24 @@ end
 local function runTypewriter(label, text)
 	task.spawn(function()
 		while label and label.Parent and Active do
-			label.Text = ""
+			label.Text = "|"
+			task.wait(0.3)
 			for i = 1, #text do
 				if not (label.Parent and Active) then return end
-				label.Text = text:sub(1, i)
+				label.Text = text:sub(1, i) .. "|"
 				task.wait(0.11)
 			end
-			task.wait(2)
+			for _ = 1, 3 do
+				if not (label.Parent and Active) then return end
+				label.Text = text; task.wait(0.4)
+				label.Text = text .. "|"; task.wait(0.4)
+			end
 			for i = #text, 0, -1 do
 				if not (label.Parent and Active) then return end
-				label.Text = text:sub(1, i)
+				label.Text = text:sub(1, i) .. "|"
 				task.wait(0.065)
 			end
-			task.wait(0.4)
+			label.Text = ""; task.wait(0.35)
 		end
 	end)
 end
@@ -118,7 +123,7 @@ function Nametags.Create(player)
 
 	local Tag = Instance.new("BillboardGui")
 	Tag.Name = "LunarTag"
-	Tag.Size = UDim2.new(0, 170, 0, 38)
+	Tag.Size = UDim2.new(0, 185, 0, 40)
 	Tag.StudsOffset = Vector3.new(0, 3.2, 0)
 	Tag.AlwaysOnTop = false
 	Tag.MaxDistance = 150
@@ -153,9 +158,17 @@ function Nametags.Create(player)
 	Glow.ImageTransparency = 0.88
 	Glow.ZIndex = 2
 
+	local TagLogo = Instance.new("ImageLabel", TagFrame)
+	TagLogo.Size = UDim2.new(0, 22, 0, 22)
+	TagLogo.Position = UDim2.new(0, 8, 0.5, -11)
+	TagLogo.BackgroundTransparency = 1
+	TagLogo.Image = LogoID
+	TagLogo.ScaleType = Enum.ScaleType.Fit
+	TagLogo.ZIndex = 4
+
 	local TagText = Instance.new("TextLabel", TagFrame)
-	TagText.Size = UDim2.new(1, -14, 0, 18)
-	TagText.Position = UDim2.new(0, 8, 0, 4)
+	TagText.Size = UDim2.new(1, -38, 0, 18)
+	TagText.Position = UDim2.new(0, 34, 0, 3)
 	TagText.BackgroundTransparency = 1
 	TagText.Text = rank.label
 	TagText.TextColor3 = rank.color
@@ -166,8 +179,8 @@ function Nametags.Create(player)
 	TagText.ZIndex = 4
 
 	local SubText = Instance.new("TextLabel", TagFrame)
-	SubText.Size = UDim2.new(1, -14, 0, 13)
-	SubText.Position = UDim2.new(0, 8, 1, -16)
+	SubText.Size = UDim2.new(1, -38, 0, 13)
+	SubText.Position = UDim2.new(0, 34, 1, -16)
 	SubText.BackgroundTransparency = 1
 	SubText.Text = "@" .. player.Name
 	SubText.TextColor3 = Color3.fromRGB(130, 130, 130)
