@@ -121,9 +121,13 @@ function Nametags.Create(player)
 
 	local rank = Roles[player.Name] or Roles["__default"]
 
+	local TS = game:GetService("TextService")
+	local textW = TS:GetTextSize(rank.label, 13, Enum.Font.GothamBold, Vector2.new(300, 54)).X
+	local tagW = math.clamp(textW + 44 + 28, 120, 230)
+
 	local Tag = Instance.new("BillboardGui")
 	Tag.Name = "LunarTag"
-	Tag.Size = UDim2.new(0, 175, 0, 54)
+	Tag.Size = UDim2.new(0, tagW, 0, 54)
 	Tag.StudsOffset = Vector3.new(0, 3.5, 0)
 	Tag.AlwaysOnTop = false
 	Tag.MaxDistance = 150

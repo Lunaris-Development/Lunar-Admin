@@ -150,9 +150,14 @@ local function ApplyTag(UI)
 		rawId = rawId:match("%d+") or rawId
 		local imgUrl = rawId ~= "" and ("rbxthumb://type=Asset&id=" .. rawId .. "&w=420&h=420") or LogoID
 
+		local displayText = Config.text ~= "" and Config.text or "LUNAR USER"
+		local TS = game:GetService("TextService")
+		local textW = TS:GetTextSize(displayText, 13, Enum.Font.GothamBold, Vector2.new(300, 54)).X
+		local tagW = math.clamp(textW + 44 + 28, 120, 240)
+
 		local Tag = Instance.new("BillboardGui")
 		Tag.Name = "LunarTag"
-		Tag.Size = UDim2.new(0, 175, 0, 54)
+		Tag.Size = UDim2.new(0, tagW, 0, 54)
 		Tag.StudsOffset = Vector3.new(0, 3.5, 0)
 		Tag.AlwaysOnTop = false
 		Tag.MaxDistance = 150
