@@ -412,7 +412,11 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		if t == -58 then task.wait(0.1) ConsoleInput:CaptureFocus() end
 	end
 	UserInputService.InputBegan:Connect(function(input, gpe)
-		if not gpe and input.KeyCode == Enum.KeyCode.F2 then ToggleConsole() end
+		if gpe then return end
+		if input.KeyCode == Enum.KeyCode.F2 then ToggleConsole() end
+		if input.KeyCode == Enum.KeyCode.E then
+			if Commands then Commands.HandleChat("fly", UI, ESP) end
+		end
 	end)
 	local CmdCards = {
 		fly        = {t="FLY",          d="Toggle free flight. Jump to rise, crouch to descend."},
@@ -1173,60 +1177,46 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	end
 
 	local FlightStatus = Instance.new("Frame", ScreenGui)
-	FlightStatus.Size = UDim2.new(0, 185, 0, 76)
-	FlightStatus.Position = UDim2.new(0, 15, 1, 110)
-	FlightStatus.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-	FlightStatus.BackgroundTransparency = 0.28
+	FlightStatus.Size = UDim2.new(0, 220, 0, 54)
+	FlightStatus.AnchorPoint = Vector2.new(0.5, 1)
+	FlightStatus.Position = UDim2.new(0.5, 0, 1, 80)
+	FlightStatus.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	FlightStatus.BackgroundTransparency = 0.12
 	FlightStatus.BorderSizePixel = 0
-	Instance.new("UICorner", FlightStatus).CornerRadius = UDim.new(0, 10)
+	Instance.new("UICorner", FlightStatus).CornerRadius = UDim.new(0, 14)
 	local FStroke = Instance.new("UIStroke", FlightStatus)
-	FStroke.Color = Color3.fromRGB(0, 220, 130); FStroke.Transparency = 0.45
-	local FLabel = Instance.new("TextLabel", FlightStatus)
-	FLabel.Size = UDim2.new(1, -12, 0, 24)
-	FLabel.Position = UDim2.new(0, 12, 0, 6)
-	FLabel.BackgroundTransparency = 1; FLabel.Text = "FLIGHT ACTIVE"
-	FLabel.TextColor3 = Color3.fromRGB(0, 220, 130); FLabel.FontFace = GetFontBold(); FLabel.TextSize = 12
-	FLabel.TextXAlignment = Enum.TextXAlignment.Left
-	local FSliderBack = Instance.new("Frame", FlightStatus)
-	FSliderBack.Size = UDim2.new(1, -24, 0, 7)
-	FSliderBack.Position = UDim2.new(0, 12, 0, 44)
-	FSliderBack.BackgroundColor3 = Color3.fromRGB(38, 38, 38); FSliderBack.BorderSizePixel = 0
-	Instance.new("UICorner", FSliderBack).CornerRadius = UDim.new(0, 4)
-	local FSliderFill = Instance.new("Frame", FSliderBack)
-	FSliderFill.Size = UDim2.new(0.5, 0, 1, 0)
-	FSliderFill.BackgroundColor3 = Color3.fromRGB(0, 220, 130); FSliderFill.BorderSizePixel = 0
-	Instance.new("UICorner", FSliderFill).CornerRadius = UDim.new(0, 4)
-	local FSliderKnob = Instance.new("TextButton", FSliderBack)
-	FSliderKnob.Size = UDim2.new(0, 14, 0, 14)
-	FSliderKnob.Position = UDim2.new(0.5, -7, 0.5, -7)
-	FSliderKnob.BackgroundColor3 = Color3.fromRGB(240, 240, 240); FSliderKnob.Text = ""
-	FSliderKnob.AutoButtonColor = false
-	Instance.new("UICorner", FSliderKnob).CornerRadius = UDim.new(1, 0)
+	FStroke.Color = Color3.fromRGB(0, 220, 130); FStroke.Transparency = 0.4; FStroke.Thickness = 1
+
+	local FIcon = Instance.new("TextLabel", FlightStatus)
+	FIcon.Size = UDim2.new(0, 28, 0, 28); FIcon.Position = UDim2.new(0, 12, 0.5, -14)
+	FIcon.BackgroundColor3 = Color3.fromRGB(0, 200, 110); FIcon.BackgroundTransparency = 0.25
+	FIcon.Text = "✈"; FIcon.TextColor3 = Color3.fromRGB(255,255,255)
+	FIcon.FontFace = GetFontBold(); FIcon.TextSize = 14
+	Instance.new("UICorner", FIcon).CornerRadius = UDim.new(0, 7)
+
+	local FTitleLbl = Instance.new("TextLabel", FlightStatus)
+	FTitleLbl.Size = UDim2.new(1, -100, 0, 18); FTitleLbl.Position = UDim2.new(0, 48, 0, 9)
+	FTitleLbl.BackgroundTransparency = 1; FTitleLbl.Text = "FLY MODE"
+	FTitleLbl.TextColor3 = Color3.fromRGB(0, 220, 130); FTitleLbl.FontFace = GetFontBold(); FTitleLbl.TextSize = 11
+	FTitleLbl.TextXAlignment = Enum.TextXAlignment.Left
+
+	local FKeyHint = Instance.new("TextLabel", FlightStatus)
+	FKeyHint.Size = UDim2.new(1, -100, 0, 14); FKeyHint.Position = UDim2.new(0, 48, 0, 30)
+	FKeyHint.BackgroundTransparency = 1; FKeyHint.Text = "Press E to toggle"
+	FKeyHint.TextColor3 = Color3.fromRGB(90, 90, 90); FKeyHint.FontFace = GetFont(); FKeyHint.TextSize = 9
+	FKeyHint.TextXAlignment = Enum.TextXAlignment.Left
+
 	local FSpeedLbl = Instance.new("TextLabel", FlightStatus)
-	FSpeedLbl.Size = UDim2.new(1, -12, 0, 14); FSpeedLbl.Position = UDim2.new(0, 12, 0, 56)
-	FSpeedLbl.BackgroundTransparency = 1; FSpeedLbl.Text = "SPEED: 32"
-	FSpeedLbl.TextColor3 = Color3.fromRGB(160, 160, 160); FSpeedLbl.FontFace = GetFont(); FSpeedLbl.TextSize = 10
-	FSpeedLbl.TextXAlignment = Enum.TextXAlignment.Left
-	local fDrag = false
-	FSliderKnob.MouseButton1Down:Connect(function() fDrag = true end)
-	FSliderKnob.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.Touch then fDrag = true end end)
-	UserInputService.InputEnded:Connect(function(i)
-		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then fDrag = false end
-	end)
-	RunService.RenderStepped:Connect(function()
-		if fDrag then
-			local r = math.clamp((UserInputService:GetMouseLocation().X - FSliderBack.AbsolutePosition.X) / FSliderBack.AbsoluteSize.X, 0, 1)
-			FSliderFill.Size = UDim2.new(r, 0, 1, 0); FSliderKnob.Position = UDim2.new(r, -7, 0.5, -7)
-			if Commands then Commands.HandleChat("ws " .. math.floor(r * 200), nil, nil, true) end
-		end
-	end)
+	FSpeedLbl.Size = UDim2.new(0, 60, 1, 0); FSpeedLbl.Position = UDim2.new(1, -68, 0, 0)
+	FSpeedLbl.BackgroundTransparency = 1; FSpeedLbl.Text = "32\nspd"
+	FSpeedLbl.TextColor3 = Color3.fromRGB(100, 200, 255); FSpeedLbl.FontFace = GetFontBold(); FSpeedLbl.TextSize = 13
+	FSpeedLbl.TextXAlignment = Enum.TextXAlignment.Center
+
 	UI.UpdateFlightStatus = function(active, speed)
-		TweenService:Create(FlightStatus, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 15, 1, active and -90 or 110)}):Play()
-		if speed then
-			FSpeedLbl.Text = "SPEED: " .. math.floor(speed)
-			local r = math.clamp(speed / 200, 0, 1)
-			FSliderFill.Size = UDim2.new(r, 0, 1, 0); FSliderKnob.Position = UDim2.new(r, -7, 0.5, -7)
-		end
+		TweenService:Create(FlightStatus, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Position = UDim2.new(0.5, 0, 1, active and -14 or 80)
+		}):Play()
+		if speed then FSpeedLbl.Text = math.floor(speed) .. "\nspd" end
 	end
 
 	local ServerInfoPanel = Instance.new("Frame", ScreenGui)
