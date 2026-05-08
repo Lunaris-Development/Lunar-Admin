@@ -1051,7 +1051,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 
 	local NotifyFrame = Instance.new("Frame", ScreenGui)
 	NotifyFrame.Size = UDim2.new(0, 262, 0, 84)
-	NotifyFrame.Position = UDim2.new(1, 285, 0, 20)
+	NotifyFrame.Position = UDim2.new(1, 285, 0, 68)
 	NotifyFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 	NotifyFrame.BackgroundTransparency = 0.05
 	NotifyFrame.BorderSizePixel = 0
@@ -1087,7 +1087,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 
 	local TutorialCard = Instance.new("Frame", ScreenGui)
 	TutorialCard.Size = UDim2.new(0, 290, 0, 96)
-	TutorialCard.Position = UDim2.new(1, 315, 0, 118)
+	TutorialCard.Position = UDim2.new(1, 315, 0, 166)
 	TutorialCard.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 	TutorialCard.BackgroundTransparency = 0.05
 	TutorialCard.BorderSizePixel = 0
@@ -1142,7 +1142,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	local _notifyThread = nil
 	UI.Notify = function(text, nType)
 		if _notifyThread then pcall(task.cancel, _notifyThread); _notifyThread = nil end
-		NotifyFrame.Position = UDim2.new(1, 285, 0, 20)
+		NotifyFrame.Position = UDim2.new(1, 285, 0, 68)
 		local typeText, typeColor = "Info", Color3.fromRGB(190, 190, 190)
 		if nType == "Success" then typeText = "Success"; typeColor = Color3.fromRGB(0, 220, 130)
 		elseif nType == "Warn" then typeText = "Warning"; typeColor = Color3.fromRGB(255, 170, 50)
@@ -1153,10 +1153,10 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		NDetailLabel.Text = text
 		NStroke.Color = typeColor
 		NStroke.Transparency = 0.58
-		TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -275, 0, 20)}):Play()
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -275, 0, 68)}):Play()
 		_notifyThread = task.delay(3.0, function()
 			TweenService:Create(NStroke, TweenInfo.new(0.35), {Transparency = 0.86}):Play()
-			TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 285, 0, 20)}):Play()
+			TweenService:Create(NotifyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 285, 0, 68)}):Play()
 			_notifyThread = nil
 		end)
 	end
@@ -1165,10 +1165,10 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		TCTitleLbl.Text = title:upper()
 		TCDescLbl.Text = desc or ""
 		TCStroke.Transparency = 0.58
-		TweenService:Create(TutorialCard, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -303, 0, 118)}):Play()
+		TweenService:Create(TutorialCard, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -303, 0, 166)}):Play()
 		task.delay(4.5, function()
 			TweenService:Create(TCStroke, TweenInfo.new(0.35), {Transparency = 0.86}):Play()
-			TweenService:Create(TutorialCard, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 315, 0, 118)}):Play()
+			TweenService:Create(TutorialCard, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Position = UDim2.new(1, 315, 0, 166)}):Play()
 		end)
 	end
 

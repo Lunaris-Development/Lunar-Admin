@@ -764,4 +764,15 @@ function NametageGUI.HandleChat(msg, UI)
 	if Win then Win.Visible = true end
 end
 
+if isfile and isfile("LunarNametag.json") then
+	task.spawn(function()
+		task.wait(2)
+		ApplyTag(nil)
+	end)
+	lp.CharacterAdded:Connect(function()
+		task.wait(1.5)
+		ApplyTag(nil)
+	end)
+end
+
 return NametageGUI
