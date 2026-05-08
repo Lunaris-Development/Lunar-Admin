@@ -1,6 +1,45 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+
+local lp = Players.LocalPlayer
+local PRESENCE_URL = "https://ntfy.sh/lunar-presence-k8x2n"
+local presenceSince = math.floor(os.time()) - 60
+local lunarUsers = {}
+
+local function httpReq(url, method, body, headers)
+	local fn = syn and syn.request or request or http_request or (http and http.request)
+	if not fn then return nil end
+	local ok, r = pcall(fn, {Url=url, Method=method or "GET", Headers=headers or {}, Body=body or ""})
+	return ok and r or nil
+end
+
+local function announcePresence()
+	local jobId = game.JobId ~= "" and game.JobId or "singleserver"
+	pcall(function()
+		httpReq(PRESENCE_URL, "POST", lp.Name .. "|" .. jobId, {
+			["Content-Type"] = "text/plain",
+			["Title"] = lp.Name,
+		})
+	end)
+end
+
+local function pollPresence()
+	local r = httpReq(PRESENCE_URL .. "/json?poll=1&since=" .. tostring(presenceSince))
+	if not r or not r.Body or r.Body == "" then return end
+	local jobId = game.JobId ~= "" and game.JobId or "singleserver"
+	for line in r.Body:gmatch("[^\n]+") do
+		local ok, data = pcall(function() return HttpService:JSONDecode(line) end)
+		if ok and data and data.message and data.time and data.time >= presenceSince then
+			presenceSince = data.time + 1
+			local name, msgJob = data.message:match("^(.+)|(.+)$")
+			if name and msgJob and msgJob == jobId and name ~= lp.Name then
+				lunarUsers[name] = true
+			end
+		end
+	end
+end
 
 local LogoID = "rbxthumb://type=Asset&id=73819038719454&w=420&h=420"
 
@@ -270,23 +309,29 @@ end
 
 function Nametags.Init()
 	Active = true
+
+	lunarUsers[lp.Name] = true
+
 	local function IsUser(p)
 		if p.Name == "lnrs_dev" then return true end
-		if p.Character and p.Character:FindFirstChild("__LunarUser") then return true end
+		if lunarUsers[p.Name] then return true end
 		if p:GetAttribute("LunarUser") then return true end
 		return false
 	end
 
-	local function Mark(char)
-		if not char:FindFirstChild("__LunarUser") then
-			local v = Instance.new("StringValue")
-			v.Name = "__LunarUser"
-			v.Parent = char
+	task.spawn(function()
+		task.wait(2)
+		announcePresence()
+		pollPresence()
+		local tick = 0
+		while Active do
+			task.wait(5)
+			pollPresence()
+			tick += 1
+			if tick % 12 == 0 then announcePresence() end
 		end
-	end
+	end)
 
-	table.insert(Connections, Players.LocalPlayer.CharacterAdded:Connect(Mark))
-	if Players.LocalPlayer.Character then Mark(Players.LocalPlayer.Character) end
 	Players.LocalPlayer:SetAttribute("LunarUser", true)
 
 	task.spawn(function()
