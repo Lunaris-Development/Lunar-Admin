@@ -350,61 +350,41 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	InputRow.Size = UDim2.new(1, 0, 1, -18)
 	InputRow.Position = UDim2.new(0, 0, 0, 18)
 	InputRow.BackgroundTransparency = 1
-	local InputLayout = Instance.new("UIListLayout", InputRow)
-	InputLayout.FillDirection = Enum.FillDirection.Horizontal
-	InputLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-	InputLayout.Padding = UDim.new(0, 0)
-	local InputPad = Instance.new("UIPadding", InputRow)
-	InputPad.PaddingLeft = UDim.new(0, 10)
 
-	local PromptUser = Instance.new("TextLabel", InputRow)
-	PromptUser.Size = UDim2.new(0, 0, 1, 0)
-	PromptUser.BackgroundTransparency = 1
-	PromptUser.Text = Player.Name
-	PromptUser.TextColor3 = Color3.fromRGB(80, 200, 255)
-	PromptUser.FontFace = Font.fromEnum(Enum.Font.Code)
-	PromptUser.TextSize = 12
-	PromptUser.AutomaticSize = Enum.AutomaticSize.X
-
-	local PromptAt = Instance.new("TextLabel", InputRow)
-	PromptAt.Size = UDim2.new(0, 0, 1, 0)
-	PromptAt.BackgroundTransparency = 1
-	PromptAt.Text = "@"
-	PromptAt.TextColor3 = Color3.fromRGB(200, 200, 200)
-	PromptAt.FontFace = Font.fromEnum(Enum.Font.Code)
-	PromptAt.TextSize = 12
-	PromptAt.AutomaticSize = Enum.AutomaticSize.X
-
-	local PromptHost = Instance.new("TextLabel", InputRow)
-	PromptHost.Size = UDim2.new(0, 0, 1, 0)
-	PromptHost.BackgroundTransparency = 1
-	PromptHost.Text = "Lunar"
-	PromptHost.TextColor3 = Color3.fromRGB(120, 255, 140)
-	PromptHost.FontFace = Font.fromEnum(Enum.Font.Code)
-	PromptHost.TextSize = 12
-	PromptHost.AutomaticSize = Enum.AutomaticSize.X
-
-	local PromptPath = Instance.new("TextLabel", InputRow)
-	PromptPath.Size = UDim2.new(0, 0, 1, 0)
-	PromptPath.BackgroundTransparency = 1
-	PromptPath.Text = ":~$ "
-	PromptPath.TextColor3 = Color3.fromRGB(200, 200, 200)
-	PromptPath.FontFace = Font.fromEnum(Enum.Font.Code)
-	PromptPath.TextSize = 12
-	PromptPath.AutomaticSize = Enum.AutomaticSize.X
-
-	local Prompt = PromptPath
+	local PromptLbl = Instance.new("TextLabel", InputRow)
+	PromptLbl.Position = UDim2.new(0, 10, 0, 0)
+	PromptLbl.Size = UDim2.new(0, 0, 1, 0)
+	PromptLbl.BackgroundTransparency = 1
+	PromptLbl.AutomaticSize = Enum.AutomaticSize.X
+	PromptLbl.RichText = true
+	PromptLbl.Text = '<font color="rgb(80,200,255)">' .. Player.Name .. '</font>' ..
+	                 '<font color="rgb(160,160,160)">@</font>' ..
+	                 '<font color="rgb(100,255,120)">Lunar</font>' ..
+	                 '<font color="rgb(160,160,160)">:~$</font> '
+	PromptLbl.FontFace = Font.fromEnum(Enum.Font.Code)
+	PromptLbl.TextSize = 12
+	PromptLbl.TextXAlignment = Enum.TextXAlignment.Left
 
 	local ConsoleInput = Instance.new("TextBox", InputRow)
-	ConsoleInput.Size = UDim2.new(1, -200, 1, 0)
+	ConsoleInput.Position = UDim2.new(0, 10, 0, 0)
+	ConsoleInput.Size = UDim2.new(1, -15, 1, 0)
 	ConsoleInput.BackgroundTransparency = 1
 	ConsoleInput.Text = ""
-	ConsoleInput.PlaceholderText = "type command..."
+	ConsoleInput.PlaceholderText = ""
 	ConsoleInput.PlaceholderColor3 = Color3.fromRGB(70, 70, 70)
 	ConsoleInput.TextColor3 = Color3.fromRGB(230, 230, 230)
 	ConsoleInput.FontFace = Font.fromEnum(Enum.Font.Code)
 	ConsoleInput.TextSize = 12
 	ConsoleInput.TextXAlignment = Enum.TextXAlignment.Left
+
+	task.spawn(function()
+		task.wait(0.1)
+		local pw = PromptLbl.AbsoluteSize.X
+		ConsoleInput.Position = UDim2.new(0, 10 + pw, 0, 0)
+		ConsoleInput.Size = UDim2.new(1, -(10 + pw + 5), 1, 0)
+	end)
+
+	local Prompt = PromptLbl
 
 	local function ToggleConsole()
 		local t = Console.Position.Y.Offset == -58 and 60 or -58
