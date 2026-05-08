@@ -301,45 +301,115 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	local function UIClick() pcall(function() UISnd:Play() end) end
 
 	local Console = Instance.new("Frame", ScreenGui)
-	Console.Size = UDim2.new(0, 500, 0, 40)
-	Console.Position = UDim2.new(0.5, -250, 1, 50)
-	Console.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	Console.BackgroundTransparency = 0.15
+	Console.Size = UDim2.new(0, 540, 0, 44)
+	Console.Position = UDim2.new(0.5, -270, 1, 60)
+	Console.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+	Console.BackgroundTransparency = 0.08
 	Console.BorderSizePixel = 0
-	Instance.new("UICorner", Console).CornerRadius = UDim.new(0, 8)
+	Instance.new("UICorner", Console).CornerRadius = UDim.new(0, 6)
 	local ConsoleStroke = Instance.new("UIStroke", Console)
-	ConsoleStroke.Color = Color3.fromRGB(150, 255, 150)
-	ConsoleStroke.Transparency = 0.75
-	local ConsoleLayout = Instance.new("UIListLayout", Console)
-	ConsoleLayout.FillDirection = Enum.FillDirection.Horizontal
-	ConsoleLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-	ConsoleLayout.Padding = UDim.new(0, 4)
-	local ConsolePad = Instance.new("UIPadding", Console)
-	ConsolePad.PaddingLeft = UDim.new(0, 12)
-	local Prompt = Instance.new("TextLabel", Console)
-	Prompt.Size = UDim2.new(0, 0, 1, 0)
-	Prompt.BackgroundTransparency = 1
-	Prompt.Text = Player.Name .. " ❯"
-	Prompt.TextColor3 = Color3.fromRGB(120, 255, 140)
-	Prompt.FontFace = GetFont()
-	Prompt.TextSize = 12
-	Prompt.TextXAlignment = Enum.TextXAlignment.Left
-	Prompt.AutomaticSize = Enum.AutomaticSize.X
-	local ConsoleInput = Instance.new("TextBox", Console)
-	ConsoleInput.Size = UDim2.new(1, -150, 1, 0)
+	ConsoleStroke.Color = Color3.fromRGB(80, 80, 80)
+	ConsoleStroke.Transparency = 0.5
+	ConsoleStroke.Thickness = 1
+
+	local TermBar = Instance.new("Frame", Console)
+	TermBar.Size = UDim2.new(1, 0, 0, 18)
+	TermBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	TermBar.BackgroundTransparency = 0
+	TermBar.BorderSizePixel = 0
+	local TermBarCorner = Instance.new("UICorner", TermBar)
+	TermBarCorner.CornerRadius = UDim.new(0, 6)
+	local TermBarFill = Instance.new("Frame", TermBar)
+	TermBarFill.Size = UDim2.new(1, 0, 0, 8)
+	TermBarFill.Position = UDim2.new(0, 0, 1, -8)
+	TermBarFill.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	TermBarFill.BorderSizePixel = 0
+
+	local function MakeDot(x, col)
+		local d = Instance.new("Frame", TermBar)
+		d.Size = UDim2.new(0, 9, 0, 9)
+		d.Position = UDim2.new(0, x, 0.5, -4)
+		d.BackgroundColor3 = col
+		d.BorderSizePixel = 0
+		Instance.new("UICorner", d).CornerRadius = UDim.new(1, 0)
+	end
+	MakeDot(8,  Color3.fromRGB(255, 95, 87))
+	MakeDot(22, Color3.fromRGB(255, 189, 68))
+	MakeDot(36, Color3.fromRGB(40, 200, 80))
+
+	local TermTitle = Instance.new("TextLabel", TermBar)
+	TermTitle.Size = UDim2.new(1, 0, 1, 0)
+	TermTitle.BackgroundTransparency = 1
+	TermTitle.Text = "lunar — bash"
+	TermTitle.TextColor3 = Color3.fromRGB(180, 180, 180)
+	TermTitle.FontFace = Font.fromEnum(Enum.Font.GothamBold)
+	TermTitle.TextSize = 9
+	TermTitle.TextXAlignment = Enum.TextXAlignment.Center
+
+	local InputRow = Instance.new("Frame", Console)
+	InputRow.Size = UDim2.new(1, 0, 1, -18)
+	InputRow.Position = UDim2.new(0, 0, 0, 18)
+	InputRow.BackgroundTransparency = 1
+	local InputLayout = Instance.new("UIListLayout", InputRow)
+	InputLayout.FillDirection = Enum.FillDirection.Horizontal
+	InputLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+	InputLayout.Padding = UDim.new(0, 0)
+	local InputPad = Instance.new("UIPadding", InputRow)
+	InputPad.PaddingLeft = UDim.new(0, 10)
+
+	local PromptUser = Instance.new("TextLabel", InputRow)
+	PromptUser.Size = UDim2.new(0, 0, 1, 0)
+	PromptUser.BackgroundTransparency = 1
+	PromptUser.Text = Player.Name
+	PromptUser.TextColor3 = Color3.fromRGB(80, 200, 255)
+	PromptUser.FontFace = Font.fromEnum(Enum.Font.Code)
+	PromptUser.TextSize = 12
+	PromptUser.AutomaticSize = Enum.AutomaticSize.X
+
+	local PromptAt = Instance.new("TextLabel", InputRow)
+	PromptAt.Size = UDim2.new(0, 0, 1, 0)
+	PromptAt.BackgroundTransparency = 1
+	PromptAt.Text = "@"
+	PromptAt.TextColor3 = Color3.fromRGB(200, 200, 200)
+	PromptAt.FontFace = Font.fromEnum(Enum.Font.Code)
+	PromptAt.TextSize = 12
+	PromptAt.AutomaticSize = Enum.AutomaticSize.X
+
+	local PromptHost = Instance.new("TextLabel", InputRow)
+	PromptHost.Size = UDim2.new(0, 0, 1, 0)
+	PromptHost.BackgroundTransparency = 1
+	PromptHost.Text = "Lunar"
+	PromptHost.TextColor3 = Color3.fromRGB(120, 255, 140)
+	PromptHost.FontFace = Font.fromEnum(Enum.Font.Code)
+	PromptHost.TextSize = 12
+	PromptHost.AutomaticSize = Enum.AutomaticSize.X
+
+	local PromptPath = Instance.new("TextLabel", InputRow)
+	PromptPath.Size = UDim2.new(0, 0, 1, 0)
+	PromptPath.BackgroundTransparency = 1
+	PromptPath.Text = ":~$ "
+	PromptPath.TextColor3 = Color3.fromRGB(200, 200, 200)
+	PromptPath.FontFace = Font.fromEnum(Enum.Font.Code)
+	PromptPath.TextSize = 12
+	PromptPath.AutomaticSize = Enum.AutomaticSize.X
+
+	local Prompt = PromptPath
+
+	local ConsoleInput = Instance.new("TextBox", InputRow)
+	ConsoleInput.Size = UDim2.new(1, -200, 1, 0)
 	ConsoleInput.BackgroundTransparency = 1
 	ConsoleInput.Text = ""
-	ConsoleInput.PlaceholderText = "command..."
-	ConsoleInput.PlaceholderColor3 = Color3.fromRGB(80, 80, 80)
-	ConsoleInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ConsoleInput.FontFace = GetFont()
+	ConsoleInput.PlaceholderText = "type command..."
+	ConsoleInput.PlaceholderColor3 = Color3.fromRGB(70, 70, 70)
+	ConsoleInput.TextColor3 = Color3.fromRGB(230, 230, 230)
+	ConsoleInput.FontFace = Font.fromEnum(Enum.Font.Code)
 	ConsoleInput.TextSize = 12
 	ConsoleInput.TextXAlignment = Enum.TextXAlignment.Left
 
 	local function ToggleConsole()
-		local t = Console.Position.Y.Offset == -60 and 50 or -60
-		TweenService:Create(Console, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -250, 1, t)}):Play()
-		if t == -60 then task.wait(0.1) ConsoleInput:CaptureFocus() end
+		local t = Console.Position.Y.Offset == -58 and 60 or -58
+		TweenService:Create(Console, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -270, 1, t)}):Play()
+		if t == -58 then task.wait(0.1) ConsoleInput:CaptureFocus() end
 	end
 	UserInputService.InputBegan:Connect(function(input, gpe)
 		if not gpe and input.KeyCode == Enum.KeyCode.F2 then ToggleConsole() end
