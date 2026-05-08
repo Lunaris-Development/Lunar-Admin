@@ -2,12 +2,13 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
-local function getAsset(id)
+local function getAsset(id, size)
+	size = size or 420
 	local fname = "lunar_" .. tostring(id) .. ".png"
 	if getcustomasset and writefile and isfile then
 		if not isfile(fname) then
 			pcall(function()
-				local data = game:HttpGet("https://assetdelivery.roblox.com/v1/asset/?id=" .. tostring(id), true)
+				local data = game:HttpGet("https://assetdelivery.roblox.com/v1/asset/?id=" .. tostring(id))
 				writefile(fname, data)
 			end)
 		end
@@ -16,10 +17,10 @@ local function getAsset(id)
 			if ok and a then return a end
 		end
 	end
-	return "rbxassetid://" .. tostring(id)
+	return "rbxthumb://type=Asset&id=" .. tostring(id) .. "&w=" .. size .. "&h=" .. size
 end
 
-local LogoID = getAsset(73819038719454)
+local LogoID = getAsset(73819038719454, 420)
 
 local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
 local function GetFontSub() return Font.fromEnum(Enum.Font.Gotham) end
