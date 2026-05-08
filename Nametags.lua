@@ -129,25 +129,18 @@ function Nametags.Create(player)
 	Tag.MaxDistance = 150
 	Tag.Parent = Head
 
-	local BorderFrame = Instance.new("Frame", Tag)
-	BorderFrame.Size = UDim2.new(1, 0, 1, 0)
-	BorderFrame.BackgroundColor3 = Color3.new(1, 1, 1)
-	BorderFrame.BorderSizePixel = 0
-	BorderFrame.ZIndex = 1
-	Instance.new("UICorner", BorderFrame).CornerRadius = UDim.new(0, 10)
-	local BorderGrad = Instance.new("UIGradient", BorderFrame)
-	BorderGrad.Color = rank.accent
-	BorderGrad.Rotation = 45
-
 	local TagFrame = Instance.new("Frame", Tag)
 	TagFrame.Name = "TagContainer"
-	TagFrame.Size = UDim2.new(1, -2, 1, -2)
-	TagFrame.Position = UDim2.new(0, 1, 0, 1)
+	TagFrame.Size = UDim2.new(1, 0, 1, 0)
 	TagFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 13)
 	TagFrame.BackgroundTransparency = 0.08
 	TagFrame.BorderSizePixel = 0
 	TagFrame.ZIndex = 2
-	Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 9)
+	Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 10)
+	local TagStroke = Instance.new("UIStroke", TagFrame)
+	TagStroke.Color = rank.accent.Keypoints[1].Value
+	TagStroke.Transparency = 0.5
+	TagStroke.Thickness = 1
 
 	local Glow = Instance.new("ImageLabel", TagFrame)
 	Glow.Size = UDim2.new(1.2, 0, 1.6, 0)
@@ -159,16 +152,17 @@ function Nametags.Create(player)
 	Glow.ZIndex = 2
 
 	local TagLogo = Instance.new("ImageLabel", TagFrame)
-	TagLogo.Size = UDim2.new(0, 22, 0, 22)
-	TagLogo.Position = UDim2.new(0, 8, 0.5, -11)
+	TagLogo.Size = UDim2.new(0, 28, 0, 28)
+	TagLogo.Position = UDim2.new(0, 6, 0.5, -14)
 	TagLogo.BackgroundTransparency = 1
 	TagLogo.Image = LogoID
 	TagLogo.ScaleType = Enum.ScaleType.Fit
-	TagLogo.ZIndex = 4
+	TagLogo.ImageTransparency = 0
+	TagLogo.ZIndex = 5
 
 	local TagText = Instance.new("TextLabel", TagFrame)
-	TagText.Size = UDim2.new(1, -38, 0, 18)
-	TagText.Position = UDim2.new(0, 34, 0, 3)
+	TagText.Size = UDim2.new(1, -42, 0, 18)
+	TagText.Position = UDim2.new(0, 38, 0, 3)
 	TagText.BackgroundTransparency = 1
 	TagText.Text = rank.label
 	TagText.TextColor3 = rank.color
@@ -179,8 +173,8 @@ function Nametags.Create(player)
 	TagText.ZIndex = 4
 
 	local SubText = Instance.new("TextLabel", TagFrame)
-	SubText.Size = UDim2.new(1, -38, 0, 13)
-	SubText.Position = UDim2.new(0, 34, 1, -16)
+	SubText.Size = UDim2.new(1, -42, 0, 13)
+	SubText.Position = UDim2.new(0, 38, 1, -16)
 	SubText.BackgroundTransparency = 1
 	SubText.Text = "@" .. player.Name
 	SubText.TextColor3 = Color3.fromRGB(130, 130, 130)

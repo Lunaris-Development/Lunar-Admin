@@ -190,11 +190,12 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 8)
 
 	local BarLogo = Instance.new("ImageLabel", Bar)
-	BarLogo.Size = UDim2.new(0, 34, 0, 34)
-	BarLogo.Position = UDim2.new(0, 8, 0.5, -17)
+	BarLogo.Size = UDim2.new(0, 38, 0, 38)
+	BarLogo.Position = UDim2.new(0, 6, 0.5, -19)
 	BarLogo.BackgroundTransparency = 1
 	BarLogo.Image = LogoID
 	BarLogo.ScaleType = Enum.ScaleType.Fit
+	BarLogo.ImageTransparency = 0
 	local BarGlow = Instance.new("ImageLabel", BarLogo)
 	BarGlow.Size = UDim2.new(1.5, 0, 1.5, 0)
 	BarGlow.Position = UDim2.new(-0.25, 0, -0.25, 0)
