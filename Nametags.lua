@@ -123,8 +123,8 @@ function Nametags.Create(player)
 
 	local Tag = Instance.new("BillboardGui")
 	Tag.Name = "LunarTag"
-	Tag.Size = UDim2.new(0, 185, 0, 40)
-	Tag.StudsOffset = Vector3.new(0, 3.2, 0)
+	Tag.Size = UDim2.new(0, 175, 0, 54)
+	Tag.StudsOffset = Vector3.new(0, 3.5, 0)
 	Tag.AlwaysOnTop = false
 	Tag.MaxDistance = 150
 	Tag.Parent = Head
@@ -152,8 +152,8 @@ function Nametags.Create(player)
 	Glow.ZIndex = 2
 
 	local TagLogo = Instance.new("ImageLabel", TagFrame)
-	TagLogo.Size = UDim2.new(0, 28, 0, 28)
-	TagLogo.Position = UDim2.new(0, 6, 0.5, -14)
+	TagLogo.Size = UDim2.new(0, 32, 0, 32)
+	TagLogo.Position = UDim2.new(0, 8, 0.5, -16)
 	TagLogo.BackgroundTransparency = 1
 	TagLogo.Image = LogoID
 	TagLogo.ScaleType = Enum.ScaleType.Fit
@@ -161,25 +161,25 @@ function Nametags.Create(player)
 	TagLogo.ZIndex = 5
 
 	local TagText = Instance.new("TextLabel", TagFrame)
-	TagText.Size = UDim2.new(1, -42, 0, 18)
-	TagText.Position = UDim2.new(0, 38, 0, 3)
+	TagText.Size = UDim2.new(1, -48, 0, 22)
+	TagText.Position = UDim2.new(0, 44, 0, 8)
 	TagText.BackgroundTransparency = 1
 	TagText.Text = rank.label
 	TagText.TextColor3 = rank.color
 	TagText.FontFace = GetFont()
-	TagText.TextSize = 10
+	TagText.TextSize = 13
 	TagText.TextXAlignment = Enum.TextXAlignment.Left
 	TagText.TextTruncate = Enum.TextTruncate.AtEnd
 	TagText.ZIndex = 4
 
 	local SubText = Instance.new("TextLabel", TagFrame)
-	SubText.Size = UDim2.new(1, -42, 0, 13)
-	SubText.Position = UDim2.new(0, 38, 1, -16)
+	SubText.Size = UDim2.new(1, -48, 0, 14)
+	SubText.Position = UDim2.new(0, 44, 1, -20)
 	SubText.BackgroundTransparency = 1
 	SubText.Text = "@" .. player.Name
-	SubText.TextColor3 = Color3.fromRGB(130, 130, 130)
+	SubText.TextColor3 = Color3.fromRGB(140, 140, 140)
 	SubText.FontFace = GetFontSub()
-	SubText.TextSize = 9
+	SubText.TextSize = 10
 	SubText.TextXAlignment = Enum.TextXAlignment.Left
 	SubText.TextTruncate = Enum.TextTruncate.AtEnd
 	SubText.ZIndex = 4
