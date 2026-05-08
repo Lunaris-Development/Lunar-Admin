@@ -77,63 +77,113 @@ local function toggleFreecam(UI)
 end
 
 local flyActive = false
+local flyDebounce = false
+local _flyPos, _flyGyro = nil, nil
+
+local function stopFly(hrp, hum, UI)
+	if _flyPos then pcall(function() _flyPos.MaxForce = Vector3.new(0,0,0) end) end
+	if _flyGyro then pcall(function() _flyGyro.MaxTorque = Vector3.new(0,0,0) end) end
+	pcall(function() if hrp:FindFirstChild("LunarFlyPos") then hrp.LunarFlyPos:Destroy() end end)
+	pcall(function() if hrp:FindFirstChild("LunarFlyGyro") then hrp.LunarFlyGyro:Destroy() end end)
+	_flyPos = nil; _flyGyro = nil
+	pcall(function() hum.PlatformStand = false end)
+	if UI and UI.Notify then UI.Notify("Fly: OFF", "Warn") end
+	if UI and UI.UpdateFlightStatus then UI.UpdateFlightStatus(false) end
+end
+
 local function toggleFly(UI)
+	if flyDebounce then return end
+	flyDebounce = true
 	flyActive = not flyActive
+
 	local char = lp.Character
 	local hrp = char and char:FindFirstChild("HumanoidRootPart")
 	local hum = char and char:FindFirstChild("Humanoid")
 
-	if not hrp or not hum then return end
+	if not hrp or not hum then
+		flyActive = not flyActive
+		flyDebounce = false
+		return
+	end
 
 	if flyActive then
-		local bv = Instance.new("BodyVelocity")
-		bv.Name = "LunarFly"
-		bv.Velocity = Vector3.new(0, 0, 0)
-		bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-		bv.Parent = hrp
+		pcall(function() if hrp:FindFirstChild("LunarFlyPos") then hrp.LunarFlyPos:Destroy() end end)
+		pcall(function() if hrp:FindFirstChild("LunarFlyGyro") then hrp.LunarFlyGyro:Destroy() end end)
 
-		local bg = Instance.new("BodyGyro")
-		bg.Name = "LunarGyro"
-		bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-		bg.CFrame = hrp.CFrame
-		bg.Parent = hrp
+		_flyPos = Instance.new("BodyPosition")
+		_flyPos.Name = "LunarFlyPos"
+		_flyPos.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+		_flyPos.Position = hrp.Position
+		_flyPos.Parent = hrp
+
+		_flyGyro = Instance.new("BodyGyro")
+		_flyGyro.Name = "LunarFlyGyro"
+		_flyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+		_flyGyro.CFrame = hrp.CFrame
+		_flyGyro.Parent = hrp
 
 		hum.PlatformStand = true
 		if UI and UI.Notify then UI.Notify("Fly: ON", "Success") end
-		if UI and UI.UpdateFlightStatus then UI.UpdateFlightStatus(true, hum.WalkSpeed) end
+		if UI and UI.UpdateFlightStatus then UI.UpdateFlightStatus(true) end
+
+		task.delay(0.5, function() flyDebounce = false end)
+
+		local topSpeed = 2
+		local speedInc = topSpeed / 25
+		local curSpeed = 0
+		local bPos = _flyPos
+		local bGyro = _flyGyro
 
 		task.spawn(function()
 			while flyActive and hrp.Parent do
-				local move = Vector3.new(0, 0, 0)
+				if not bPos.Parent or not bGyro.Parent then break end
+				local camera = workspace.CurrentCamera
+				local fwd   = UserInputService:IsKeyDown(Enum.KeyCode.W)
+				local back  = UserInputService:IsKeyDown(Enum.KeyCode.S)
+				local left  = UserInputService:IsKeyDown(Enum.KeyCode.A)
+				local right = UserInputService:IsKeyDown(Enum.KeyCode.D)
+				local up    = UserInputService:IsKeyDown(Enum.KeyCode.Space)
+				local down  = UserInputService:IsKeyDown(Enum.KeyCode.Q) or UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
 
 				if isMobile then
 					local md = hum.MoveDirection
-					if md.Magnitude > 0.1 then
-						move = Vector3.new(md.X, Camera.CFrame.LookVector.Y * md.Magnitude, md.Z)
-					end
-				else
-					if UserInputService:IsKeyDown(Enum.KeyCode.W) then move = move + Camera.CFrame.LookVector end
-					if UserInputService:IsKeyDown(Enum.KeyCode.S) then move = move - Camera.CFrame.LookVector end
-					if UserInputService:IsKeyDown(Enum.KeyCode.A) then move = move - Camera.CFrame.RightVector end
-					if UserInputService:IsKeyDown(Enum.KeyCode.D) then move = move + Camera.CFrame.RightVector end
-					if UserInputService:IsKeyDown(Enum.KeyCode.Space) then move = move + Vector3.new(0, 1, 0) end
-					if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then move = move - Vector3.new(0, 1, 0) end
+					if md.Magnitude > 0.1 then fwd = true end
 				end
 
-				bv.Velocity = move * (hum.WalkSpeed * 2)
-				bg.CFrame = Camera.CFrame
+				local new = bGyro.CFrame.Rotation + bPos.Position
+
+				if not (fwd or back or up or down or left or right) then
+					curSpeed = 1
+				else
+					if up    then new = new * CFrame.new(0,  curSpeed, 0); curSpeed = curSpeed + speedInc end
+					if down  then new = new * CFrame.new(0, -curSpeed, 0); curSpeed = curSpeed + speedInc end
+					if fwd   then new = new + camera.CFrame.LookVector * curSpeed;  curSpeed = curSpeed + speedInc end
+					if back  then new = new - camera.CFrame.LookVector * curSpeed;  curSpeed = curSpeed + speedInc end
+					if left  then new = new * CFrame.new(-curSpeed, 0, 0); curSpeed = curSpeed + speedInc end
+					if right then new = new * CFrame.new( curSpeed, 0, 0); curSpeed = curSpeed + speedInc end
+					if curSpeed > topSpeed then curSpeed = topSpeed end
+				end
+
+				hum.PlatformStand = true
+				bPos.Position = new.p
+
+				if fwd then
+					bGyro.CFrame = camera.CFrame * CFrame.Angles(-math.rad(curSpeed * 7.5), 0, 0)
+				elseif back then
+					bGyro.CFrame = camera.CFrame * CFrame.Angles(math.rad(curSpeed * 7.5), 0, 0)
+				else
+					bGyro.CFrame = camera.CFrame
+				end
+
 				RunService.RenderStepped:Wait()
 			end
-			if bv then bv:Destroy() end
-			if bg then bg:Destroy() end
-			hum.PlatformStand = false
+			pcall(function() bPos:Destroy() end)
+			pcall(function() bGyro:Destroy() end)
+			pcall(function() hum.PlatformStand = false end)
 		end)
 	else
-		if hrp:FindFirstChild("LunarFly") then hrp.LunarFly:Destroy() end
-		if hrp:FindFirstChild("LunarGyro") then hrp.LunarGyro:Destroy() end
-		hum.PlatformStand = false
-		if UI and UI.Notify then UI.Notify("Fly: OFF", "Warn") end
-		if UI and UI.UpdateFlightStatus then UI.UpdateFlightStatus(false) end
+		stopFly(hrp, hum, UI)
+		task.delay(0.5, function() flyDebounce = false end)
 	end
 end
 

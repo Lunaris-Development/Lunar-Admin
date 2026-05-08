@@ -410,7 +410,6 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		antiafk    = {t="ANTI AFK",     d="Prevent the server from kicking you for inactivity."},
 		lag        = {t="LAG SPOOF",    d="Simulate high ping to confuse detection systems."},
 		ftpmobile  = {t="CLICK TP",     d="Click anywhere on screen to teleport there instantly."},
-		hug        = {t="HUG",          d="Perform a hug animation on the nearest player."},
 		flip       = {t="FRONTFLIP",    d="Execute a frontflip animation on your character."},
 		bflip      = {t="BACKFLIP",     d="Execute a backflip animation on your character."},
 		nametag    = {t="NAMETAG",      d="Open the nametag customizer — requires gamepass."},
@@ -502,34 +501,33 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		return b
 	end
 
-	addBtn("Fly Toggle", "fly")
-	addBtn("Freecam Toggle", "fc")
+	addBtn("Fly", "fly")
+	addBtn("Freecam", "fc")
 	addBtn("Noclip", "noclip")
 	addBtn("Inf Jump", "infjump")
 	addBtn("God Mode", "god")
 	addBtn("Walk on Air", "walkair")
 	addBtn("Invisible", "invis")
-	addBtn("Aim Lock", "aimlock")
-	addBtn("Reach (20)", "reach 20")
-	addBtn("Hug Nearest", "hug")
+	addBtn("Aimlock", "aimlock")
+	addBtn("Reach", "reach 20")
 	addBtn("Frontflip", "flip")
 	addBtn("Backflip", "bflip")
 	addBtn("Anti AFK", "antiafk")
 	addBtn("Lag Spoof", "lag")
 	addBtn("Click TP", "ftpmobile")
 	addBtn("Loop Speed", "loopspeed 50")
-	addBtn("User Spoofer", "userspoofer player")
-	addBtn("Show Low HP", "shlow")
-	addBtn("Show Most HP", "shmost")
+	addBtn("Spoofer", "userspoofer player")
+	addBtn("Low HP", "shlow")
+	addBtn("High HP", "shmost")
 	addBtn("Lunar Chat", "chat")
 	addBtn("Server List", "serverh")
 	addBtn("Server Info", "serverinfo")
-	addBtn("Animations", function() ToggleAnimWin() end)
-	addBtn("Send Rizz", function() ToggleRizzWin() end)
-	addBtn("Fling Players", function() ToggleFlingWin() end)
-	addBtn("Teleport to Player", function() ToggleTPWin() end)
-	addBtn("ESP Settings", function() ToggleEspWin() end)
-	addBtn("Speed Control", function() ToggleSpeedWin() end)
+	addBtn("Anims", function() ToggleAnimWin() end)
+	addBtn("Rizz", function() ToggleRizzWin() end)
+	addBtn("Fling", function() ToggleFlingWin() end)
+	addBtn("Teleport", function() ToggleTPWin() end)
+	addBtn("ESP", function() ToggleEspWin() end)
+	addBtn("Speed", function() ToggleSpeedWin() end)
 
 	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
 		local q = SearchBox.Text:lower()
