@@ -1247,20 +1247,24 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		Btn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
 		Btn.BackgroundTransparency = 0.25
 		Btn.Text = symbol
-		Btn.TextColor3 = accent
+		Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		Btn.FontFace = GetFontBold()
-		Btn.TextSize = 13
+		Btn.TextSize = 15
 		Btn.AutoButtonColor = false
 		Instance.new("UICorner", Btn).CornerRadius = UDim.new(1, 0)
 		local s = Instance.new("UIStroke", Btn)
-		s.Color = accent; s.Transparency = 0.65; s.Thickness = 1
+		s.Color = accent; s.Transparency = 0.55; s.Thickness = 1.2
+		local ts = Instance.new("UIStroke", Btn)
+		ts.Color = Color3.fromRGB(255, 255, 255)
+		ts.Thickness = 1.5
+		ts.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 		Btn.MouseEnter:Connect(function()
 			TweenService:Create(Btn, TweenInfo.new(0.12), {BackgroundTransparency = 0.02}):Play()
 			TweenService:Create(s, TweenInfo.new(0.12), {Transparency = 0.1}):Play()
 		end)
 		Btn.MouseLeave:Connect(function()
 			TweenService:Create(Btn, TweenInfo.new(0.12), {BackgroundTransparency = 0.25}):Play()
-			TweenService:Create(s, TweenInfo.new(0.12), {Transparency = 0.65}):Play()
+			TweenService:Create(s, TweenInfo.new(0.12), {Transparency = 0.55}):Play()
 		end)
 		if callback then Btn.MouseButton1Click:Connect(callback) end
 		return Btn
