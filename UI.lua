@@ -6,25 +6,7 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local Executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 
-local function getAsset(id, size)
-	size = size or 420
-	local fname = "lunar_" .. tostring(id) .. ".png"
-	if getcustomasset and writefile and isfile then
-		if not isfile(fname) then
-			pcall(function()
-				local data = game:HttpGet("https://assetdelivery.roblox.com/v1/asset/?id=" .. tostring(id))
-				writefile(fname, data)
-			end)
-		end
-		if isfile(fname) then
-			local ok, a = pcall(getcustomasset, fname)
-			if ok and a then return a end
-		end
-	end
-	return "rbxthumb://type=Asset&id=" .. tostring(id) .. "&w=" .. size .. "&h=" .. size
-end
-
-local LogoID = getAsset(73819038719454, 420)
+local LogoID = "rbxassetid://73819038719454"
 
 local function GetFont() return Font.fromEnum(Enum.Font.GothamBold) end
 local function GetFontBold() return Font.fromEnum(Enum.Font.GothamBold) end
@@ -1272,7 +1254,7 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		Img.AnchorPoint = Vector2.new(0.5, 0.5)
 		Img.Position = UDim2.new(0.5, 0, 0.5, 0)
 		Img.BackgroundTransparency = 1
-		Img.Image = getAsset(imgId, 150)
+		Img.Image = "rbxassetid://" .. tostring(imgId)
 		Img.ImageColor3 = accent
 		Img.ScaleType = Enum.ScaleType.Fit
 		Btn.MouseEnter:Connect(function()
