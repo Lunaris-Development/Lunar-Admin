@@ -189,24 +189,26 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	Bar.ClipsDescendants = true
 	Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 8)
 
-	local BarLogo = Instance.new("ImageLabel", Bar)
+	local BarLogo = Instance.new("TextButton", Bar)
 	BarLogo.Size = UDim2.new(0, 34, 0, 34)
 	BarLogo.Position = UDim2.new(0, 8, 0.5, -17)
-	BarLogo.BackgroundTransparency = 1
-	BarLogo.Image = LogoID
-	BarLogo.ScaleType = Enum.ScaleType.Fit
-	local BarGlow = Instance.new("ImageLabel", BarLogo)
-	BarGlow.Size = UDim2.new(1.5, 0, 1.5, 0)
-	BarGlow.Position = UDim2.new(-0.25, 0, -0.25, 0)
-	BarGlow.BackgroundTransparency = 1
-	BarGlow.Image = "rbxassetid://6015538162"
-	BarGlow.ImageColor3 = Color3.fromRGB(255, 255, 255)
-	BarGlow.ImageTransparency = 0.85
+	BarLogo.BackgroundColor3 = Color3.fromRGB(120, 80, 255)
+	BarLogo.BackgroundTransparency = 0.15
+	BarLogo.Text = "L"
+	BarLogo.TextColor3 = Color3.fromRGB(255, 255, 255)
+	BarLogo.FontFace = GetFontBold()
+	BarLogo.TextSize = 16
+	BarLogo.AutoButtonColor = false
+	Instance.new("UICorner", BarLogo).CornerRadius = UDim.new(0, 8)
+	local LogoStroke = Instance.new("UIStroke", BarLogo)
+	LogoStroke.Color = Color3.fromRGB(160, 100, 255)
+	LogoStroke.Transparency = 0.4
+	LogoStroke.Thickness = 1.5
 	task.spawn(function()
 		while ScreenGui.Parent do
-			TweenService:Create(BarGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.6}):Play()
+			TweenService:Create(LogoStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Transparency = 0.1}):Play()
 			task.wait(1.5)
-			TweenService:Create(BarGlow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = 0.85}):Play()
+			TweenService:Create(LogoStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Transparency = 0.5}):Play()
 			task.wait(1.5)
 		end
 	end)
@@ -1239,24 +1241,19 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 		return Btn
 	end
 
-	local function CreateIconBtn(imgId, accent, callback)
+	local function CreateIconBtn(symbol, accent, callback)
 		local Btn = Instance.new("TextButton", Icons)
 		Btn.Size = UDim2.new(0, 32, 0, 32)
 		Btn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
 		Btn.BackgroundTransparency = 0.25
-		Btn.Text = ""
+		Btn.Text = symbol
+		Btn.TextColor3 = accent
+		Btn.FontFace = GetFontBold()
+		Btn.TextSize = 13
 		Btn.AutoButtonColor = false
 		Instance.new("UICorner", Btn).CornerRadius = UDim.new(1, 0)
 		local s = Instance.new("UIStroke", Btn)
 		s.Color = accent; s.Transparency = 0.65; s.Thickness = 1
-		local Img = Instance.new("ImageLabel", Btn)
-		Img.Size = UDim2.new(0, 18, 0, 18)
-		Img.AnchorPoint = Vector2.new(0.5, 0.5)
-		Img.Position = UDim2.new(0.5, 0, 0.5, 0)
-		Img.BackgroundTransparency = 1
-		Img.Image = "rbxassetid://" .. tostring(imgId)
-		Img.ImageColor3 = accent
-		Img.ScaleType = Enum.ScaleType.Fit
 		Btn.MouseEnter:Connect(function()
 			TweenService:Create(Btn, TweenInfo.new(0.12), {BackgroundTransparency = 0.02}):Play()
 			TweenService:Create(s, TweenInfo.new(0.12), {Transparency = 0.1}):Play()
@@ -1443,12 +1440,12 @@ function UI.Init(Nametags, Commands, ESP, Rizzlines, Animations, ProperFling)
 	Players.PlayerAdded:Connect(function() if NetWin.Visible then RefreshNet() end end)
 	Players.PlayerRemoving:Connect(function() task.wait(0.1) if NetWin.Visible then RefreshNet() end end)
 
-	CreateIconBtn(134751195905316, Color3.fromRGB(215, 215, 215), function() ToggleCmdWin() end)
-	CreateIconBtn(70849156584970,  Color3.fromRGB(100, 230, 130), ToggleConsole)
-	CreateIconBtn(87094224829882,  Color3.fromRGB(200, 150, 255), function()
+	CreateIconBtn("⌘",  Color3.fromRGB(215, 215, 215), function() ToggleCmdWin() end)
+	CreateIconBtn(">_", Color3.fromRGB(100, 230, 130), ToggleConsole)
+	CreateIconBtn("⬡",  Color3.fromRGB(200, 150, 255), function()
 		if Commands then Commands.HandleChat("nametag", UI, ESP) end
 	end)
-	CreateIconBtn(109654827173212, Color3.fromRGB(100, 200, 255), function() ToggleNetWin() end)
+	CreateIconBtn("◈",  Color3.fromRGB(100, 200, 255), function() ToggleNetWin() end)
 	CreatePill("⚙", Color3.fromRGB(190, 190, 190), function() ToggleSettingsWin() end)
 
 	local _fa, _ff = 0, 0
