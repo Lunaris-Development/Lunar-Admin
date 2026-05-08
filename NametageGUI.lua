@@ -152,56 +152,52 @@ local function ApplyTag(UI)
 
 		local Tag = Instance.new("BillboardGui")
 		Tag.Name = "LunarTag"
-		Tag.Size = UDim2.new(0, 188, 0, 46)
+		Tag.Size = UDim2.new(0, 175, 0, 54)
 		Tag.StudsOffset = Vector3.new(0, 3.5, 0)
 		Tag.AlwaysOnTop = false
 		Tag.MaxDistance = 150
 		Tag.Parent = Head
 
-		local BorderFrame = Instance.new("Frame", Tag)
-		BorderFrame.Size = UDim2.new(1, 0, 1, 0)
-		BorderFrame.BackgroundColor3 = Config.textColor
-		BorderFrame.BorderSizePixel = 0
-		BorderFrame.ZIndex = 1
-		Instance.new("UICorner", BorderFrame).CornerRadius = UDim.new(0, 12)
-
 		local TagFrame = Instance.new("Frame", Tag)
-		TagFrame.Size = UDim2.new(1, -2, 1, -2)
-		TagFrame.Position = UDim2.new(0, 1, 0, 1)
+		TagFrame.Size = UDim2.new(1, 0, 1, 0)
 		TagFrame.BackgroundColor3 = Config.bgColor
 		TagFrame.BackgroundTransparency = Config.bgTransparency
 		TagFrame.BorderSizePixel = 0
 		TagFrame.ZIndex = 2
-		Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 11)
+		Instance.new("UICorner", TagFrame).CornerRadius = UDim.new(0, 10)
+		local TagStroke = Instance.new("UIStroke", TagFrame)
+		TagStroke.Color = Config.textColor
+		TagStroke.Transparency = 0.5
+		TagStroke.Thickness = 1
 
 		local Img = Instance.new("ImageLabel", TagFrame)
-		Img.Size = UDim2.new(0, 28, 0, 28)
-		Img.Position = UDim2.new(0, 9, 0.5, -14)
+		Img.Size = UDim2.new(0, 32, 0, 32)
+		Img.Position = UDim2.new(0, 8, 0.5, -16)
 		Img.BackgroundTransparency = 1
 		Img.ScaleType = Enum.ScaleType.Fit
 		Img.ZIndex = 3
 		Img.Image = imgUrl
 
 		local TL = Instance.new("TextLabel", TagFrame)
-		TL.Size = UDim2.new(1, -46, 0, ts + 4)
-		TL.Position = UDim2.new(0, 42, 0, 6)
+		TL.Size = UDim2.new(1, -48, 0, 22)
+		TL.Position = UDim2.new(0, 44, 0, 8)
 		TL.BackgroundTransparency = 1
 		TL.Text = Config.text
 		TL.TextColor3 = Config.textColor
 		TL.FontFace = Font.fromEnum(Config.font)
-		TL.TextSize = ts
+		TL.TextSize = 13
 		TL.TextXAlignment = Enum.TextXAlignment.Left
 		TL.TextTruncate = Enum.TextTruncate.AtEnd
 		TL.ZIndex = 3
 
 		local SL = Instance.new("TextLabel", TagFrame)
-		SL.Size = UDim2.new(1, -46, 0, 14)
-		SL.Position = UDim2.new(0, 42, 1, -18)
+		SL.Size = UDim2.new(1, -48, 0, 14)
+		SL.Position = UDim2.new(0, 44, 1, -20)
 		SL.BackgroundTransparency = 1
 		SL.Text = "@" .. lp.Name
 		SL.TextColor3 = Color3.fromRGB(170, 170, 170)
 		SL.FontFace = Font.fromEnum(Config.font)
-		SL.TextSize = math.max(9, ts - 2)
+		SL.TextSize = 10
 		SL.TextXAlignment = Enum.TextXAlignment.Left
 		SL.ZIndex = 3
 
@@ -500,9 +496,12 @@ local function BuildGUI(UI)
 	Instance.new("UICorner", DecalBox).CornerRadius = UDim.new(0,7)
 	Instance.new("UIPadding", DecalBox).PaddingLeft = UDim.new(0,8)
 
+	local RefreshPreview  -- forward declaration so color pickers can call it
+
 	SLabel(LeftP, "BACKGROUND", 64)
 	local getBGColor = MakePicker(LeftP, 80, Config.bgColor, function(c)
 		Config.bgColor = c
+		if RefreshPreview then RefreshPreview() end
 	end)
 
 	SLabel(LeftP, "OPACITY", 168)
@@ -531,12 +530,14 @@ local function BuildGUI(UI)
 			local r = math.clamp((i.Position.X - BGSliderBack.AbsolutePosition.X) / BGSliderBack.AbsoluteSize.X, 0, 1)
 			BGFill.Size = UDim2.new(r,0,1,0); BGKnob.Position = UDim2.new(r,-7,0.5,-7)
 			Config.bgTransparency = 1 - r
+			if RefreshPreview then RefreshPreview() end
 		end
 	end)
 
 	SLabel(LeftP, "TEXT COLOR", 202)
 	local getTCColor = MakePicker(LeftP, 218, Config.textColor, function(c)
 		Config.textColor = c
+		if RefreshPreview then RefreshPreview() end
 	end)
 
 	SLabel(CenterP, "PREVIEW", 10)
@@ -565,10 +566,10 @@ local function BuildGUI(UI)
 	PImg.Image = ((Config.decalId or ""):match("%d+") or "") ~= "" and ("rbxthumb://type=Asset&id="..(Config.decalId:match("%d+") or "").."&w=420&h=420") or LogoID
 
 	local PTL = Instance.new("TextLabel", PTagFrame)
-	PTL.Size = UDim2.new(1,-42,0.5,0); PTL.Position = UDim2.new(0,38,0,5)
+	PTL.Size = UDim2.new(1,-42,0,22); PTL.Position = UDim2.new(0,38,0,8)
 	PTL.BackgroundTransparency = 1; PTL.Text = Config.text ~= "" and Config.text or "LUNAR USER"
 	PTL.TextColor3 = Config.textColor; PTL.FontFace = Font.fromEnum(Config.font)
-	PTL.TextSize = 10; PTL.TextXAlignment = Enum.TextXAlignment.Left; PTL.ZIndex = 35
+	PTL.TextSize = 13; PTL.TextXAlignment = Enum.TextXAlignment.Left; PTL.ZIndex = 35
 	PTL.TextTruncate = Enum.TextTruncate.AtEnd
 
 	local PSL = Instance.new("TextLabel", PTagFrame)
@@ -577,7 +578,7 @@ local function BuildGUI(UI)
 	PSL.TextColor3 = Color3.fromRGB(160,160,160); PSL.FontFace = Font.fromEnum(Enum.Font.Gotham)
 	PSL.TextSize = 8; PSL.TextXAlignment = Enum.TextXAlignment.Left; PSL.ZIndex = 35
 
-	local function RefreshPreview()
+	RefreshPreview = function()
 		local bc = getBGColor()
 		local tc = getTCColor()
 		PTagFrame.BackgroundColor3 = bc
