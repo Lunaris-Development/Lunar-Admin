@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git remote *)",
+      "Bash(git branch *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\lunar\\Documents\\Lunar\\src",
+      "c:\\Users\\lunar\\Documents\\Lunar"
+    ]
+  }
+}
